@@ -1,0 +1,14 @@
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\TouragencyWebApi.DAL.csproj.AssemblyReference.cache
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\TouragencyWebApi.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\TouragencyWebApi.DAL.AssemblyInfoInputs.cache
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\TouragencyWebApi.DAL.AssemblyInfo.cs
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\TouragencyWebApi.DAL.csproj.CoreCompileInputs.cache
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\bin\Debug\net8.0\TouragencyWebApi.DAL.deps.json
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\bin\Debug\net8.0\TouragencyWebApi.DAL.runtimeconfig.json
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\bin\Debug\net8.0\TouragencyWebApi.DAL.dll
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\bin\Debug\net8.0\TouragencyWebApi.DAL.pdb
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\TouragencyWebApi.DAL.dll
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\refint\TouragencyWebApi.DAL.dll
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\TouragencyWebApi.DAL.pdb
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\TouragencyWebApi.DAL.genruntimeconfig.cache
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.DAL\obj\Debug\net8.0\ref\TouragencyWebApi.DAL.dll
