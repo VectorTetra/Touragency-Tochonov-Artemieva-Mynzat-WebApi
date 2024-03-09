@@ -71,5 +71,13 @@ namespace TouragencyWebApi.DAL.Repositories
             if (client != null)
                 _context.Clients.Remove(client);
         }
+        public async Task<IEnumerable<Phone>> GetPhones() 
+        {
+            return await _context.Clients.Select(c => c.Person.Phones).ToListAsync();
+        }
+        public async Task<IEnumerable<Email>> GetEmails() 
+        {
+            return await _context.Clients.Select(c => c.Person.Emails).ToListAsync();
+        }
     }
 }
