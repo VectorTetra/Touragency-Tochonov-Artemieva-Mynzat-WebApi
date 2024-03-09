@@ -9,6 +9,7 @@ namespace TouragencyWebApi.DAL.Entities
         public long Id { get; set; }
         public string EmailAddress { get; set; }
         public virtual ContactType ContactType { get; set; }
+        public virtual ICollection<Person> Persons { get; set; }
         public int ContactTypeId { get; set; }
     }
 
