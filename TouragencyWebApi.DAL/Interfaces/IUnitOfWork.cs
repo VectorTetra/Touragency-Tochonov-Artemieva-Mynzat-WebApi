@@ -9,6 +9,8 @@ namespace TouragencyWebApi.DAL.Interfaces
     public interface IUnitOfWork
     {
         IClientRepository Clients { get; }
+        IEmailRepository Emails { get; }
+        IPhoneRepository Phones { get; }
         //IBookingRepository Bookings { get; }
         //IHotelRepository Hotels { get; }
         //IRoomRepository Rooms { get; }

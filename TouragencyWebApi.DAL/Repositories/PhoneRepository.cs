@@ -19,20 +19,61 @@ namespace TouragencyWebApi.DAL.Repositories
         }
         public async Task<IEnumerable<Phone>> GetAll()
         {
-            _context.Phones.ToListAsync();
+            return await _context.Phones.ToListAsync();
         }
         public async Task<IEnumerable<Phone>> GetByClientId(int clientId)
         {
-            _context.Phones.Where(p => p.ClientId == clientId).ToListAsync();
+           return await _context.Phones
+                .Include(p => p.Persons)
+                .Where(p => p.Persons.Any(p => p.Client.Id == clientId))
+                .ToListAsync();
         }
-        public async Task<IEnumerable<Phone>> GetByPersonId(int personId) { }
-        public async Task<IEnumerable<Phone>> GetByTouragencyEmployeeId(int touragencyEmployeeId) { }
-        public async Task<IEnumerable<Phone>> GetByTouristNickname(string touristNickname) { }
-        public async Task<IEnumerable<Phone>> GetByContactTypeId(string contactTypeId) { }
-        public async Task<Phone> GetByPhoneNumber(string phoneNumber) { }
-        public async Task Create(Phone phone) { }
-        public void Update(Phone phone) { }
-        public async Task Delete(int id) { }
+        public async Task<IEnumerable<Phone>> GetByPersonId(int personId) 
+        {
+            return await _context.Phones
+                .Include(p => p.Persons)
+                .Where(p => p.Persons.Any(p => p.Id == personId))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Phone>> GetByTouragencyEmployeeId(int touragencyEmployeeId) 
+        {
+            return await _context.Phones
+                .Include(p => p.Persons)
+                .Where(p => p.Persons.Any(p => p.TouragencyEmployee.Id == touragencyEmployeeId))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Phone>> GetByTouristNickname(string touristNickname)
+        {
+            return await _context.Phones
+                .Include(p => p.Persons)
+                .Where(p => p.Persons.Any(p => p.Client.TouristNickname == touristNickname))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Phone>> GetByContactTypeId(int contactTypeId) 
+        {
+            return await _context.Phones
+                .Where(p => p.ContactTypeId == contactTypeId)
+                .ToListAsync();
+        }
+        public async Task<Phone?> GetByPhoneNumber(string phoneNumber) 
+        {
+            return await _context.Phones
+                .FirstOrDefaultAsync(p => p.PhoneNumber == phoneNumber);
+        }
+        public async Task Create(Phone phone) 
+        {
+            await _context.Phones.AddAsync(phone);
+        }
+        public void Update(Phone phone) 
+        {
+            _context.Entry(phone).State = EntityState.Modified;
+        }
+        public async Task Delete(int id) 
+        {
+            Phone? phone = await _context.Phones.FindAsync(id);
+            if (phone != null)
+                _context.Phones.Remove(phone);
+        }
     }
 }
 

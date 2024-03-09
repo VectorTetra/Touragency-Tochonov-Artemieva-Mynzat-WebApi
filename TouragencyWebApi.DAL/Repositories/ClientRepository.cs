@@ -55,6 +55,14 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Clients.Where(c => c.TouristNickname.Contains(touristNickname)).ToListAsync();
         }
+        public async Task<IEnumerable<Client>> GetByEmailAddress(string emailAddress)
+        {
+            return await _context.Clients.Where(c => c.Person.Emails.Any(e => e.EmailAddress.Contains(emailAddress))).ToListAsync();
+        }
+        public async Task<IEnumerable<Client>> GetByPhoneNumber(string phoneNumber)
+        {
+            return await _context.Clients.Where(c => c.Person.Phones.Any(p => p.PhoneNumber.Contains(phoneNumber))).ToListAsync();
+        }
         public async Task Create(Client client)
         {
             await _context.Clients.AddAsync(client);
@@ -71,13 +79,13 @@ namespace TouragencyWebApi.DAL.Repositories
             if (client != null)
                 _context.Clients.Remove(client);
         }
-        public async Task<IEnumerable<Phone>> GetPhones() 
+        public async Task<IEnumerable<Phone>> GetPhones(int clientId) 
         {
-            return await _context.Clients.Select(c => c.Person.Phones).ToListAsync();
+            return await _context.Phones.Where(ph => ph.Persons.Any(pr=> pr.Client.Id == clientId)).ToListAsync();
         }
-        public async Task<IEnumerable<Email>> GetEmails() 
+        public async Task<IEnumerable<Email>> GetEmails(int clientId) 
         {
-            return await _context.Clients.Select(c => c.Person.Emails).ToListAsync();
+            return await _context.Emails.Where(ph => ph.Persons.Any(pr => pr.Client.Id == clientId)).ToListAsync();
         }
     }
 }

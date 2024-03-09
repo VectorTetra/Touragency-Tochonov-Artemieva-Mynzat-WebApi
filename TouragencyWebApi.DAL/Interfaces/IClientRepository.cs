@@ -14,6 +14,8 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<Client?> GetByPersonId(int personId);
         Task<Client?> GetByBookingId(int bookingId);
         Task<IEnumerable<Client>> GetByTouristNickname(string touristNickname);
+        Task<IEnumerable<Client>> GetByEmailAddress(string touristNickname);
+        Task<IEnumerable<Client>> GetByPhoneNumber(string touristNickname);
         Task<IEnumerable<Client>> GetByFirstname(string firstname);
         Task<IEnumerable<Client>> GetByLastname(string lastname);
         Task<IEnumerable<Client>> GetByMiddlename(string middlename);

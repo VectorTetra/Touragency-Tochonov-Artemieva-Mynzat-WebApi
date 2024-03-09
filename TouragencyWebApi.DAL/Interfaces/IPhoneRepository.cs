@@ -14,8 +14,8 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Phone>> GetByPersonId(int personId);
         Task<IEnumerable<Phone>> GetByTouragencyEmployeeId(int touragencyEmployeeId);
         Task<IEnumerable<Phone>> GetByTouristNickname(string touristNickname);
-        Task<IEnumerable<Phone>> GetByContactTypeId(string contactTypeId);
-        Task<Phone> GetByPhoneNumber(string phoneNumber);
+        Task<IEnumerable<Phone>> GetByContactTypeId(int contactTypeId);
+        Task<Phone?> GetByPhoneNumber(string phoneNumber);
         Task Create(Phone phone);
         void Update(Phone phone);
         Task Delete(int id);

@@ -243,8 +243,10 @@ namespace TouragencyWebApi.DAL.EF
 
                 TouragencyAccountRoles.Add(new TouragencyAccountRole { Name="СУПЕРАДМІНІСТРАТОР", Description="Має повний доступ до всіх операцій" });
 
-                Persons.Add(new Person { Firstname = "Tester", Lastname = "Testovich" });
-                Clients.Add(new Client { TouristNickname="TestTourist"});
+                ContactTypes.Add(new ContactType { Description = "Телефон клієнта" });
+                ContactTypes.Add(new ContactType { Description = "Телефон робітника турагенства" });
+                ContactTypes.Add(new ContactType { Description = "Email клієнта" });
+                ContactTypes.Add(new ContactType { Description = "Email робітника турагенства" });
                 SaveChanges();
                 
             }
