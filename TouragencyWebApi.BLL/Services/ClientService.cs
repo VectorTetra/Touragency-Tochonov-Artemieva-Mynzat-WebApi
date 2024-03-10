@@ -10,11 +10,24 @@ using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DTO;
 using TouragencyWebApi.DAL.Entities;
+using AutoMapper;
 namespace TouragencyWebApi.Services
 {
     public class ClientService : IClientService
     {
         IUnitOfWork Database;
+
+        MapperConfiguration Client_ClientDTOMapConfig = new MapperConfiguration(cfg => cfg.CreateMap<Client, ClientDTO>()
+                    .ForMember("Id", opt => opt.MapFrom(c => c.Id))
+                    .ForMember("TouristNickname", opt => opt.MapFrom(c => c.TouristNickname))
+                    .ForMember("AvatarImagePath", opt => opt.MapFrom(c => c.AvatarImagePath))
+                    .ForPath(d => d.Person.Firstname, opt => opt.MapFrom(c => c.Person.Firstname))
+                    .ForPath(d => d.Person.Lastname, opt => opt.MapFrom(c => c.Person.Lastname))
+                    .ForPath(d => d.Person.Middlename, opt => opt.MapFrom(c => c.Person.Middlename))
+                    .ForPath(d => d.Person.Phones, opt => opt.MapFrom(c => c.Person.Phones))
+                    .ForPath(d => d.Person.Emails, opt => opt.MapFrom(c => c.Person.Emails))
+                    .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
+                    );
         public ClientService(IUnitOfWork uow)
         {
             Database = uow;
@@ -124,7 +137,7 @@ namespace TouragencyWebApi.Services
                 }
                 else
                 {
-                    MeaningUser = SimilarClients.FirstOrDefault(x => x.Person.Emails.Any(em=> em.EmailAddress == loginDto.Email));
+                    MeaningUser = SimilarClients.FirstOrDefault(x => x.Person.Emails.Any(em => em.EmailAddress == loginDto.Email));
                     // Якщо в БД немає користувача з таким конкретним email, то показати неоднозначну помилку
                     if (MeaningUser == null)
                     {
@@ -151,7 +164,7 @@ namespace TouragencyWebApi.Services
                     }
                 }
             }
-            if(MeaningUser != null)
+            if (MeaningUser != null)
             {
                 string? salt = MeaningUser.Salt;
                 //переводим пароль в байт-массив  
@@ -173,20 +186,153 @@ namespace TouragencyWebApi.Services
                 {
                     Id = MeaningUser.Id,
                     TouristNickname = MeaningUser.TouristNickname,
-
+                    Person = new PersonDTO
+                    {
+                        Id = MeaningUser.Person.Id,
+                        Lastname = MeaningUser.Person.Lastname,
+                        Firstname = MeaningUser.Person.Firstname,
+                        Middlename = MeaningUser.Person.Middlename,
+                        Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList(),
+                        Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList()
+                    },
+                    BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
+                    AvatarImagePath = MeaningUser.AvatarImagePath
                 };
             }
+            throw new ValidationException("Вказано неправильні дані", "");
 
         }
-        public async Task<IEnumerable<ClientDTO>> GetAll() { }
-        public async Task<ClientDTO?> GetByClientId(int clientId) { }
-        public async Task<ClientDTO?> GetByPersonId(int personId) { }
-        public async Task<ClientDTO?> GetByBookingId(int bookingId) { }
-        public async Task<IEnumerable<ClientDTO>> GetByTouristNickname(string touristNickname) { }
-        public async Task<IEnumerable<ClientDTO>> GetByFirstname(string firstname) { }
-        public async Task<IEnumerable<ClientDTO>> GetByLastname(string lastname) { }
-        public async Task<IEnumerable<ClientDTO>> GetByMiddlename(string middlename) { }
-        public void Update(ClientDTO client) { }
-        public async Task Delete(int id) { }
+        public async Task<IEnumerable<ClientDTO>> GetAll()
+        {
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetAll());
+        }
+        public async Task<ClientDTO?> GetByClientId(int clientId)
+        {
+            Client? MeaningUser = await Database.Clients.GetByClientId(clientId);
+            if (MeaningUser == null)
+            {
+                return null;
+            }
+            return new ClientDTO
+            {
+                Id = MeaningUser.Id,
+                TouristNickname = MeaningUser.TouristNickname,
+                Person = new PersonDTO
+                {
+                    Id = MeaningUser.Person.Id,
+                    Lastname = MeaningUser.Person.Lastname,
+                    Firstname = MeaningUser.Person.Firstname,
+                    Middlename = MeaningUser.Person.Middlename,
+                    Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList(),
+                    Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList()
+                },
+                BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
+                AvatarImagePath = MeaningUser.AvatarImagePath
+            };
+        }
+        public async Task<ClientDTO?> GetByPersonId(int personId)
+        {
+            Client? MeaningUser = await Database.Clients.GetByPersonId(personId);
+            if (MeaningUser == null)
+            {
+                return null;
+            }
+            return new ClientDTO
+            {
+                Id = MeaningUser.Id,
+                TouristNickname = MeaningUser.TouristNickname,
+                Person = new PersonDTO
+                {
+                    Id = MeaningUser.Person.Id,
+                    Lastname = MeaningUser.Person.Lastname,
+                    Firstname = MeaningUser.Person.Firstname,
+                    Middlename = MeaningUser.Person.Middlename,
+                    Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList(),
+                    Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList()
+                },
+                BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
+                AvatarImagePath = MeaningUser.AvatarImagePath
+            };
+        }
+        public async Task<ClientDTO?> GetByBookingId(int bookingId)
+        {
+            Client? MeaningUser = await Database.Clients.GetByBookingId(bookingId);
+            if (MeaningUser == null)
+            {
+                return null;
+            }
+            return new ClientDTO
+            {
+                Id = MeaningUser.Id,
+                TouristNickname = MeaningUser.TouristNickname,
+                Person = new PersonDTO
+                {
+                    Id = MeaningUser.Person.Id,
+                    Lastname = MeaningUser.Person.Lastname,
+                    Firstname = MeaningUser.Person.Firstname,
+                    Middlename = MeaningUser.Person.Middlename,
+                    Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList(),
+                    Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList()
+                },
+                BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
+                AvatarImagePath = MeaningUser.AvatarImagePath
+            };
+        }
+        public async Task<IEnumerable<ClientDTO>> GetByTouristNickname(string touristNickname)
+        {
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByTouristNickname(touristNickname));
+        }
+        public async Task<IEnumerable<ClientDTO>> GetByFirstname(string firstname)
+        {
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByFirstname(firstname));
+        }
+        public async Task<IEnumerable<ClientDTO>> GetByLastname(string lastname)
+        {
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByLastname(lastname));
+        }
+        public async Task<IEnumerable<ClientDTO>> GetByMiddlename(string middlename) 
+        {
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByMiddlename(middlename));
+        }
+        public async Task Update(ClientDTO clientDTO) 
+        {
+            var client = await Database.Clients.GetByClientId(clientDTO.Id);
+            if (client == null)
+            {
+                throw new ValidationException("Такого користувача не існує!", "");
+            }
+            else
+            {
+                client.AvatarImagePath = clientDTO.AvatarImagePath;
+                client.TouristNickname = clientDTO.TouristNickname;
+                client.Person.Firstname = clientDTO.Person.Firstname;
+                client.Person.Lastname = clientDTO.Person.Lastname;
+                client.Person.Middlename = clientDTO.Person.Middlename;
+                client.Person.Phones = clientDTO.Person.Phones.Select(ph => new Phone { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList();
+                client.Person.Emails = clientDTO.Person.Emails.Select(em => new Email { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList();
+                Database.Clients.Update(client);
+                await Database.Save();
+            }
+        }
+        public async Task Delete(int id) 
+        {
+            var User = await Database.Clients.GetByClientId(id);
+            if (User == null)
+            {
+                throw new ValidationException("Такого користувача не існує!", "");
+            }
+            else
+            {
+                await Database.Clients.Delete(id);
+                await Database.Save();
+            }
+        }
+
+
     }
 }

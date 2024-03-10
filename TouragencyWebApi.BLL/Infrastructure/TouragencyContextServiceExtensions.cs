@@ -12,7 +12,7 @@ namespace TouragencyWebApi.BLL.Infrastructure
     {
         public static void AddTouragencyContext(this IServiceCollection services, string connection)
         {
-            services.AddDbContext<TouragencyContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<TouragencyContext>(options => options.UseLazyLoadingProxies().UseSqlServer(connection));
         }
     }
 }

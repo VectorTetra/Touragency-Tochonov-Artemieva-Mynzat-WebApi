@@ -87,5 +87,9 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Emails.Where(ph => ph.Persons.Any(pr => pr.Client.Id == clientId)).ToListAsync();
         }
+        public async Task<IEnumerable<Booking>> GetBookings(int clientId)
+        {
+            return await _context.Bookings.Where(b => b.Client.Id == clientId).ToListAsync();
+        }
     }
 }

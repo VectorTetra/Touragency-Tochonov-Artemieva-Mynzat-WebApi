@@ -10,11 +10,9 @@ namespace TouragencyWebApi.BLL.DTO
     public class ClientDTO
     {
         public int Id { get; set; }
-        public int PersonId { get; set; }
+        public PersonDTO Person { get; set; }
         public string TouristNickname { get; set; }
         public string? AvatarImagePath { get; set; }
-        public string Password { get; set; }
-        public string Salt { get; set; }
         public ICollection<long>? BookingIds { get; set; }
     }
 }

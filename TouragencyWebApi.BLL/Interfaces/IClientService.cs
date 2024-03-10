@@ -20,7 +20,7 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<ClientDTO>> GetByFirstname(string firstname);
         Task<IEnumerable<ClientDTO>> GetByLastname(string lastname);
         Task<IEnumerable<ClientDTO>> GetByMiddlename(string middlename);
-        void Update(ClientDTO client);
+        Task Update(ClientDTO clientDTO);
         Task Delete(int id);
     }
 }
