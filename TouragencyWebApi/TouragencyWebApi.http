@@ -1,0 +1,6 @@
+@TouragencyT.A.M.WebApi_HostAddress = http://localhost:5126
+
+GET {{TouragencyT.A.M.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

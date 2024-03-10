@@ -1,0 +1,33 @@
+﻿// ClientRegister
+{
+  "firstname": "Віктор",
+  "lastname": "Точонов",
+  "middlename": "Віталійович",
+  "touristNickname": "viktochonov",
+  "phone": "+380951792150",
+  "email": "viktochonov@gmail.com",
+  "password": "123456",
+  "passwordConfirm": "123456"
+}
+
+// ClientLoginByTouristNickname
+{
+  "touristNickname": "viktochonov",
+  "password": "123456"
+}
+
+// ClientLoginByEmail
+{
+  "email": "viktochonov@gmail.com",
+  "password": "123456"
+}
+// ClientLoginByPhone
+{
+  "phone": "+380951792150",
+  "password": "123456"
+}
+// ClientLoginByMissingPhone
+{
+  "phone": "+380951792160",
+  "password": "123456"
+}

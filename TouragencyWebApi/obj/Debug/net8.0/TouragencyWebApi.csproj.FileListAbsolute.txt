@@ -1,0 +1,6 @@
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyT.A.M.WebApi\obj\Debug\net8.0\TouragencyWebApi.csproj.AssemblyReference.cache
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyT.A.M.WebApi\obj\Debug\net8.0\TouragencyWebApi.GeneratedMSBuildEditorConfig.editorconfig
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyT.A.M.WebApi\obj\Debug\net8.0\TouragencyWebApi.AssemblyInfoInputs.cache
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyT.A.M.WebApi\obj\Debug\net8.0\TouragencyWebApi.AssemblyInfo.cs
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyT.A.M.WebApi\obj\Debug\net8.0\TouragencyWebApi.csproj.CoreCompileInputs.cache
+D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyT.A.M.WebApi\obj\Debug\net8.0\TouragencyWebApi.MvcApplicationPartsAssemblyInfo.cache
