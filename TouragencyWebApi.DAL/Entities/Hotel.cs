@@ -18,5 +18,6 @@ namespace TouragencyWebApi.DAL.Entities
 		public virtual ICollection<Tour> Tours { get; set; }
 		//One-to-many relationship between Hotel and Booking
 		public virtual ICollection<Booking> Bookings { get; set; }
+		public virtual ICollection<HotelService> HotelServices { get; set; }
 	}
 }
