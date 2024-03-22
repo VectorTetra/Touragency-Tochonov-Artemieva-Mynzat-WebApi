@@ -1,3 +1,5 @@
+using TouragencyWebApi.DAL.Entities;
+
 public class HotelServiceType
 {
 	public int Id { get; set; }

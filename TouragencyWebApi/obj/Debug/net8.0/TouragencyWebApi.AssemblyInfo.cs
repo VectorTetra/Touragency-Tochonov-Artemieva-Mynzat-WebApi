@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TouragencyWebApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af699a16c2c1b9f676f82b1369067fa15e638395")]
 [assembly: System.Reflection.AssemblyProductAttribute("TouragencyWebApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TouragencyWebApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
