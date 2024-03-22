@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "AutoMapper/13.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Options": "6.0.0"
+        },
+        "compile": {
+          "lib/net6.0/AutoMapper.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/AutoMapper.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Azure.Core/1.35.0": {
         "type": "package",
         "dependencies": {
@@ -1136,6 +1152,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "AutoMapper": "13.0.1",
           "TouragencyWebApi.DAL": "1.0.0"
         },
         "compile": {
@@ -1163,6 +1180,21 @@
     }
   },
   "libraries": {
+    "AutoMapper/13.0.1": {
+      "sha512": "/Fx1SbJ16qS7dU4i604Sle+U9VLX+WSNVJggk6MupKVkYvvBm4XqYaeFuf67diHefHKHs50uQIS2YEDFhPCakQ==",
+      "type": "package",
+      "path": "automapper/13.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "automapper.13.0.1.nupkg.sha512",
+        "automapper.nuspec",
+        "icon.png",
+        "lib/net6.0/AutoMapper.dll",
+        "lib/net6.0/AutoMapper.xml"
+      ]
+    },
     "Azure.Core/1.35.0": {
       "sha512": "hENcx03Jyuqv05F4RBEPbxz29UrM3Nbhnr6Wl6NQpoU9BCIbL3XLentrxDCTrH54NLS11Exxi/o8MYgT/cnKFA==",
       "type": "package",
@@ -3311,23 +3343,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
-    "D:\\Visual Studio 2019\\Tools\\NuGetPackages": {}
+    "C:\\Users\\t460s\\.nuget\\packages\\": {},
+    "C:\\Users\\t460s\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Visual Studio 2019\\VISUAL STUDIO 2022\\Командний проект 1 (Турагенство)\\TouragencyWebApi\\TouragencyWebApi\\TouragencyWebApi.csproj",
+      "projectUniqueName": "C:\\HOME\\Touragency-Tochonov-Artemieva-Mynzat-WebApi\\TouragencyWebApi\\TouragencyWebApi.csproj",
       "projectName": "TouragencyWebApi",
-      "projectPath": "D:\\Visual Studio 2019\\VISUAL STUDIO 2022\\Командний проект 1 (Турагенство)\\TouragencyWebApi\\TouragencyWebApi\\TouragencyWebApi.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "D:\\Visual Studio 2019\\VISUAL STUDIO 2022\\Командний проект 1 (Турагенство)\\TouragencyWebApi\\TouragencyWebApi\\obj\\",
+      "projectPath": "C:\\HOME\\Touragency-Tochonov-Artemieva-Mynzat-WebApi\\TouragencyWebApi\\TouragencyWebApi.csproj",
+      "packagesPath": "C:\\Users\\t460s\\.nuget\\packages\\",
+      "outputPath": "C:\\HOME\\Touragency-Tochonov-Artemieva-Mynzat-WebApi\\TouragencyWebApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "D:\\Visual Studio 2019\\Tools\\NuGetPackages"
+        "C:\\Users\\t460s\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder",
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\t460s\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\t460s\\AppData\\Roaming\\NuGet\\config\\Godot.Offline.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3336,14 +3371,15 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Visual Studio 2019\\VISUAL STUDIO 2022\\Командний проект 1 (Турагенство)\\TouragencyWebApi\\TouragencyWebApi.BLL\\TouragencyWebApi.BLL.csproj": {
-              "projectPath": "D:\\Visual Studio 2019\\VISUAL STUDIO 2022\\Командний проект 1 (Турагенство)\\TouragencyWebApi\\TouragencyWebApi.BLL\\TouragencyWebApi.BLL.csproj"
+            "C:\\HOME\\Touragency-Tochonov-Artemieva-Mynzat-WebApi\\TouragencyWebApi.BLL\\TouragencyWebApi.BLL.csproj": {
+              "projectPath": "C:\\HOME\\Touragency-Tochonov-Artemieva-Mynzat-WebApi\\TouragencyWebApi.BLL\\TouragencyWebApi.BLL.csproj"
             }
           }
         }
@@ -3382,7 +3418,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -3,3 +3,19 @@ D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Ту
 D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.AssemblyInfoInputs.cache
 D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.AssemblyInfo.cs
 D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyT.A.M.WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.csproj.CoreCompileInputs.cache
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.csproj.AssemblyReference.cache
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.GeneratedMSBuildEditorConfig.editorconfig
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.AssemblyInfoInputs.cache
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.AssemblyInfo.cs
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.csproj.CoreCompileInputs.cache
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.sourcelink.json
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\bin\Debug\net8.0\TouragencyWebApi.BLL.deps.json
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\bin\Debug\net8.0\TouragencyWebApi.BLL.dll
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\bin\Debug\net8.0\TouragencyWebApi.BLL.pdb
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\bin\Debug\net8.0\TouragencyWebApi.DAL.dll
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\bin\Debug\net8.0\TouragencyWebApi.DAL.pdb
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.csproj.CopyComplete
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.dll
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\refint\TouragencyWebApi.BLL.dll
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\TouragencyWebApi.BLL.pdb
+C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\obj\Debug\net8.0\ref\TouragencyWebApi.BLL.dll
