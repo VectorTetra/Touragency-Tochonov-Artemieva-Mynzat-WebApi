@@ -5,5 +5,6 @@ namespace TouragencyWebApi.DAL.Entities
     {
         public int Id { get; set; }
         public string ConfigDescription { get; set; }
+        public virtual ICollection<Booking> Bookings { get; set; }
     }
 }

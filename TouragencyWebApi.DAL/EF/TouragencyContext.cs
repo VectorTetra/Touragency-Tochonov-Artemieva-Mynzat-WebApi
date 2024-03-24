@@ -15,26 +15,24 @@ namespace TouragencyWebApi.DAL.EF
         public DbSet<Email> Emails { get; set; }
         public DbSet<HotelConfiguration> HotelConfigurations { get; set; }
         public DbSet<HotelService> HotelServices { get; set; }
+        public DbSet<HotelServiceType> HotelServiceTypes { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Phone> Phones { get; set; }
         public DbSet<Position> Positions { get; set; }
-        public DbSet<Region> Regions { get; set; }
-        public DbSet<Resort> Resorts { get; set; }
+        //public DbSet<Region> Regions { get; set; }
+        //public DbSet<Resort> Resorts { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ReviewImage> ReviewImages { get; set; }
         public DbSet<Settlement> Settlements { get; set; }
         public DbSet<Tour> Tours { get; set; }
-        public DbSet<TouragencyAccount> TouragencyAccounts { get; set; }
+        public DbSet<TouragencyEmployeeAccount> TouragencyEmployeeAccounts { get; set; }
         public DbSet<TouragencyAccountRole> TouragencyAccountRoles { get; set; }
         public DbSet<TouragencyEmployee> TouragencyEmployees { get; set; }
         public DbSet<TourName> TourNames { get; set; }
         public DbSet<TourState> TourStates { get; set; }
-        
-        
+        public DbSet<TransportType> TransportTypes { get; set; }
 
-       
-                
         // The overrided OnConfiguring method is used to configure UseLazyLoadingProxies and UseSqlServer.
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -43,9 +41,16 @@ namespace TouragencyWebApi.DAL.EF
         public TouragencyContext(DbContextOptions<TouragencyContext> options)
             : base(options)
         {
+            if (Database.EnsureDeleted())
+            {
+                SaveChanges();
+                Console.WriteLine(@"БД ВИДАЛЕНО");
+
+            }
+            
             if (Database.EnsureCreated())
             {
-               
+
                 Countries.Add(new Country { Name = "Австралія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Flag_of_Australia.svg/160px-Flag_of_Australia.svg.png" });
                 Countries.Add(new Country { Name = "Австрія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_Austria.svg/120px-Flag_of_Austria.svg.png" });
                 Countries.Add(new Country { Name = "Азербайджан", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Flag_of_Azerbaijan.svg/160px-Flag_of_Azerbaijan.svg.png" });
@@ -240,15 +245,77 @@ namespace TouragencyWebApi.DAL.EF
                 Countries.Add(new Country { Name = "Шрі-Ланка", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Flag_of_Sri_Lanka.svg/160px-Flag_of_Sri_Lanka.svg.png" });
                 Countries.Add(new Country { Name = "Ямайка", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Flag_of_Jamaica.svg/160px-Flag_of_Jamaica.svg.png" });
                 Countries.Add(new Country { Name = "Японія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Flag_of_Japan.svg/120px-Flag_of_Japan.svg.png" });
+                SaveChanges();
 
-                TouragencyAccountRoles.Add(new TouragencyAccountRole { Name="СУПЕРАДМІНІСТРАТОР", Description="Має повний доступ до всіх операцій" });
+                TouragencyAccountRoles.Add(new TouragencyAccountRole { Name = "Суперадміністратор", Description = "Має повний доступ до всіх операцій"});
+                TouragencyAccountRoles.Add(new TouragencyAccountRole { Name = "Менеджер", Description = @"Може додавати / редагувати / видаляти готелі.
+                                                                                                       Може додавати / редагувати / видаляти новини.
+                                                                                                       Може переглядати заявки клієнтів на тур і приймати / відхиляти. Також може міняти статус туру.
+                                                                                                       Може поміняти інформаію про клієнта або про міста" });
+                TouragencyAccountRoles.Add(new TouragencyAccountRole { Name = "Клієнт", Description = "Має повний доступ до всіх операцій"});
+                SaveChanges();
 
                 ContactTypes.Add(new ContactType { Description = "Телефон клієнта" });
                 ContactTypes.Add(new ContactType { Description = "Телефон робітника турагенства" });
                 ContactTypes.Add(new ContactType { Description = "Email клієнта" });
                 ContactTypes.Add(new ContactType { Description = "Email робітника турагенства" });
                 SaveChanges();
-                
+
+                TransportTypes.Add(new TransportType { Description = "Авіапереліт", Name = "Авіапереліт" });
+                TransportTypes.Add(new TransportType { Description = "Автобус", Name = "Автобус" });
+                TransportTypes.Add(new TransportType { Description = "Потяг", Name = "Потяг" });
+                SaveChanges();
+
+                HotelServiceTypes.Add(new HotelServiceType { Description = "Харчування" });
+                HotelServiceTypes.Add(new HotelServiceType { Description = "Послуги" });
+                SaveChanges();
+
+                HotelServices.Add(new HotelService { Name = "OB", Description = "(Only Bed) - це розміщення в готелі без харчування.", HotelServiceTypeId = 1 });
+                HotelServices.Add(new HotelService { Name = "BB", Description = "(Bed & Breakfast) -  у вартість проживання включено сніданок.", HotelServiceTypeId = 1 });
+                HotelServices.Add(new HotelService { Name = "HB", Description = "(Half Board) - напівпансіон, що включає сніданок та вечерю.", HotelServiceTypeId = 1 });
+                HotelServices.Add(new HotelService { Name = "FB", Description = "(Full Board) -  повний пансіон, що включає сніданок, обід та вечерю.", HotelServiceTypeId = 1 });
+                HotelServices.Add(new HotelService { Name = "AI", Description = "(All Inclusive) - повний пансіон + додаткові прийоми їжі: легкий сніданок, закуски, легка вечеря + напої місцевого виробництва.", HotelServiceTypeId = 1 });
+                HotelServices.Add(new HotelService { Name = "UAI", Description = "(Ultra All Inclusive) - У такому разі вам буде запропоновано 5-разове повноцінне харчування в ресторані: сніданок, пізній сніданок, обід, полуденок і вечеря.\r\nЦі типи харчування можуть трохи відрізнятися в залежності від готелю та країни.", HotelServiceTypeId = 1 });
+
+                HotelServices.Add(new HotelService { Name = "СПА", Description = "СПА", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Аквапарк", Description = "Аквапарк", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Анімація", Description = "Анімація", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Wi-Fi", Description = "Wi-Fi", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Дайвінг", Description = "Дайвінг", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Басейн", Description = "Басейн", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Масаж", Description = "Масаж", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Сауна", Description = "Сауна", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Бар", Description = "Бар", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Казино", Description = "Казино", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Дискотека", Description = "Дискотека", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Дитячий майданчик", Description = "Дитячий майданчик", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Дитячий клуб", Description = "Дитячий клуб", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Дитяче ліжко", Description = "Дитяче ліжко", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Дитяче меню", Description = "Дитяче меню", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Дитячий басейн", Description = "Дитячий басейн", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Фітнес", Description = "Фітнес", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Трансфер", Description = "Трансфер", HotelServiceTypeId = 2 });
+                //HotelServices.Add(new HotelService { Name = "Парковка", Description = "Парковка", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Телевізор", Description = "Телевізор", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Кондиціонер", Description = "Кондиціонер", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Міні-бар", Description = "Міні-бар", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Сейф", Description = "Сейф", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Фен", Description = "Фен", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Праска", Description = "Праска", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Кавоварка", Description = "Кавоварка", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Кухня", Description = "Кухня", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Холодильник", Description = "Холодильник", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Мікрохвильова піч", Description = "Мікрохвильова піч", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Посуд", Description = "Посуд", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Ванна", Description = "Ванна", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Душ", Description = "Душ", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Туалет", Description = "Туалет", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Біде", Description = "Біде", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Туалетні приналежності", Description = "Туалетні приналежності", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Постільна білизна", Description = "Постільна білизна", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Рушники", Description = "Рушники", HotelServiceTypeId = 2 });
+                HotelServices.Add(new HotelService { Name = "Пляжні рушники", Description = "Пляжні рушники", HotelServiceTypeId = 2 });
+                SaveChanges();
             }
         }
     }

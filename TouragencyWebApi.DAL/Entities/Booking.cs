@@ -9,7 +9,9 @@ namespace TouragencyWebApi.DAL.Entities
         public int HotelId { get; set; }
         public virtual Client Client { get; set; }
         public virtual Hotel Hotel { get; set; }
+        public virtual Tour Tour { get; set; }
         public virtual BookingChildren? BookingChildren { get; set; }
         public virtual BookingData BookingData { get; set; }
+        public virtual BedConfiguration BedConfiguration { get; set; }
     }
 }
