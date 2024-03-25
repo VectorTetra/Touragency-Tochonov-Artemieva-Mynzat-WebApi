@@ -25,5 +25,6 @@ namespace TouragencyWebApi.DAL.Entities
 		public int TotalPrice { get; set; }
 		public short AdultsCount { get; set; }
 		public virtual Booking Booking { get; set; }
+		
 	}
 }

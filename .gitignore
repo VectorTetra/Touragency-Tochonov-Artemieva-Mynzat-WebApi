@@ -3,6 +3,15 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#RULES WROTED BY VIKTOR TOCHONOV
+# Ігнорувати директорії bin та obj
+**/bin/
+**/obj/
+
+# Ігнорувати конкретні типи файлів або шаблони
+*.cache
+*.csproj.nuget.*
+
 # User-specific files
 *.rsuser
 *.suo

@@ -14,5 +14,6 @@ namespace TouragencyWebApi.BLL.DTO
         public string TouristNickname { get; set; }
         public string? AvatarImagePath { get; set; }
         public ICollection<long>? BookingIds { get; set; }
+        public ICollection<long>? TourIds { get; set; }
     }
 }

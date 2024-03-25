@@ -37,6 +37,9 @@ namespace TouragencyWebApi.DAL.Entities
 
 		// One-to-many зв'язок з таблицею Reviews
 		public virtual ICollection<Review> Reviews { get; set; }
+		public virtual ICollection<TransportType> TransportTypes { get; set; }
+		public virtual ICollection<Booking> Bookings { get; set; }
+		public virtual ICollection<Client> Clients { get; set; }
 
 	}
 }
