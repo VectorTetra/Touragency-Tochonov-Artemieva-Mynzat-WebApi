@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = TouragencyWebApi.BLL
-build_property.ProjectDir = D:\Visual Studio 2019\VISUAL STUDIO 2022\Командний проект 1 (Турагенство)\TouragencyWebApi\TouragencyWebApi.BLL\
+build_property.ProjectDir = C:\HOME\Touragency-Tochonov-Artemieva-Mynzat-WebApi\TouragencyWebApi.BLL\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
