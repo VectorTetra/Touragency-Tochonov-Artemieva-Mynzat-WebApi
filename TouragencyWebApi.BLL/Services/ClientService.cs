@@ -11,23 +11,26 @@ using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DTO;
 using TouragencyWebApi.DAL.Entities;
 using AutoMapper;
-namespace TouragencyWebApi.Services
+namespace TouragencyWebApi.BLL.Services
 {
     public class ClientService : IClientService
     {
         IUnitOfWork Database;
 
         MapperConfiguration Client_ClientDTOMapConfig = new MapperConfiguration(cfg => cfg.CreateMap<Client, ClientDTO>()
-                    .ForMember("Id", opt => opt.MapFrom(c => c.Id))
-                    .ForMember("TouristNickname", opt => opt.MapFrom(c => c.TouristNickname))
-                    .ForMember("AvatarImagePath", opt => opt.MapFrom(c => c.AvatarImagePath))
-                    .ForPath(d => d.Person.Firstname, opt => opt.MapFrom(c => c.Person.Firstname))
-                    .ForPath(d => d.Person.Lastname, opt => opt.MapFrom(c => c.Person.Lastname))
-                    .ForPath(d => d.Person.Middlename, opt => opt.MapFrom(c => c.Person.Middlename))
-                    .ForPath(d => d.Person.Phones, opt => opt.MapFrom(c => c.Person.Phones))
-                    .ForPath(d => d.Person.Emails, opt => opt.MapFrom(c => c.Person.Emails))
-                    .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
-                    );
+        .ForMember("Id", opt => opt.MapFrom(c => c.Id))
+        .ForMember("TouristNickname", opt => opt.MapFrom(c => c.TouristNickname))
+        .ForMember("AvatarImagePath", opt => opt.MapFrom(c => c.AvatarImagePath))
+        .ForMember("TouragencyAccountRoleId", opt => opt.MapFrom(c => c.TouragencyAccountRoleId))
+        .ForPath(d => d.Person.Firstname, opt => opt.MapFrom(c => c.Person.Firstname))
+        .ForPath(d => d.Person.Lastname, opt => opt.MapFrom(c => c.Person.Lastname))
+        .ForPath(d => d.Person.Middlename, opt => opt.MapFrom(c => c.Person.Middlename))
+        .ForPath(d => d.Person.Phones, opt => opt.MapFrom(c => c.Person.Phones))
+        .ForPath(d => d.Person.Emails, opt => opt.MapFrom(c => c.Person.Emails))
+        .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
+        .ForPath(d => d.TourIds, opt => opt.MapFrom(c => c.Tours.Select(b => b.Id)))
+        .ForPath(d => d.ReviewIds, opt => opt.MapFrom(c => c.Reviews.Select(b => b.Id)))
+        );
         public ClientService(IUnitOfWork uow)
         {
             Database = uow;
@@ -294,12 +297,12 @@ namespace TouragencyWebApi.Services
             var mapper = new Mapper(Client_ClientDTOMapConfig);
             return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByLastname(lastname));
         }
-        public async Task<IEnumerable<ClientDTO>> GetByMiddlename(string middlename) 
+        public async Task<IEnumerable<ClientDTO>> GetByMiddlename(string middlename)
         {
             var mapper = new Mapper(Client_ClientDTOMapConfig);
             return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByMiddlename(middlename));
         }
-        public async Task Update(ClientDTO clientDTO) 
+        public async Task Update(ClientDTO clientDTO)
         {
             var client = await Database.Clients.GetByClientId(clientDTO.Id);
             if (client == null)
@@ -319,7 +322,7 @@ namespace TouragencyWebApi.Services
                 await Database.Save();
             }
         }
-        public async Task Delete(int id) 
+        public async Task Delete(int id)
         {
             var User = await Database.Clients.GetByClientId(id);
             if (User == null)

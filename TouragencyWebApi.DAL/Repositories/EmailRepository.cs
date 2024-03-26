@@ -21,6 +21,10 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Emails.ToListAsync();
         }
+        public async Task<Email?> GetById(long id)
+        {
+            return await _context.Emails.FindAsync(id);
+        }
         public async Task<IEnumerable<Email>> GetByClientId(int clientId)
         {
             return await _context.Emails
@@ -68,7 +72,7 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             _context.Entry(Email).State = EntityState.Modified;
         }
-        public async Task Delete(int id)
+        public async Task Delete(long id)
         {
             Email? Email = await _context.Emails.FindAsync(id);
             if (Email != null)

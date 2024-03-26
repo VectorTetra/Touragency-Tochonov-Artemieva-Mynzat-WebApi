@@ -32,6 +32,7 @@ namespace TouragencyWebApi.DAL.EF
         public DbSet<TourState> TourStates { get; set; }
         public DbSet<TransportType> TransportTypes { get; set; }
 
+        #region RunWithMigration
         static DbContextOptions<TouragencyContext> _options;
 
         static TouragencyContext()
@@ -59,6 +60,8 @@ namespace TouragencyWebApi.DAL.EF
         {
 
         }
+
+        #endregion RunWithMigration
 
         // При першому запуску програми видаляємо БД і створюємо нову
         // Надалі коментуємо цей код і при запуску повинні виконуватись міграції, які описані вище

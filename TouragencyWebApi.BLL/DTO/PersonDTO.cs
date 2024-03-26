@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TouragencyWebApi.DAL.Entities;
 
 namespace TouragencyWebApi.BLL.DTO
 {
@@ -14,5 +15,7 @@ namespace TouragencyWebApi.BLL.DTO
         public string? Middlename { get; set; }
         public ICollection<EmailDTO>? Emails { get; set; }
         public ICollection<PhoneDTO>? Phones { get; set; }
+        public int? TouragencyEmployeeId { get; set; }
+        public int? ClientId { get; set; }
     }
 }

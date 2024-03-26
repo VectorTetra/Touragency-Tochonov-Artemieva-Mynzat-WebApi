@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.BLL.Interfaces;
+using TouragencyWebApi.BLL.Services;
 //using TouragencyWebApi.DAL.Interfaces;
-using TouragencyWebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(); // добавляем сервисы CORS
@@ -18,7 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTouragencyContext(connection);
 builder.Services.AddUnitOfWorkService();
 builder.Services.AddScoped<IClientService, ClientService>();
-//builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 
 var app = builder.Build();

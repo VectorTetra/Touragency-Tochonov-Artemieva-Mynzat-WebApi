@@ -11,5 +11,6 @@ namespace TouragencyWebApi.BLL.DTO
         public long Id { get; set; }
         public string EmailAddress { get; set; }
         public int ContactTypeId { get; set; }
+        public ICollection<int>? PersonIds { get; set; }
     }
 }

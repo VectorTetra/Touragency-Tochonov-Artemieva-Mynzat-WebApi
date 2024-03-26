@@ -16,8 +16,9 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Email>> GetByTouristNickname(string touristNickname);
         Task<IEnumerable<Email>> GetByContactTypeId(int contactTypeId);
         Task<Email?> GetByEmailAddress(string emailAddress);
+        Task<Email?> GetById(long id);
         Task Create(Email email);
         void Update(Email email);
-        Task Delete(int id);
+        Task Delete(long id);
     }
 }

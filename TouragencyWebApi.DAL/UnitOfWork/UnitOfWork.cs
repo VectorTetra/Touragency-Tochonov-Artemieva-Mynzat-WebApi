@@ -15,11 +15,21 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private IClientRepository _clients;
         private IEmailRepository _emails;
         private IPhoneRepository _phones;
+        private IPersonRepository _persons;
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
         }
 
+        public IPersonRepository Persons
+        {
+            get
+            {
+                if (_persons == null)
+                    _persons = new PersonRepository(_context);
+                return _persons;
+            }
+        }
         public IClientRepository Clients
         {
             get
