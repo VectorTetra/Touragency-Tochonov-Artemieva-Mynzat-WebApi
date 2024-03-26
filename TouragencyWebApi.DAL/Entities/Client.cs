@@ -20,6 +20,5 @@ namespace TouragencyWebApi.DAL.Entities
         public int TouragencyAccountRoleId { get; set; } = 3;
         public virtual TouragencyAccountRole TouragencyAccountRole { get; set; }
 
-       
     }
 }
