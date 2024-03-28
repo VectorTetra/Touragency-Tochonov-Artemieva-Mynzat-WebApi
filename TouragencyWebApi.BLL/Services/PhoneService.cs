@@ -60,7 +60,7 @@ namespace TouragencyWebApi.BLL.Services
             }
             phone.PhoneNumber = phoneDTO.PhoneNumber;
             phone.ContactTypeId = phoneDTO.ContactTypeId;
-            phone.Persons = new List<Person>();
+            phone.Persons.Clear();
             foreach (var id in phoneDTO.PersonIds)
             {
                 var person = await Database.Persons.GetById(id);

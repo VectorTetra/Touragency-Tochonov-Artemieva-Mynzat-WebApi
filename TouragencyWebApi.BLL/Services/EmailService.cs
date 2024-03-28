@@ -61,7 +61,7 @@ namespace TouragencyWebApi.BLL.Services
             }
             email.EmailAddress = emailDTO.EmailAddress;
             email.ContactTypeId = emailDTO.ContactTypeId;
-            email.Persons = new List<Person>();
+            email.Persons.Clear();
             foreach (var id in emailDTO.PersonIds)
             {
                 var person = await Database.Persons.GetById(id);
