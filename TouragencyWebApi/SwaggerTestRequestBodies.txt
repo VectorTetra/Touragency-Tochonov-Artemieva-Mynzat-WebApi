@@ -9,6 +9,26 @@
   "password": "123456",
   "passwordConfirm": "123456"
 }
+{
+  "firstname": "Анна",
+  "lastname": "Ковальчук",
+  "middlename": "",
+  "touristNickname": "annkov",
+  "phone": "+380981234567",
+  "email": "annkov@gmail.com",
+  "password": "123456",
+  "passwordConfirm": "123456"
+}
+{
+  "firstname": "Вікторія",
+  "lastname": "Ковальчук",
+  "middlename": "",
+  "touristNickname": "vikkov",
+  "phone": "+380931234567",
+  "email": "vikkov@gmail.com",
+  "password": "123456",
+  "passwordConfirm": "123456"
+}
 
 // ClientLoginByTouristNickname
 {

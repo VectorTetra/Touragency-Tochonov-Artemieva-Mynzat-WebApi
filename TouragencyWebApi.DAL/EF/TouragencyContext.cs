@@ -63,10 +63,13 @@ namespace TouragencyWebApi.DAL.EF
 
         #endregion RunWithMigration
 
+        /*
+        #region RunWithoutMigration(Re-Create)
         // При першому запуску програми видаляємо БД і створюємо нову
         // Надалі коментуємо цей код і при запуску повинні виконуватись міграції, які описані вище
-        /*
+
         //The overrided OnConfiguring method is used to configure UseLazyLoadingProxies and UseSqlServer.
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=TouragencyDb;Trusted_Connection=True;");
@@ -146,7 +149,7 @@ namespace TouragencyWebApi.DAL.EF
                 Countries.Add(new Country { Name = "Індія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_India.svg/120px-Flag_of_India.svg.png" });
                 Countries.Add(new Country { Name = "Індонезія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/120px-Flag_of_Indonesia.svg.png" });
                 Countries.Add(new Country { Name = "Ірак", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Flag_of_Iraq.svg/120px-Flag_of_Iraq.svg.png" });
-                //Countries.Add(new Country { Name = "Іран", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Flag_of_Iran.svg/140px-Flag_of_Iran.svg.png" });
+                Countries.Add(new Country { Name = "Іран", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Flag_of_Iran.svg/140px-Flag_of_Iran.svg.png" });
                 Countries.Add(new Country { Name = "Ірландія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Flag_of_Ireland.svg/160px-Flag_of_Ireland.svg.png" });
                 Countries.Add(new Country { Name = "Ісландія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Flag_of_Iceland.svg/111px-Flag_of_Iceland.svg.png" });
                 Countries.Add(new Country { Name = "Іспанія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Spain.svg/120px-Flag_of_Spain.svg.png" });
@@ -167,7 +170,7 @@ namespace TouragencyWebApi.DAL.EF
                 Countries.Add(new Country { Name = "Комори", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Flag_of_the_Comoros.svg/134px-Flag_of_the_Comoros.svg.png" });
                 Countries.Add(new Country { Name = "Демократична Республіка Конго", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Flag_of_the_Democratic_Republic_of_the_Congo.svg/107px-Flag_of_the_Democratic_Republic_of_the_Congo.svg.png" });
                 Countries.Add(new Country { Name = "Республіка Конго", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Flag_of_the_Republic_of_the_Congo.svg/120px-Flag_of_the_Republic_of_the_Congo.svg.png" });
-                //Countries.Add(new Country { Name = "КНДР (Північна Корея)", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Flag_of_North_Korea.svg/160px-Flag_of_North_Korea.svg.png" });
+                Countries.Add(new Country { Name = "КНДР (Північна Корея)", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Flag_of_North_Korea.svg/160px-Flag_of_North_Korea.svg.png" });
                 Countries.Add(new Country { Name = "Республіка Корея (Південна Корея)", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/120px-Flag_of_South_Korea.svg.png" });
                 Countries.Add(new Country { Name = "Коста-Рика", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Flag_of_Costa_Rica.svg/134px-Flag_of_Costa_Rica.svg.png" });
                 Countries.Add(new Country { Name = "Кот-д'Івуар", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_C%C3%B4te_d%27Ivoire.svg/120px-Flag_of_C%C3%B4te_d%27Ivoire.svg.png" });
@@ -222,7 +225,7 @@ namespace TouragencyWebApi.DAL.EF
                 Countries.Add(new Country { Name = "Південний Судан", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Flag_of_South_Sudan.svg/160px-Flag_of_South_Sudan.svg.png" });
                 Countries.Add(new Country { Name = "Польща", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/128px-Flag_of_Poland.svg.png" });
                 Countries.Add(new Country { Name = "Португалія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Portugal.svg/120px-Flag_of_Portugal.svg.png" });
-                //Countries.Add(new Country { Name = "Росія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Flag_of_Russia.svg/120px-Flag_of_Russia.svg.png" });
+                Countries.Add(new Country { Name = "Росія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Flag_of_Russia.svg/120px-Flag_of_Russia.svg.png" });
                 Countries.Add(new Country { Name = "Руанда", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Flag_of_Rwanda.svg/120px-Flag_of_Rwanda.svg.png" });
                 Countries.Add(new Country { Name = "Румунія", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flag_of_Romania.svg/120px-Flag_of_Romania.svg.png" });
                 Countries.Add(new Country { Name = "Сальвадор", FlagUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Flag_of_El_Salvador.svg/142px-Flag_of_El_Salvador.svg.png" });
@@ -354,6 +357,8 @@ namespace TouragencyWebApi.DAL.EF
             }
 
         }
-         */
+
+        #endregion RunWithoutMigration(Re-Create)
+        */
     }
 }
