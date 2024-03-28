@@ -21,6 +21,10 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Phones.ToListAsync();
         }
+        public async Task<Phone?> GetById(long id)
+        {
+            return await _context.Phones.FindAsync(id);
+        }
         public async Task<IEnumerable<Phone>> GetByClientId(int clientId)
         {
            return await _context.Phones
@@ -55,10 +59,12 @@ namespace TouragencyWebApi.DAL.Repositories
                 .Where(p => p.ContactTypeId == contactTypeId)
                 .ToListAsync();
         }
-        public async Task<Phone?> GetByPhoneNumber(string phoneNumber) 
+        public async Task<IEnumerable<Phone>> GetByPhoneNumber(string phoneNumberSubstring) 
         {
             return await _context.Phones
-                .FirstOrDefaultAsync(p => p.PhoneNumber == phoneNumber);
+                .Include(p => p.Persons)
+                .Where(p => p.PhoneNumber.Contains(phoneNumberSubstring))
+                .ToListAsync();
         }
         public async Task Create(Phone phone) 
         {
@@ -68,7 +74,7 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             _context.Entry(phone).State = EntityState.Modified;
         }
-        public async Task Delete(int id) 
+        public async Task Delete(long id) 
         {
             Phone? phone = await _context.Phones.FindAsync(id);
             if (phone != null)

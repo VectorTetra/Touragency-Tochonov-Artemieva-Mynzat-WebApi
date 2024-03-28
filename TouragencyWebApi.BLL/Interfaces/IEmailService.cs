@@ -20,7 +20,7 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<EmailDTO>> GetByPersonId(int personId);
         Task<IEnumerable<EmailDTO>> GetByTouragencyEmployeeId(int touragencyEmployeeId);
         Task<IEnumerable<EmailDTO>> GetByContactTypeId(int contactTypeId);
-        Task<EmailDTO?> GetByEmailAddress(string emailAddress);
+        Task<IEnumerable<EmailDTO>> GetByEmailAddress(string emailAddressSubstring);
     }
 }
 

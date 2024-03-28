@@ -15,7 +15,6 @@ namespace TouragencyWebApi.Controllers
             _serv = serv;
         }
         /*
-         
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmailDTO>>> GetEmails(string searchParameter, string stringParameter, int intParameter, long longParameter)
         {
@@ -136,8 +135,7 @@ namespace TouragencyWebApi.Controllers
                             {
                                 throw new ValidationException("Не вказано EmailAddress для пошуку!", nameof(emailQuery.EmailAddress));
                             }
-                            var acc = await _serv.GetByEmailAddress(emailQuery?.EmailAddress);
-                            collec = new List<EmailDTO?> { acc };
+                            collec = await _serv.GetByEmailAddress(emailQuery?.EmailAddress);
                         }
                         break;
                     default:
@@ -196,7 +194,7 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteEmail(int id)
+        public async Task<ActionResult> DeleteEmail(long id)
         {
             try
             {
