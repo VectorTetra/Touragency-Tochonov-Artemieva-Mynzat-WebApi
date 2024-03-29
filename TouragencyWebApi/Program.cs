@@ -19,6 +19,7 @@ builder.Services.AddTouragencyContext(connection);
 builder.Services.AddUnitOfWorkService();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IPhoneService, PhoneService>();
 
 
 var app = builder.Build();

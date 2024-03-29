@@ -195,10 +195,16 @@ namespace TouragencyWebApi.BLL.Services
                         Lastname = MeaningUser.Person.Lastname,
                         Firstname = MeaningUser.Person.Firstname,
                         Middlename = MeaningUser.Person.Middlename,
-                        Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList(),
-                        Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList()
+                        Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId, 
+                        PersonIds = ph.Persons.Select(p => p.Id).ToList()}).ToList(),
+                        Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId,
+                            PersonIds = em.Persons.Select(p => p.Id).ToList()}).ToList(),
+                        ClientId = MeaningUser.Id
                     },
                     BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
+                    ReviewIds = MeaningUser.Reviews.Select(r => r.Id).ToList(),
+                    TourIds = MeaningUser.Tours.Select(t => t.Id).ToList(),
+                    TouragencyAccountRoleId = MeaningUser.TouragencyAccountRoleId,
                     AvatarImagePath = MeaningUser.AvatarImagePath
                 };
             }

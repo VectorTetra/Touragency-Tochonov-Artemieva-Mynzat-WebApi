@@ -15,9 +15,10 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Phone>> GetByTouragencyEmployeeId(int touragencyEmployeeId);
         Task<IEnumerable<Phone>> GetByTouristNickname(string touristNickname);
         Task<IEnumerable<Phone>> GetByContactTypeId(int contactTypeId);
-        Task<Phone?> GetByPhoneNumber(string phoneNumber);
+        Task<IEnumerable<Phone>> GetByPhoneNumber(string phoneNumberSubstring);
+        Task<Phone?> GetById(long id);
         Task Create(Phone phone);
         void Update(Phone phone);
-        Task Delete(int id);
+        Task Delete(long id);
     }
 }

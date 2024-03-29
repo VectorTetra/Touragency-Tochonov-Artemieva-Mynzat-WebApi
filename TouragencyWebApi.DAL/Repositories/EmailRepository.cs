@@ -56,13 +56,16 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<IEnumerable<Email>> GetByContactTypeId(int contactTypeId)
         {
             return await _context.Emails
+                .Include(p => p.Persons)
                 .Where(p => p.ContactTypeId == contactTypeId)
                 .ToListAsync();
         }
-        public async Task<Email?> GetByEmailAddress(string emailAddress)
+        public async Task<IEnumerable<Email>> GetByEmailAddress(string emailAddressSubstring)
         {
             return await _context.Emails
-                .FirstOrDefaultAsync(p => p.EmailAddress == emailAddress);
+                .Include(p => p.Persons)
+                .Where(p => p.EmailAddress.Contains(emailAddressSubstring))
+                .ToListAsync();
         }
         public async Task Create(Email Email)
         {

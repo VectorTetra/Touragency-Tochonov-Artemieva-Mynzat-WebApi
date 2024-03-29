@@ -29,7 +29,7 @@ namespace TouragencyWebApi.BLL.Services
         public async Task TryToAddNewEmail(EmailDTO emailDTO)
         {
             var BusyEmail= await Database.Emails.GetByEmailAddress(emailDTO.EmailAddress);
-            if (BusyEmail != null)
+            if (BusyEmail.Any(em => em.EmailAddress == emailDTO.EmailAddress))
             {
                 throw new ValidationException("Такий email вже зайнято!", "");
             }
@@ -61,7 +61,7 @@ namespace TouragencyWebApi.BLL.Services
             }
             email.EmailAddress = emailDTO.EmailAddress;
             email.ContactTypeId = emailDTO.ContactTypeId;
-            email.Persons = new List<Person>();
+            email.Persons.Clear();
             foreach (var id in emailDTO.PersonIds)
             {
                 var person = await Database.Persons.GetById(id);
@@ -121,10 +121,10 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.GetByContactTypeId(contactTypeId));
         }
 
-        public async Task<EmailDTO?> GetByEmailAddress(string emailAddress)
+        public async Task<IEnumerable<EmailDTO>> GetByEmailAddress(string emailAddressSubstring)
         {
             var mapper = new Mapper(Email_EmailDTOMapConfig);
-            return mapper.Map<Email, EmailDTO>(await Database.Emails.GetByEmailAddress(emailAddress));
+            return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.GetByEmailAddress(emailAddressSubstring));
         }
     }
 }

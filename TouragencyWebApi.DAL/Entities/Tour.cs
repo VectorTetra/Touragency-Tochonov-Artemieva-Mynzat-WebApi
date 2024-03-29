@@ -3,7 +3,7 @@ namespace TouragencyWebApi.DAL.Entities
 	public class Tour
 	{
 		// Ідентифікатор туру
-		public int Id { get; set; }
+		public long Id { get; set; }
 
 		// Дата прибуття
 		public virtual TourName Name { get; set; }
