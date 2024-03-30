@@ -20,6 +20,7 @@ builder.Services.AddUnitOfWorkService();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPhoneService, PhoneService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
 
 
 var app = builder.Build();

@@ -12,6 +12,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         IEmailRepository Emails { get; }
         IPhoneRepository Phones { get; }
         IPersonRepository Persons { get; }
+        ICountriesRepository Countries { get; }
 
         //IBookingRepository Bookings { get; }
         //IHotelRepository Hotels { get; }

@@ -23,14 +23,15 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Countries.ToListAsync();
         }
-        public async Task<Country?> GetById(long id)
+        public async Task<Country?> GetById(int id)
         {
             return await _context.Countries.FindAsync(id);
         }
-        public async Task<Country?> GetByName(string countryName)
+        public async Task<IEnumerable<Country>> GetByName(string countryName)
         {
-            return await _context.Countries.
-                FirstOrDefaultAsync((p => p.Name == countryName));
+            return await _context.Countries
+                .Where(p => p.Name.Contains(countryName))
+                .ToListAsync();
         }
         public async Task Create(Country country)
         {
@@ -40,7 +41,7 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             _context.Entry(country).State = EntityState.Modified;
         }
-        public async Task Delete(long id)
+        public async Task Delete(int id)
         {
             Country? country = await _context.Countries.FindAsync(id);
             if (country != null)

@@ -11,10 +11,10 @@ namespace TouragencyWebApi.BLL.Interfaces
     public interface ICountryService
     {
         Task<IEnumerable<CountryDTO>> GetAll();
-        Task<CountryDTO?> GetById(long id);
-        Task<CountryDTO?> GetByName(string countryName);
-        Task Add(CountryDTO country);
-        Task Update(CountryDTO country);
-        Task Delete(long id);
+        Task<CountryDTO?> GetById(int id);
+        Task<IEnumerable<CountryDTO>> GetByName(string countryName);
+        Task Add(CountryDTO countryDTO);
+        Task Update(CountryDTO countryDTO);
+        Task Delete(int id);
     }
 }
