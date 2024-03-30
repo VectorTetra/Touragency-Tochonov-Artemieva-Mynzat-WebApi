@@ -17,6 +17,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private IPhoneRepository _phones;
         private IPersonRepository _persons;
         private ICountriesRepository _countries;
+
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
@@ -58,7 +59,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 return _phones;
             }
         }
-        public ICountriesRepository countries
+        public ICountriesRepository Countries
         {
             get
             {
@@ -67,6 +68,8 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 return _countries;
             }
         }
+
+
         public async Task Save()
         {
             await _context.SaveChangesAsync();

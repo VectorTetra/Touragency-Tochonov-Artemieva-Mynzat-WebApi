@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TouragencyWebApi.BLL.Interfaces;
 using TouragencyWebApi.BLL.DTO;
+using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.DAL.Interfaces;
+using AutoMapper;
 using TouragencyWebApi.DAL.Entities;
 
 namespace TouragencyWebApi.BLL.Services
 {
-    public class CountryService : ICountriesRepository
+    public class CountryService : ICountryService
     {
         IUnitOfWork Database;
 
@@ -19,10 +22,68 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForMember("FlagUrl", opt => opt.MapFrom(c => c.FlagUrl))
         );
-
         public CountryService(IUnitOfWork uow)
         {
             Database = uow;
+        }
+        public async Task Add(CountryDTO countryDTO)
+        {
+            var PreExistedCountry = await Database.Countries.GetByName(countryDTO.Name);
+            if (PreExistedCountry.Any(em => em.Name == countryDTO.Name))
+            {
+                throw new ValidationException("Така країна вже існує", "");
+            }
+            var newCountry = new Country
+            {
+                Name = countryDTO.Name,
+                FlagUrl= countryDTO.FlagUrl
+            };
+
+            await Database.Countries.Create(newCountry);
+            await Database.Save();
+        }
+
+        public async Task Update(CountryDTO countryDTO)
+        {
+            Country country = await Database.Countries.GetById(countryDTO.Id);
+            if (country == null)
+            {
+                throw new ValidationException("Країну не знайдено", "");
+            }
+            country.Name = countryDTO.Name;
+            country.FlagUrl = countryDTO.FlagUrl;
+            
+            Database.Countries.Update(country);
+            await Database.Save();
+        }
+
+        public async Task Delete(int id)
+        {
+            Country country = await Database.Countries.GetById(id);
+            if (country == null)
+            {
+                throw new ValidationException("Країну не знайдено", "");
+            }
+            await Database.Countries.Delete(id);
+            await Database.Save();
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetAll()
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetAll());
+        }
+
+        public async Task<CountryDTO?> GetById(int id)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<Country, CountryDTO>(await Database.Countries.GetById(id));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByName(string countryName)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByName(countryName));
         }
     }
 }
