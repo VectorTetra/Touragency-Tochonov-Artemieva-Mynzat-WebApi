@@ -30,6 +30,7 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<IEnumerable<Country>> GetByName(string countryName)
         {
             return await _context.Countries
+                .Include(p => p.Settlements)
                 .Where(p => p.Name.Contains(countryName))
                 .ToListAsync();
         }

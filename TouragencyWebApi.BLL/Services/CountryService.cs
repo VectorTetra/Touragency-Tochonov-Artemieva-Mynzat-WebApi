@@ -10,6 +10,7 @@ using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.DAL.Interfaces;
 using AutoMapper;
 using TouragencyWebApi.DAL.Entities;
+using System.Numerics;
 
 namespace TouragencyWebApi.BLL.Services
 {
@@ -21,6 +22,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForMember("FlagUrl", opt => opt.MapFrom(c => c.FlagUrl))
+        .ForPath(d => d.SettlementIds, opt => opt.MapFrom(c => c.Settlements.Select(b => b.Id)))
         );
         public CountryService(IUnitOfWork uow)
         {
@@ -52,7 +54,15 @@ namespace TouragencyWebApi.BLL.Services
             }
             country.Name = countryDTO.Name;
             country.FlagUrl = countryDTO.FlagUrl;
-            
+            country.Settlements.Clear();
+            foreach (var id in countryDTO.SettlementIds)
+            {
+                var person = await Database.Settlements.GetById(id);
+                if (person != null)
+                {
+                    country.Settlements.Add(person);
+                }
+            }
             Database.Countries.Update(country);
             await Database.Save();
         }
