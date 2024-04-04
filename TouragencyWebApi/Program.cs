@@ -21,6 +21,7 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPhoneService, PhoneService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<ISettlementService, SettlementService>();
 
 
 var app = builder.Build();

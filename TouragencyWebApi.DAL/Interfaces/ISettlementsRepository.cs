@@ -12,6 +12,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Settlement>> GetAll();
         Task<Settlement?> GetById(int id);
         Task<IEnumerable<Settlement>> GetByName(string name);
+        Task<IEnumerable<Settlement>> GetByCountryName(string countryName);
         Task Create(Settlement settlement);
         void Update(Settlement settlement);
         Task Delete(int id);

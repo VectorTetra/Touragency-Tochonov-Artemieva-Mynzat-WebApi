@@ -8,6 +8,7 @@ using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Entities;
 using TouragencyWebApi.DAL.Interfaces;
 
+
 namespace TouragencyWebApi.DAL.Repositories
 {
     public class SettlementsRepository : ISettlementsRepository
@@ -33,6 +34,12 @@ namespace TouragencyWebApi.DAL.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Settlement>> GetByCountryName(string countryName)
+        {
+            return await _context.Settlements
+                .Where(p => p.Country.Name == countryName)
+                .ToListAsync();
+        }
         public async Task Create(Settlement settlement)
         {
             await _context.Settlements.AddAsync(settlement);

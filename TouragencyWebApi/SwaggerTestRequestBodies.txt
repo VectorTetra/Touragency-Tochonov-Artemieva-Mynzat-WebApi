@@ -51,3 +51,31 @@
   "phone": "+380951792160",
   "password": "123456"
 }
+
+//Settlements
+
+{
+  "id": 0,
+  "name": "Сідней",
+  "toursIds": [
+    0
+  ],
+  "countryId": 1
+}
+
+{
+  "id": 0,
+  "name": "Сідней",
+  "toursIds": [
+    0
+  ],
+  "countryId": 1
+}
+{
+  "id": 0,
+  "name": "Сідней",
+  "toursIds": [
+    0
+  ],
+  "countryId": 1
+}
