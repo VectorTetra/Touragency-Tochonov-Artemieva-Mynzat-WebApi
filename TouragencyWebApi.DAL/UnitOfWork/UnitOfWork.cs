@@ -18,6 +18,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private IPersonRepository _persons;
         private ICountriesRepository _countries;
         private ISettlementsRepository  _settlements;
+        private ITourStateRepository _statuses;
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
@@ -77,7 +78,15 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 return _settlements;
             }
         }
-
+        public ITourStateRepository TourStates
+        {
+            get
+            {
+                if (_statuses == null)
+                    _statuses = new TourStateRepository(_context);
+                return _statuses;
+            }
+        }
         public async Task Save()
         {
             await _context.SaveChangesAsync();
