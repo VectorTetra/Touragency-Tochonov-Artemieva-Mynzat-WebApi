@@ -41,6 +41,14 @@ namespace TouragencyWebApi.BLL.Services
                 FlagUrl= countryDTO.FlagUrl
             };
 
+            foreach (var id in countryDTO.SettlementIds)
+            {
+                var settlement = await Database.Settlements.GetById(id);
+                if (settlement != null)
+                {
+                    newCountry.Settlements.Add(settlement);
+                }
+            }
             await Database.Countries.Create(newCountry);
             await Database.Save();
         }
