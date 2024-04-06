@@ -8,6 +8,7 @@ using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Interfaces;
 using TouragencyWebApi.DAL.Entities;
 using TouragencyWebApi.DAL.Interfaces;
+using TouragencyWebApi.BLL.Infrastructure;
 
 namespace TouragencyWebApi.BLL.Services
 {
