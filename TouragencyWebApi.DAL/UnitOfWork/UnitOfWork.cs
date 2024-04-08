@@ -19,11 +19,30 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private ICountriesRepository _countries;
         private ISettlementsRepository  _settlements;
         private ITourStateRepository _statuses;
+        private ITourNameRepository _tourNames;
+        private ITourRepository _tours;
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
         }
-
+        public ITourNameRepository TourNames
+        {
+            get
+            {
+                if (_tourNames == null)
+                    _tourNames = new TourNameRepository(_context);
+                return _tourNames;
+            }
+        }
+        public ITourRepository Tours
+        {
+            get
+            {
+                if (_tours == null)
+                    _tours = new TourRepository(_context);
+                return _tours;
+            }
+        }
         public IPersonRepository Persons
         {
             get

@@ -3,6 +3,7 @@ using TouragencyWebApi.BLL.Interfaces;
 
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TouragencyWebApi.Controllers
 {
@@ -34,9 +35,8 @@ namespace TouragencyWebApi.Controllers
                             if(countryQuery.CountryId == null)
                             {
                                 throw new ValidationException("Не вказано CountryId для пошуку!", nameof(countryQuery.CountryId));
-
                             }
-                            var cntr = await _serv.GetById(countryQuery.CountryId);
+                            var cntr = await _serv.GetById((int)countryQuery.CountryId);
                             collection = new List<CountryDTO?> { cntr };
                         }
                         break;
@@ -51,9 +51,12 @@ namespace TouragencyWebApi.Controllers
                         break;
                     default:
                         {
-                            collection = new List<CountryDTO>();
+                            throw new ValidationException("Вказано неправильний параметр countryQuery.SearchParameter!", nameof(countryQuery.SearchParameter));
                         }
-                        break;
+                }
+                if (collection.IsNullOrEmpty())
+                {
+                    return NoContent();
                 }
                 return collection?.ToList();
             }
@@ -127,7 +130,7 @@ namespace TouragencyWebApi.Controllers
     public class CountryQuery
     {
         public string SearchParameter { get; set; } = "";
-        public int CountryId { get; set; }
+        public int? CountryId { get; set; }
         public string? CountryName { get; set; }
 
     }

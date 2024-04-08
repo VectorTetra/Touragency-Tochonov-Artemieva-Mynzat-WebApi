@@ -1,29 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TouragencyWebApi.BLL.Interfaces;
-
+using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
-using Microsoft.IdentityModel.Tokens;
+using TouragencyWebApi.BLL.Interfaces;
 
 namespace TouragencyWebApi.Controllers
 {
-    [Route("api/TourState")]
+    [Route("api/TourName")]
     [ApiController]
-    public class TourStateController : ControllerBase
+    public class TourNameController : ControllerBase
     {
-        private readonly ITourStateService _serv;
-        public TourStateController(ITourStateService serv)
+        private readonly ITourNameService _serv;
+
+        public TourNameController(ITourNameService serv)
         {
             _serv = serv;
         }
 
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TourStateDTO>>> GetState([FromQuery] TourStateQuery tourStateQuery)
+        public async Task<ActionResult<IEnumerable<TourNameDTO>>> GetTourNames([FromQuery] TourNameQuery tourNameQuery)
         {
             try
             {
-                IEnumerable<TourStateDTO?> collection = null;
-                switch (tourStateQuery.SearchParameter)
+                IEnumerable<TourNameDTO> collection = null;
+                switch (tourNameQuery.SearchParameter)
                 {
                     case "GetAll":
                         {
@@ -32,28 +33,35 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetById":
                         {
-                            if (tourStateQuery.StateId == null)
+                            if (tourNameQuery.Id == null)
                             {
-                                throw new ValidationException("Не вказано CountryId для пошуку!", nameof(tourStateQuery.StateId));
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(TourNameQuery.Id));
                             }
-
-                            var trst = await _serv.GetById((int)tourStateQuery.StateId);
-                            if (trst != null)
-                            { collection = new List<TourStateDTO?> { trst }; }
+                            else
+                            {
+                                var n = await _serv.GetById((int)tourNameQuery.Id);
+                                if (n != null)
+                                {
+                                    collection= new List<TourNameDTO> { n };
+                                }
+                            }
                         }
                         break;
-                    case "GetByStatus":
+                    case "GetByName":
                         {
-                            if (tourStateQuery.TourStatus == null)
+                            if (tourNameQuery.Name == null)
                             {
-                                throw new ValidationException("Не вказано CountryQuery для пошуку!", nameof(tourStateQuery.TourStatus));
+                                throw new ValidationException("Не вказано TourName.Name для пошуку!", nameof(TourNameQuery.Name));
                             }
-                            collection = await _serv.GetByStatus(tourStateQuery.TourStatus);
+                            else
+                            {
+                                collection = await _serv.GetByName(tourNameQuery.Name);
+                            }
                         }
                         break;
                     default:
                         {
-                            throw new ValidationException("Вказано неправильний параметр tourStateQuery.SearchParameter!", nameof(tourStateQuery.SearchParameter));
+                            throw new ValidationException("Вказано неправильний параметр tourNameQuery.SearchParameter!", nameof(tourNameQuery.SearchParameter));
                         }
                 }
                 if (collection.IsNullOrEmpty())
@@ -61,6 +69,7 @@ namespace TouragencyWebApi.Controllers
                     return NoContent();
                 }
                 return collection?.ToList();
+
             }
             catch (ValidationException ex)
             {
@@ -73,12 +82,12 @@ namespace TouragencyWebApi.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult> AddState(TourStateDTO stateDTO)
+        [HttpPut]
+        public async Task<IActionResult> UpdateTourName(TourNameDTO tourNameDTO)
         {
             try
             {
-                await _serv.Add(stateDTO);
+                await _serv.Update(tourNameDTO);
                 return Ok();
             }
             catch (ValidationException ex)
@@ -91,12 +100,12 @@ namespace TouragencyWebApi.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult> UpdateState(TourStateDTO stateDTO)
+        [HttpPost]
+        public async Task<ActionResult> AddTourName(TourNameDTO tourNameDTO)
         {
             try
             {
-                await _serv.Update(stateDTO);
+                await _serv.Create(tourNameDTO);
                 return Ok();
             }
             catch (ValidationException ex)
@@ -110,7 +119,7 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteState(int id)
+        public async Task<ActionResult> DeleteTourName(int id)
         {
             try
             {
@@ -128,11 +137,10 @@ namespace TouragencyWebApi.Controllers
         }
     }
 
-    public class TourStateQuery
+    public class TourNameQuery
     {
         public string SearchParameter { get; set; } = "";
-        public int? StateId { get; set; }
-        public string? TourStatus { get; set; }
-
+        public int? Id { get; set; }
+        public string? Name { get; set; }
     }
 }

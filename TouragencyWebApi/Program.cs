@@ -23,6 +23,8 @@ builder.Services.AddScoped<IPhoneService, PhoneService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ISettlementService, SettlementService>();
 builder.Services.AddScoped<ITourStateService, TourStateService>();
+builder.Services.AddScoped<ITourService, TourService>();
+builder.Services.AddScoped<ITourNameService, TourNameService>();
 
 
 var app = builder.Build();

@@ -15,6 +15,8 @@ namespace TouragencyWebApi.DAL.Interfaces
         ICountriesRepository Countries { get; }
         ISettlementsRepository Settlements { get; }
         ITourStateRepository TourStates { get; }
+        ITourNameRepository TourNames { get; }
+        ITourRepository Tours { get; }
         //IBookingRepository Bookings { get; }
         //IHotelRepository Hotels { get; }
         //IRoomRepository Rooms { get; }

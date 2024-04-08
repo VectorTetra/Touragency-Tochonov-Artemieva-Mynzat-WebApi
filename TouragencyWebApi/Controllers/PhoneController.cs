@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TouragencyWebApi.BLL.Interfaces;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TouragencyWebApi.Controllers
 {
@@ -20,11 +21,11 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                IEnumerable<PhoneDTO?> collec = null;
+                IEnumerable<PhoneDTO?> collection = null;
                 switch (phoneQuery.SearchParameter)
                 {
                     case "GetAll":
-                        { collec = await _serv.GetAll(); }
+                        { collection = await _serv.GetAll(); }
                         break;
                     case "GetByPhoneId":
                         {
@@ -33,7 +34,7 @@ namespace TouragencyWebApi.Controllers
                                 throw new ValidationException("Не вказано PhoneId для пошуку!", nameof(phoneQuery.PhoneId));
                             }
                             var acc = await _serv.GetById((long)phoneQuery.PhoneId);
-                            collec = new List<PhoneDTO?> { acc };
+                            collection = new List<PhoneDTO?> { acc };
                         }
                         break;
                     case "GetByPersonId":
@@ -42,7 +43,7 @@ namespace TouragencyWebApi.Controllers
                             {
                                 throw new ValidationException("Не вказано PersonId для пошуку!", nameof(phoneQuery.PersonId));
                             }
-                            collec = await _serv.GetByPersonId((int)phoneQuery.PersonId);
+                            collection = await _serv.GetByPersonId((int)phoneQuery.PersonId);
                         }
                         break;
                     case "GetByClientId":
@@ -51,7 +52,7 @@ namespace TouragencyWebApi.Controllers
                             {
                                 throw new ValidationException("Не вказано ClientId для пошуку!", nameof(phoneQuery.ClientId));
                             }
-                            collec = await _serv.GetByClientId((int)phoneQuery.ClientId);
+                            collection = await _serv.GetByClientId((int)phoneQuery.ClientId);
                         }
                         break;
                     case "GetByTouragencyEmployeeId":
@@ -60,7 +61,7 @@ namespace TouragencyWebApi.Controllers
                             {
                                 throw new ValidationException("Не вказано TouragencyEmployeeId для пошуку!", nameof(phoneQuery.TouragencyEmployeeId));
                             }
-                            collec = await _serv.GetByTouragencyEmployeeId((int)phoneQuery.TouragencyEmployeeId);
+                            collection = await _serv.GetByTouragencyEmployeeId((int)phoneQuery.TouragencyEmployeeId);
                         }
                         break;
                     case "GetByContactTypeId":
@@ -69,7 +70,7 @@ namespace TouragencyWebApi.Controllers
                             {
                                 throw new ValidationException("Не вказано ContactTypeId для пошуку!", nameof(phoneQuery.ContactTypeId));
                             }
-                            collec = await _serv.GetByContactTypeId((int)phoneQuery.ContactTypeId);
+                            collection = await _serv.GetByContactTypeId((int)phoneQuery.ContactTypeId);
                         }
                         break;
                     case "GetByPhoneNumber":
@@ -78,17 +79,19 @@ namespace TouragencyWebApi.Controllers
                             {
                                 throw new ValidationException("Не вказано PhoneAddress для пошуку!", nameof(phoneQuery.PhoneNumber));
                             }
-                            collec = await _serv.GetByPhoneNumber(phoneQuery?.PhoneNumber);
+                            collection = await _serv.GetByPhoneNumber(phoneQuery?.PhoneNumber);
                         }
                         break;
                     default:
-                        { // Якщо немає правильного варіанту - повернути пусту колекцію
-                            collec = new List<PhoneDTO>();
+                        { // Якщо немає правильного варіанту - кинути виключення
+                            throw new ValidationException("Вказано неправильний параметр phoneQuery.SearchParameter!", nameof(phoneQuery.SearchParameter));
                         }
-                        break;
                 }
-
-                return collec?.ToList();
+                if (collection.IsNullOrEmpty())
+                {
+                    return NoContent();
+                }
+                return collection?.ToList();
             }
             catch (ValidationException ex)
             {
