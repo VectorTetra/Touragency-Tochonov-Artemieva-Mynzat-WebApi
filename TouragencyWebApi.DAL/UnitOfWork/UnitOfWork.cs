@@ -22,6 +22,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private ITourNameRepository _tourNames;
         private ITourRepository _tours;
         private IPositionRepository _positions;
+        private IReviewRepository _reviews;
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
@@ -114,6 +115,15 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 if (_statuses == null)
                     _statuses = new TourStateRepository(_context);
                 return _statuses;
+            }
+        }
+        public IReviewRepository Reviews
+        {
+            get
+            {
+                if (_reviews == null)
+                    _reviews = new ReviewRepository(_context);
+                return _reviews;
             }
         }
         public async Task Save()

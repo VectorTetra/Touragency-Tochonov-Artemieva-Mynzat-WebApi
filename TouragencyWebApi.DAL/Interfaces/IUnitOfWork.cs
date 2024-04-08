@@ -18,6 +18,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         ITourNameRepository TourNames { get; }
         ITourRepository Tours { get; }
         IPositionRepository Positions { get; }
+        IReviewRepository Reviews { get; }
         //IBookingRepository Bookings { get; }
         //IHotelRepository Hotels { get; }
         //IRoomRepository Rooms { get; }

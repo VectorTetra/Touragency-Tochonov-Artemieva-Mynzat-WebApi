@@ -16,7 +16,7 @@ namespace TouragencyWebApi.Controllers
             _serv = serv;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmailDTO>>> GetEmails([FromQuery]EmailQuery emailQuery)
+        public async Task<ActionResult<IEnumerable<EmailDTO>>> GetEmails([FromQuery] EmailQuery emailQuery)
         {
             try
             {
@@ -26,14 +26,17 @@ namespace TouragencyWebApi.Controllers
                     case "GetAll":
                         { collection = await _serv.GetAll(); }
                         break;
-                    case "GetByEmailId":
+                    case "GetById":
                         {
                             if (emailQuery.EmailId == null)
                             {
                                 throw new ValidationException("Не вказано EmailId для пошуку!", nameof(emailQuery.EmailId));
                             }
                             var acc = await _serv.GetById((long)emailQuery.EmailId);
-                            collection = new List<EmailDTO?> { acc };
+                            if (acc != null)
+                            {
+                                collection = new List<EmailDTO?> { acc };
+                            }
                         }
                         break;
                     case "GetByPersonId":

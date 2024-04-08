@@ -18,7 +18,7 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpGet]
-        public async Task <ActionResult<IEnumerable<CountryDTO>>> GetCountry([FromQuery]CountryQuery countryQuery)
+        public async Task<ActionResult<IEnumerable<CountryDTO>>> GetCountry([FromQuery] CountryQuery countryQuery)
         {
             try
             {
@@ -32,12 +32,15 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetById":
                         {
-                            if(countryQuery.CountryId == null)
+                            if (countryQuery.CountryId == null)
                             {
                                 throw new ValidationException("Не вказано CountryId для пошуку!", nameof(countryQuery.CountryId));
                             }
                             var cntr = await _serv.GetById((int)countryQuery.CountryId);
-                            collection = new List<CountryDTO?> { cntr };
+                            if (cntr != null)
+                            {
+                                collection = new List<CountryDTO?> { cntr };
+                            }
                         }
                         break;
                     case "GetByName":

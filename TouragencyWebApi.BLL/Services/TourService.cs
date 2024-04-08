@@ -252,12 +252,67 @@ namespace TouragencyWebApi.BLL.Services
                 throw new ValidationException("Тур не знайдено!", "");
             }
             //-----------------------------------------------------------------------------------------------------
-            var SettlementCollection = new List<Settlement>();
-            var ClientCollection = new List<Client>();
-            var HotelCollection = new List<Hotel>();
-            var ReviewCollection = new List<Review>();
-            var TransportTypeCollection = new List<TransportType>();
-            var BookingCollection = new List<Booking>();
+            tour.Settlements.Clear();
+            tour.Clients.Clear();
+            tour.Hotels.Clear();
+            tour.Reviews.Clear();
+            tour.TransportTypes.Clear();
+            tour.Bookings.Clear();
+            //-----------------------------------------------------------------------------------------------------
+            foreach (var settlementId in tourDTO.SettlementIds)
+            {
+                var settlement = await Database.Settlements.GetById(settlementId);
+                if (settlement == null)
+                {
+                    throw new ValidationException("Неможливо знайти поселення з таким settlementId!", "");
+                }
+                tour.Settlements.Add(settlement);
+            }
+            foreach (var clientId in tourDTO.ClientIds)
+            {
+                var client = await Database.Clients.GetByClientId(clientId);
+                if (client == null)
+                {
+                    throw new ValidationException("Неможливо знайти клієнта з таким clientId!", "");
+                }
+                tour.Clients.Add(client);
+            }
+            foreach(var hotelId in tourDTO.HotelIds)
+            {
+                var hotel = await Database.Hotels.GetById(hotelId);
+                if (hotel == null)
+                {
+                    throw new ValidationException("Неможливо знайти готель з таким hotelId!", "");
+                }
+                tour.Hotels.Add(hotel);
+            }
+            foreach(var reviewId in tourDTO.ReviewIds)
+            {
+                var review = await Database.Reviews.GetById(reviewId);
+                if (review == null)
+                {
+                    throw new ValidationException("Неможливо знайти відгук з таким reviewId!", "");
+                }
+                tour.Reviews.Add(review);
+            }
+            foreach(var transportTypeId in tourDTO.TransportTypeIds)
+            {
+                var transportType = await Database.TransportTypes.GetById(transportTypeId);
+                if (transportType == null)
+                {
+                    throw new ValidationException("Неможливо знайти тип транспорту з таким transportTypeId!", "");
+                }
+                tour.TransportTypes.Add(transportType);
+            }
+            foreach(var bookingId in tourDTO.BookingIds)
+            {
+                var booking = await Database.Bookings.GetById(bookingId);
+                if (booking == null)
+                {
+                    throw new ValidationException("Неможливо знайти бронювання з таким bookingId!", "");
+                }
+                tour.Bookings.Add(booking);
+            }
             //-----------------------------------------------------------------------------------------------------
             tour.ArrivalDate = tourDTO.ArrivalDate;
             tour.DepartureDate = tourDTO.DepartureDate;
@@ -267,12 +322,6 @@ namespace TouragencyWebApi.BLL.Services
             tour.FreeSeats = tourDTO.FreeSeats;
             tour.TourState = await Database.TourStates.GetById(tourDTO.TourStateId);
             tour.Route = tourDTO.Route;
-            tour.Settlements = SettlementCollection;
-            tour.Hotels = HotelCollection;
-            tour.Reviews = ReviewCollection;
-            tour.TransportTypes = TransportTypeCollection;
-            tour.Bookings = BookingCollection;
-            tour.Clients = ClientCollection;
             Database.Tours.Update(tour);
             await Database.Save();
         }

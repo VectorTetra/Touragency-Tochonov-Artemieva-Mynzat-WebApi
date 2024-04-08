@@ -27,14 +27,17 @@ namespace TouragencyWebApi.Controllers
                     case "GetAll":
                         { collection = await _serv.GetAll(); }
                         break;
-                    case "GetByPhoneId":
+                    case "GetById":
                         {
                             if (phoneQuery.PhoneId == null)
                             {
                                 throw new ValidationException("Не вказано PhoneId для пошуку!", nameof(phoneQuery.PhoneId));
                             }
                             var acc = await _serv.GetById((long)phoneQuery.PhoneId);
-                            collection = new List<PhoneDTO?> { acc };
+                            if (acc != null)
+                            {
+                                collection = new List<PhoneDTO?> { acc };
+                            }
                         }
                         break;
                     case "GetByPersonId":

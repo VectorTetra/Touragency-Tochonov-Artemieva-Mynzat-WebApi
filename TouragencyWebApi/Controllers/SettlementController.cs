@@ -35,7 +35,10 @@ namespace TouragencyWebApi.Controllers
                                 throw new ValidationException("Не вказано CountryId для пошуку!", nameof(settlementQuery.Id));
                             }
                             var stlmnt = await _serv.GetById((int)settlementQuery.Id);
-                            collection = new List<SettlementDTO?> { stlmnt };
+                            if (stlmnt != null)
+                            {
+                                collection = new List<SettlementDTO?> { stlmnt };
+                            }
                         }
                         break;
                     case "GetByName":
