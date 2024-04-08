@@ -21,9 +21,19 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private ITourStateRepository _statuses;
         private ITourNameRepository _tourNames;
         private ITourRepository _tours;
+        private IPositionRepository _positions;
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
+        }
+        public IPositionRepository Positions
+        {
+            get
+            {
+                if (_positions == null)
+                    _positions = new PositionRepository(_context);
+                return _positions;
+            }
         }
         public ITourNameRepository TourNames
         {

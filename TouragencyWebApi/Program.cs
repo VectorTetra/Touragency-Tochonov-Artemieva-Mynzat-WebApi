@@ -25,6 +25,7 @@ builder.Services.AddScoped<ISettlementService, SettlementService>();
 builder.Services.AddScoped<ITourStateService, TourStateService>();
 builder.Services.AddScoped<ITourService, TourService>();
 builder.Services.AddScoped<ITourNameService, TourNameService>();
+builder.Services.AddScoped<IPositionService, PositionService>();
 
 
 var app = builder.Build();
