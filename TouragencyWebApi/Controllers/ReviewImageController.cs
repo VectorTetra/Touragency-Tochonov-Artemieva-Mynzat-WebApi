@@ -1,15 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.BLL.Interfaces;
-using TouragencyWebApi.DAL.Entities;
 
 namespace TouragencyWebApi.Controllers
 {
@@ -90,7 +83,7 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] ReviewImageDTO reviewImageDTO)
+        public async Task<ActionResult> Create(ReviewImageDTO reviewImageDTO)
         {
             try
             {
@@ -107,7 +100,7 @@ namespace TouragencyWebApi.Controllers
             }
         }
         [HttpPut]
-        public async Task<ActionResult> Update([FromBody] ReviewImageDTO reviewImageDTO)
+        public async Task<ActionResult> Update(ReviewImageDTO reviewImageDTO)
         {
             try
             {
@@ -148,7 +141,7 @@ namespace TouragencyWebApi.Controllers
         public string SearchParameter { get; set; } = "";
         public long? Id { get; set; }
         public long? ReviewId { get; set; }
-        public string? ImagePath { get; set; }        
+        public string? ImagePath { get; set; }
     }
 }
 

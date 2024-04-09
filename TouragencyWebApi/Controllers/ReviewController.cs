@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TouragencyWebApi.BLL.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
-using Microsoft.IdentityModel.Tokens;
-using TouragencyWebApi.DAL.Entities;
+using TouragencyWebApi.BLL.Interfaces;
 
 
 namespace TouragencyWebApi.Controllers

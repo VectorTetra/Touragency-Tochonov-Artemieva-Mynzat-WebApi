@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Interfaces;
-using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Repositories;
 
 namespace TouragencyWebApi.DAL.UnitOfWork
@@ -17,16 +12,26 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private IPhoneRepository _phones;
         private IPersonRepository _persons;
         private ICountriesRepository _countries;
-        private ISettlementsRepository  _settlements;
+        private ISettlementsRepository _settlements;
         private ITourStateRepository _statuses;
         private ITourNameRepository _tourNames;
         private ITourRepository _tours;
         private IPositionRepository _positions;
         private IReviewRepository _reviews;
         private IReviewImageRepository _reviewImages;
+        private ITransportTypeRepository _transportTypes;
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
+        }
+        public ITransportTypeRepository TransportTypes
+        {
+            get
+            {
+                if (_transportTypes == null)
+                    _transportTypes = new TransportTypeRepository(_context);
+                return _transportTypes;
+            }
         }
         public IReviewImageRepository ReviewImages
         {
@@ -113,7 +118,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         {
             get
             {
-                if(_settlements == null)
+                if (_settlements == null)
                     _settlements = new SettlementsRepository(_context);
                 return _settlements;
             }

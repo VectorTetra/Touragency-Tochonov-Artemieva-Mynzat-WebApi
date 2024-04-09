@@ -177,10 +177,10 @@ namespace TouragencyWebApi.BLL.Services
         }
 
         // Для повної реалізації цього сервісу (TourService) потрібно додати створити репозиторій для:
-        // ? Review,
-        // ? TransportType,
         // ? Booking,
         // ? Hotel,
+        // ---- TransportType,
+        // ---- Review,
         // ---- Client,
         // ---- Settlement,
         // ---- TourState,
