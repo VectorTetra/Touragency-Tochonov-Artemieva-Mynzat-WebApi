@@ -14,7 +14,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Booking>> GetByTourId(long tourId);
         Task<IEnumerable<Booking>> GetByClientId(int clientId);
         Task<IEnumerable<Booking>> GetByHotelId(int hotelId);
-        Task<IEnumerable<Booking>> GetByBookingDataId(int bookingDataId);
+        Task<IEnumerable<Booking>> GetByBookingDataId(long bookingDataId);
         Task Create(Booking booking);
         void Update(Booking booking);
         Task Delete(long id);

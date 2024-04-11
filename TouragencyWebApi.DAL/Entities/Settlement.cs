@@ -11,6 +11,7 @@ namespace TouragencyWebApi.DAL.Entities
 
 		//Many-to-many relationship between Settlement and Tour
 		public virtual ICollection<Tour> Tours { get; set; }
+		public virtual ICollection<Hotel> Hotels { get; set; }
 		
 		// One-to-many relationship between Settlement and Country
 		public virtual Country Country { get; set; }

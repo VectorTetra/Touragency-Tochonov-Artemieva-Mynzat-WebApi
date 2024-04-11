@@ -12,6 +12,7 @@ namespace TouragencyWebApi.DAL.Entities
 		//public virtual Resort Resort { get; set; }
 		public virtual HotelConfiguration HotelConfiguration { get; set; }
 		public virtual ICollection<BedConfiguration> BedConfigurations { get; set; }
+		public virtual Settlement Settlement { get; set; }
         public int HotelConfigurationId { get; set; }
 
 		// Many-to-many relationship between Hotel and Tour

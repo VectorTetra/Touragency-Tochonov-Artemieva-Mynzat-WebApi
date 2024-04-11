@@ -20,6 +20,8 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForMember("CountryId", opt => opt.MapFrom(c => c.Country.Id))
+        .ForPath(d => d.ToursIds, opt => opt.MapFrom(c => c.Tours.Select(b => b.Id)))
+        .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Hotels.Select(b => b.Id)))
         );
         MapperConfiguration Country_CountryDTOMapConfig = new MapperConfiguration(cfg => cfg.CreateMap<Country, CountryDTO>()
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
@@ -93,6 +95,23 @@ namespace TouragencyWebApi.BLL.Services
         {
             var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
             return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCountryName(countryName));
+        }
+
+        public async Task<IEnumerable<SettlementDTO>> GetByCountryId(int countryId)
+        {
+            var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
+            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCountryId(countryId));
+        }
+        
+        public async Task<IEnumerable<SettlementDTO>> GetByTourId(long tourId) 
+        {
+            var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
+            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByTourId(tourId));
+        }
+        public async Task<SettlementDTO?> GetByHotelId(int hotelId)
+        {
+            var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
+            return mapper.Map<Settlement, SettlementDTO>(await Database.Settlements.GetByHotelId(hotelId));
         }
     }
 }

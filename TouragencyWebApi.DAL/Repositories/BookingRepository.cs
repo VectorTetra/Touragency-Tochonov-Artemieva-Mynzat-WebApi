@@ -43,7 +43,7 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.Bookings.Where(b => b.Hotel.Id == hotelId).ToListAsync();
         }
 
-        public async Task<IEnumerable<Booking>> GetByBookingDataId(int bookingDataId)
+        public async Task<IEnumerable<Booking>> GetByBookingDataId(long bookingDataId)
         {
             return await _context.Bookings.Where(b => b.BookingData.Any(bd=>bd.Id == bookingDataId)).ToListAsync();
         }
