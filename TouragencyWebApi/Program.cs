@@ -18,6 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTouragencyContext(connection);
 builder.Services.AddUnitOfWorkService();
 builder.Services.AddScoped<IBedConfigurationService, BedConfigurationService>();
+builder.Services.AddScoped<IBookingChildrenService, BookingChildrenService>();
 builder.Services.AddScoped<IBookingDataService, BookingDataService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<ICountryService, CountryService>();

@@ -26,7 +26,7 @@ namespace TouragencyWebApi.DAL.Entities
     public class BookingChildren
     {
         public long Id { get; set; }
-        public long BookingDataId { get; set; }
+        public long? BookingDataId { get; set; }
         public short ChildrenCount { get; set; }
         public short ChildrenAge { get; set; }
         public virtual BookingData? BookingData { get; set; }
