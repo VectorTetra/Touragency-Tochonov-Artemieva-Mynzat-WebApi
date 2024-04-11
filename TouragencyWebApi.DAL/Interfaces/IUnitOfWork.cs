@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TouragencyWebApi.DAL.Entities;
+using TouragencyWebApi.DAL.Repositories;
 
 namespace TouragencyWebApi.DAL.Interfaces
 {
@@ -21,6 +24,8 @@ namespace TouragencyWebApi.DAL.Interfaces
         IReviewRepository Reviews { get; }
         IReviewImageRepository ReviewImages { get; }
         ITransportTypeRepository TransportTypes { get; }
+        IBookingRepository Bookings { get; }
+        IBedConfigurationRepository BedConfigurations { get; }
         //IBookingRepository Bookings { get; }
         //IHotelRepository Hotels { get; }
         //IRoomRepository Rooms { get; }

@@ -12,7 +12,7 @@ using TouragencyWebApi.DAL.Interfaces;
 
 namespace TouragencyWebApi.BLL.Services
 {
-    internal class ReviewImageService : IReviewImageService
+    public class ReviewImageService : IReviewImageService
     {
         IUnitOfWork Database;
 

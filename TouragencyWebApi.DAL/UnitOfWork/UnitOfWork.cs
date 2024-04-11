@@ -20,9 +20,29 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private IReviewRepository _reviews;
         private IReviewImageRepository _reviewImages;
         private ITransportTypeRepository _transportTypes;
+        private IBookingRepository _bookings;
+        private IBedConfigurationRepository _bedConfigurations;
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
+        }
+        public IBookingRepository Bookings
+        {
+            get
+            {
+                if (_bookings == null)
+                    _bookings = new BookingRepository(_context);
+                return _bookings;
+            }
+        }
+        public IBedConfigurationRepository BedConfigurations
+        {
+            get
+            {
+                if (_bedConfigurations == null)
+                    _bedConfigurations = new BedConfigurationRepository(_context);
+                return _bedConfigurations;
+            }
         }
         public ITransportTypeRepository TransportTypes
         {

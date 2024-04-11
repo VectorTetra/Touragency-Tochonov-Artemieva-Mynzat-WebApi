@@ -17,15 +17,20 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTouragencyContext(connection);
 builder.Services.AddUnitOfWorkService();
+builder.Services.AddScoped<IBedConfigurationService, BedConfigurationService>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPhoneService, PhoneService>();
-builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IPositionService, PositionService>();
+builder.Services.AddScoped<IReviewImageService, ReviewImageService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<ISettlementService, SettlementService>();
 builder.Services.AddScoped<ITourStateService, TourStateService>();
-builder.Services.AddScoped<ITourService, TourService>();
 builder.Services.AddScoped<ITourNameService, TourNameService>();
-builder.Services.AddScoped<IPositionService, PositionService>();
+builder.Services.AddScoped<ITourService, TourService>();
+builder.Services.AddScoped<ITransportTypeService, TransportTypeService>();
+
 
 
 var app = builder.Build();
