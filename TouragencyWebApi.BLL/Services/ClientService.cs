@@ -218,7 +218,7 @@ namespace TouragencyWebApi.BLL.Services
         }
         public async Task<ClientDTO?> GetByClientId(int clientId)
         {
-            Client? MeaningUser = await Database.Clients.GetByClientId(clientId);
+            Client? MeaningUser = await Database.Clients.GetById(clientId);
             if (MeaningUser == null)
             {
                 return null;
@@ -310,7 +310,7 @@ namespace TouragencyWebApi.BLL.Services
         }
         public async Task Update(ClientDTO clientDTO)
         {
-            var client = await Database.Clients.GetByClientId(clientDTO.Id);
+            var client = await Database.Clients.GetById(clientDTO.Id);
             if (client == null)
             {
                 throw new ValidationException("Такого користувача не існує!", "");
@@ -330,7 +330,7 @@ namespace TouragencyWebApi.BLL.Services
         }
         public async Task Delete(int id)
         {
-            var User = await Database.Clients.GetByClientId(id);
+            var User = await Database.Clients.GetById(id);
             if (User == null)
             {
                 throw new ValidationException("Такого користувача не існує!", "");

@@ -13,8 +13,6 @@ namespace TouragencyWebApi.BLL.DTO
         public int ClientId { get; set; }
         public int HotelId { get; set; }
         public long TourId { get; set; }
-        public ICollection<long>? BookingChildrenIds { get; set; }
         public ICollection<long>? BookingDataIds { get; set; }
-        public int? BedConfigurationId { get; set; }
     }
 }

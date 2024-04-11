@@ -215,7 +215,7 @@ namespace TouragencyWebApi.BLL.Services
             }
             foreach(var clientId in tourDTO.ClientIds)
             {
-                var client = await Database.Clients.GetByClientId(clientId);
+                var client = await Database.Clients.GetById(clientId);
                 if (client == null)
                 {
                     throw new ValidationException("Неможливо знайти клієнта з таким clientId!", "");
@@ -270,7 +270,7 @@ namespace TouragencyWebApi.BLL.Services
             }
             foreach (var clientId in tourDTO.ClientIds)
             {
-                var client = await Database.Clients.GetByClientId(clientId);
+                var client = await Database.Clients.GetById(clientId);
                 if (client == null)
                 {
                     throw new ValidationException("Неможливо знайти клієнта з таким clientId!", "");
