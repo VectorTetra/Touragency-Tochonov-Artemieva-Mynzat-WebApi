@@ -25,10 +25,20 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private IBedConfigurationRepository _bedConfigurations;
         private IBookingChildrenRepository _bookingChildrens;
         private IHotelRepository _hotels;
+        private IHotelConfigurationRepository _hotelConfigurations;
 
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
+        }
+        public IHotelConfigurationRepository HotelConfigurations
+        {
+            get
+            {
+                if (_hotelConfigurations == null)
+                    _hotelConfigurations = new HotelConfigurationRepository(_context);
+                return _hotelConfigurations;
+            }
         }
 
         public IHotelRepository Hotels

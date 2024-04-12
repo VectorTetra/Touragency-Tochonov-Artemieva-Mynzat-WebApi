@@ -24,6 +24,7 @@ builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IHotelConfigurationService, HotelConfigurationService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IPhoneService, PhoneService>();
 builder.Services.AddScoped<IPositionService, PositionService>();
