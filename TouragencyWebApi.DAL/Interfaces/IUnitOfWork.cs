@@ -30,6 +30,8 @@ namespace TouragencyWebApi.DAL.Interfaces
         IBookingChildrenRepository BookingChildrens { get; }
         IHotelRepository Hotels { get; }
         IHotelConfigurationRepository HotelConfigurations { get; }
+        IHotelServiceTypeRepository HotelServiceTypes { get; }
+        IHotelServiceRepository HotelServices { get; }
         //IBookingRepository Bookings { get; }
         //IHotelRepository Hotels { get; }
         //IRoomRepository Rooms { get; }

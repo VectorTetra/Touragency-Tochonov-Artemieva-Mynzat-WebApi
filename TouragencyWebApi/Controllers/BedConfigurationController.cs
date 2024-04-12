@@ -161,7 +161,7 @@ namespace TouragencyWebApi.Controllers
     }
     public class BedConfigurationQuery
     {
-        public string SearchParameter { get; set; }
+        public string SearchParameter { get; set; } = string.Empty;
         public int? Id { get; set; }
         public string? Label { get; set; }
         public string? Description { get; set; }

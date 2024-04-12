@@ -10,8 +10,6 @@ namespace TouragencyWebApi.DAL.Entities
 		public int Id { get; set; }
 		public string Name { get; set; }
 		public string? Description { get; set; }
-
-		public int HotelServiceTypeId;
 		// Додай віртуальну навігаційну властивість HotelServiceType зв'язок один до багатьох з класом HotelServiceType
 		public virtual HotelServiceType HotelServiceType { get; set; }
 		// Додай віртуальну навігаційну властивість Hotel зв'язок багато до багатьох з класом Hotel
