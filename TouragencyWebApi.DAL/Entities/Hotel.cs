@@ -10,14 +10,12 @@ namespace TouragencyWebApi.DAL.Entities
 		public string Name { get; set; }
 		public int? Stars { get; set; }
 		//public virtual Resort Resort { get; set; }
-		public virtual HotelConfiguration HotelConfiguration { get; set; }
+		public virtual ICollection<HotelConfiguration> HotelConfigurations { get; set; }
 		public virtual ICollection<BedConfiguration> BedConfigurations { get; set; }
 		public virtual Settlement Settlement { get; set; }
-        public int HotelConfigurationId { get; set; }
-
 		// Many-to-many relationship between Hotel and Tour
 		public virtual ICollection<Tour> Tours { get; set; }
-		//One-to-many relationship between Hotel and Booking
+		// One-to-many relationship between Hotel and Booking
 		public virtual ICollection<Booking> Bookings { get; set; }
 		// В цьому полі можуть зберігатися дані про послуги готелю (наприклад, Wi-Fi, сніданок, басейн, парковка, трансфер)
 		// А також дані про модель харчування (наприклад, BB, HB, FB, AI)

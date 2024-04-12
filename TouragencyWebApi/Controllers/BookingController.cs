@@ -79,6 +79,10 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByBookingDataId((long)bookingQuery.BookingDataId);
                         }
                         break;
+                        default:
+                        {
+                            throw new ValidationException("Невірно вказаний параметр пошуку!", nameof(bookingQuery.SearchParameter));
+                        }
                 }
                 if (collection.IsNullOrEmpty())
                 {

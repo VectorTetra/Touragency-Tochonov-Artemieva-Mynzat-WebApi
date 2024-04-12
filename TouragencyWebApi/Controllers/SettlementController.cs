@@ -59,23 +59,25 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByCountryName(settlementQuery.CountryName);
                         }
                         break;
-                        case "GetByCountryId":
+                    case "GetByCountryId":
                         {
                             if (settlementQuery.CountryId == null)
                             {
                                 throw new ValidationException("Не вказано CountryId для пошуку!", nameof(settlementQuery.CountryId));
                             }
                             collection = await _serv.GetByCountryId((int)settlementQuery.CountryId);
-                        }break;
-                        case "GetByTourId":
+                        }
+                        break;
+                    case "GetByTourId":
                         {
                             if (settlementQuery.TourId == null)
                             {
                                 throw new ValidationException("Не вказано TourId для пошуку!", nameof(settlementQuery.TourId));
                             }
                             collection = await _serv.GetByTourId((long)settlementQuery.TourId);
-                        }break;
-                        case "GetByHotelId":
+                        }
+                        break;
+                    case "GetByHotelId":
                         {
                             if (settlementQuery.HotelId == null)
                             {
@@ -86,7 +88,8 @@ namespace TouragencyWebApi.Controllers
                             {
                                 collection = new List<SettlementDTO?> { stlmnt };
                             }
-                        }break;
+                        }
+                        break;
 
                     default:
                         {
