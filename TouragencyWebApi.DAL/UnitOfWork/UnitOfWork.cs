@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Repositories;
+using TouragencyWebApi.DAL.Entities;
 
 namespace TouragencyWebApi.DAL.UnitOfWork
 {
@@ -19,6 +20,10 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private ICountriesRepository _countries;
         private ISettlementsRepository  _settlements;
         private ITourStateRepository _statuses;
+        private ITouragencyAccountRepository _account;
+        private ITouragencyAccountRoleRepository _role;
+        private ITouragencyEmployeeRepository _employee;
+
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
@@ -85,6 +90,33 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 if (_statuses == null)
                     _statuses = new TourStateRepository(_context);
                 return _statuses;
+            }
+        }
+        public ITouragencyEmployeeRepository TouragencyEmployee
+        {
+            get
+            {
+                if (_employee == null)
+                    _employee = new TouragencyEmployeeRepository(_context);
+                return _employee;
+            }
+        }
+        public ITouragencyAccountRoleRepository TouragencyAccountRole
+        {
+            get
+            {
+                if(_role == null)
+                    _role = new TouragencyAccountRoleRepository(_context);
+                return _role;
+            }
+        }
+        public ITouragencyAccountRepository TouragencyAccount
+        {
+            get
+            {
+                if(_account == null)
+                    _account = new TouragencyAccountRepository(_context);
+                return _account;
             }
         }
         public async Task Save()
