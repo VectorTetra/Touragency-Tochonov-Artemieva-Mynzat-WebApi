@@ -23,7 +23,9 @@ builder.Services.AddScoped<IPhoneService, PhoneService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ISettlementService, SettlementService>();
 builder.Services.AddScoped<ITourStateService, TourStateService>();
-
+builder.Services.AddScoped<ITouragencyAccountRoleService, TouragencyAccountRoleService>();
+builder.Services.AddScoped<ITouragencyEmployeeService, TouragencyEmployeeService>();
+builder.Services.AddScoped<ITouragencyAccountService, TouragencyAccountService>();
 
 var app = builder.Build();
 // настраиваем CORS

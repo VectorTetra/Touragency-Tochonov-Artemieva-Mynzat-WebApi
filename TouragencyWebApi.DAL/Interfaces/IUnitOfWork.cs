@@ -22,9 +22,9 @@ namespace TouragencyWebApi.DAL.Interfaces
         //IBedConfigurationRepository BedConfigurations { get; }
         //IRoomConfigurationRepository RoomConfigurations { get; }
         //IHotelRoomRepository HotelRooms { get; }
-        ITouragencyAccountRepository TouragencyAccount { get; }
-        ITouragencyAccountRoleRepository TouragencyAccountRole { get; }
-        ITouragencyEmployeeRepository TouragencyEmployee { get; }
+        ITouragencyAccountRepository TouragencyAccounts { get; }
+        ITouragencyAccountRoleRepository TouragencyAccountRoles { get; }
+        ITouragencyEmployeeRepository TouragencyEmployees { get; }
         Task Save();
     }
 }

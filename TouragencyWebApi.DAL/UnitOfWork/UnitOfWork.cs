@@ -92,7 +92,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 return _statuses;
             }
         }
-        public ITouragencyEmployeeRepository TouragencyEmployee
+        public ITouragencyEmployeeRepository TouragencyEmployees
         {
             get
             {
@@ -101,7 +101,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 return _employee;
             }
         }
-        public ITouragencyAccountRoleRepository TouragencyAccountRole
+        public ITouragencyAccountRoleRepository TouragencyAccountRoles
         {
             get
             {
@@ -110,7 +110,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 return _role;
             }
         }
-        public ITouragencyAccountRepository TouragencyAccount
+        public ITouragencyAccountRepository TouragencyAccounts
         {
             get
             {
