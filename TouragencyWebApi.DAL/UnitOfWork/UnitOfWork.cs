@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Interfaces;
-using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Repositories;
 using TouragencyWebApi.DAL.Entities;
 
@@ -18,17 +13,150 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private IPhoneRepository _phones;
         private IPersonRepository _persons;
         private ICountriesRepository _countries;
-        private ISettlementsRepository  _settlements;
+        private ISettlementsRepository _settlements;
         private ITourStateRepository _statuses;
+        private ITourNameRepository _tourNames;
+        private ITourRepository _tours;
+        private IPositionRepository _positions;
+        private IReviewRepository _reviews;
+        private IReviewImageRepository _reviewImages;
+        private ITransportTypeRepository _transportTypes;
+        private IBookingRepository _bookings;
+        private IBookingDataRepository _bookingDatas;
+        private IBedConfigurationRepository _bedConfigurations;
+        private IBookingChildrenRepository _bookingChildrens;
+        private IHotelRepository _hotels;
+        private IHotelConfigurationRepository _hotelConfigurations;
+        private IHotelServiceTypeRepository _hotelServiceTypes;
+        private IHotelServiceRepository _hotelServices;
         private ITouragencyAccountRepository _account;
         private ITouragencyAccountRoleRepository _role;
         private ITouragencyEmployeeRepository _employee;
+
 
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
         }
 
+        public IHotelServiceRepository HotelServices
+        {
+            get
+            {
+                if (_hotelServices == null)
+                    _hotelServices = new HotelServiceRepository(_context);
+                return _hotelServices;
+            }
+        }
+        public IHotelServiceTypeRepository HotelServiceTypes
+        {
+            get
+            {
+                if (_hotelServiceTypes == null)
+                    _hotelServiceTypes = new HotelServiceTypeRepository(_context);
+                return _hotelServiceTypes;
+            }
+        }
+        public IHotelConfigurationRepository HotelConfigurations
+        {
+            get
+            {
+                if (_hotelConfigurations == null)
+                    _hotelConfigurations = new HotelConfigurationRepository(_context);
+                return _hotelConfigurations;
+            }
+        }
+
+        public IHotelRepository Hotels
+        {
+            get
+            {
+                if (_hotels == null)
+                    _hotels = new HotelRepository(_context);
+                return _hotels;
+            }
+        }
+        public IBookingChildrenRepository BookingChildrens
+        {
+            get
+            {
+                if (_bookingChildrens == null)
+                    _bookingChildrens = new BookingChildrenRepository(_context);
+                return _bookingChildrens;
+            }
+        }
+        public IBookingDataRepository BookingDatas
+        {
+            get
+            {
+                if (_bookingDatas == null)
+                    _bookingDatas = new BookingDataRepository(_context);
+                return _bookingDatas;
+            }
+        }
+        public IBookingRepository Bookings
+        {
+            get
+            {
+                if (_bookings == null)
+                    _bookings = new BookingRepository(_context);
+                return _bookings;
+            }
+        }
+        public IBedConfigurationRepository BedConfigurations
+        {
+            get
+            {
+                if (_bedConfigurations == null)
+                    _bedConfigurations = new BedConfigurationRepository(_context);
+                return _bedConfigurations;
+            }
+        }
+        public ITransportTypeRepository TransportTypes
+        {
+            get
+            {
+                if (_transportTypes == null)
+                    _transportTypes = new TransportTypeRepository(_context);
+                return _transportTypes;
+            }
+        }
+        public IReviewImageRepository ReviewImages
+        {
+            get
+            {
+                if (_reviewImages == null)
+                    _reviewImages = new ReviewImageRepository(_context);
+                return _reviewImages;
+            }
+        }
+        public IPositionRepository Positions
+        {
+            get
+            {
+                if (_positions == null)
+                    _positions = new PositionRepository(_context);
+                return _positions;
+            }
+        }
+        public ITourNameRepository TourNames
+        {
+            get
+            {
+                if (_tourNames == null)
+                    _tourNames = new TourNameRepository(_context);
+                return _tourNames;
+            }
+        }
+        public ITourRepository Tours
+        {
+            get
+            {
+                if (_tours == null)
+                    _tours = new TourRepository(_context);
+                return _tours;
+            }
+        }
         public IPersonRepository Persons
         {
             get
@@ -78,7 +206,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         {
             get
             {
-                if(_settlements == null)
+                if (_settlements == null)
                     _settlements = new SettlementsRepository(_context);
                 return _settlements;
             }
@@ -92,6 +220,7 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 return _statuses;
             }
         }
+
         public ITouragencyEmployeeRepository TouragencyEmployees
         {
             get
@@ -117,6 +246,16 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 if(_account == null)
                     _account = new TouragencyAccountRepository(_context);
                 return _account;
+             }
+        }
+
+        public IReviewRepository Reviews
+        {
+            get
+            {
+                if (_reviews == null)
+                    _reviews = new ReviewRepository(_context);
+                return _reviews;
             }
         }
         public async Task Save()

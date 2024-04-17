@@ -13,6 +13,6 @@ namespace TouragencyWebApi.DAL.Entities
 		public bool IsAllowPets { get; set; }
 
 		// Many-to-many relationship between HotelConfiguration and Hotel
-		public virtual ICollection<Hotel> Hotels { get; set; }
+		public virtual ICollection<Hotel> Hotels { get; set; }	
 	}
 }

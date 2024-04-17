@@ -22,7 +22,7 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.Clients.ToListAsync();
         }
 
-        public async Task<Client?> GetByClientId(int clientId)
+        public async Task<Client?> GetById(int clientId)
         {
             return await _context.Clients.FirstOrDefaultAsync(c => c.Id == clientId);
         }

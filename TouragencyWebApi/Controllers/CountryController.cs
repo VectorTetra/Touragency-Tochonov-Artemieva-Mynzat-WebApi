@@ -3,6 +3,7 @@ using TouragencyWebApi.BLL.Interfaces;
 
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TouragencyWebApi.Controllers
 {
@@ -17,7 +18,7 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpGet]
-        public async Task <ActionResult<IEnumerable<CountryDTO>>> GetCountry([FromQuery]CountryQuery countryQuery)
+        public async Task<ActionResult<IEnumerable<CountryDTO>>> GetCountry([FromQuery] CountryQuery countryQuery)
         {
             try
             {
@@ -31,13 +32,15 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetById":
                         {
-                            if(countryQuery.CountryId == null)
+                            if (countryQuery.CountryId == null)
                             {
                                 throw new ValidationException("Не вказано CountryId для пошуку!", nameof(countryQuery.CountryId));
-
                             }
-                            var cntr = await _serv.GetById(countryQuery.CountryId);
-                            collection = new List<CountryDTO?> { cntr };
+                            var cntr = await _serv.GetById((int)countryQuery.CountryId);
+                            if (cntr != null)
+                            {
+                                collection = new List<CountryDTO?> { cntr };
+                            }
                         }
                         break;
                     case "GetByName":
@@ -51,9 +54,12 @@ namespace TouragencyWebApi.Controllers
                         break;
                     default:
                         {
-                            collection = new List<CountryDTO>();
+                            throw new ValidationException("Вказано неправильний параметр countryQuery.SearchParameter!", nameof(countryQuery.SearchParameter));
                         }
-                        break;
+                }
+                if (collection.IsNullOrEmpty())
+                {
+                    return NoContent();
                 }
                 return collection?.ToList();
             }
@@ -127,7 +133,7 @@ namespace TouragencyWebApi.Controllers
     public class CountryQuery
     {
         public string SearchParameter { get; set; } = "";
-        public int CountryId { get; set; }
+        public int? CountryId { get; set; }
         public string? CountryName { get; set; }
 
     }

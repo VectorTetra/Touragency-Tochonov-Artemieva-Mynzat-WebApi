@@ -10,7 +10,7 @@ namespace TouragencyWebApi.DAL.Interfaces
     public interface IClientRepository
     {
         Task<IEnumerable<Client>> GetAll();
-        Task<Client?> GetByClientId(int clientId);
+        Task<Client?> GetById(int clientId);
         Task<Client?> GetByPersonId(int personId);
         Task<Client?> GetByBookingId(int bookingId);
         Task<IEnumerable<Client>> GetByTouristNickname(string touristNickname);

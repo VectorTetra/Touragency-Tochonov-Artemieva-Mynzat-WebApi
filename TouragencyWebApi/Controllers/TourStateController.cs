@@ -3,6 +3,7 @@ using TouragencyWebApi.BLL.Interfaces;
 
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TouragencyWebApi.Controllers
 {
@@ -34,10 +35,11 @@ namespace TouragencyWebApi.Controllers
                             if (tourStateQuery.StateId == null)
                             {
                                 throw new ValidationException("Не вказано CountryId для пошуку!", nameof(tourStateQuery.StateId));
-
                             }
-                            var trst = await _serv.GetById(tourStateQuery.StateId);
-                            collection = new List<TourStateDTO?> { trst };
+
+                            var trst = await _serv.GetById((int)tourStateQuery.StateId);
+                            if (trst != null)
+                            { collection = new List<TourStateDTO?> { trst }; }
                         }
                         break;
                     case "GetByStatus":
@@ -51,9 +53,12 @@ namespace TouragencyWebApi.Controllers
                         break;
                     default:
                         {
-                            collection = new List<TourStateDTO>();
+                            throw new ValidationException("Вказано неправильний параметр tourStateQuery.SearchParameter!", nameof(tourStateQuery.SearchParameter));
                         }
-                        break;
+                }
+                if (collection.IsNullOrEmpty())
+                {
+                    return NoContent();
                 }
                 return collection?.ToList();
             }
@@ -126,7 +131,7 @@ namespace TouragencyWebApi.Controllers
     public class TourStateQuery
     {
         public string SearchParameter { get; set; } = "";
-        public int StateId { get; set; }
+        public int? StateId { get; set; }
         public string? TourStatus { get; set; }
 
     }

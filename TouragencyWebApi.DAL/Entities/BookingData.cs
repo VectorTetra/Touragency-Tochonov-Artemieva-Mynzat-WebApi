@@ -7,7 +7,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TouragencyWebApi.DAL.Entities
 {
-    [PrimaryKey(nameof(BookingId), nameof(RoomNumber), nameof(DateBeginPeriod), nameof(DateEndPeriod))]
+    #region BookingData_v1.0
+    /*
+	[PrimaryKey(nameof(BookingId), nameof(RoomNumber), nameof(DateBeginPeriod), nameof(DateEndPeriod))]
     public class BookingData
 	{
 		
@@ -27,4 +29,19 @@ namespace TouragencyWebApi.DAL.Entities
 		public virtual Booking Booking { get; set; }
 		
 	}
+	 */
+    #endregion BookingData_v1.0
+    public class BookingData
+    {
+        public long Id { get; set; }
+        public long BookingId { get; set; }
+        public int RoomNumber { get; set; }
+        public System.DateTime DateBeginPeriod { get; set; }
+        public System.DateTime DateEndPeriod { get; set; }
+        public int TotalPrice { get; set; }
+        public short AdultsCount { get; set; }
+        public virtual Booking Booking { get; set; }
+        public virtual ICollection<BookingChildren>? BookingChildren { get; set; }
+        public virtual BedConfiguration? BedConfiguration { get; set; }
+    }
 }

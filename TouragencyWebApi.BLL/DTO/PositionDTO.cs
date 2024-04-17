@@ -10,8 +10,7 @@ namespace TouragencyWebApi.BLL.DTO
     public class PositionDTO
     {
         public int Id { get; set; }
-        public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<int> TouragencyEmployeesIds { get; set; }
+        public virtual ICollection<int> TouragencyEmployeeIds { get; set; }
     }
 }

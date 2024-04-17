@@ -33,6 +33,7 @@ namespace TouragencyWebApi.DAL.EF
         public DbSet<TransportType> TransportTypes { get; set; }
 
         #region RunWithMigration
+        /*
         static DbContextOptions<TouragencyContext> _options;
 
         static TouragencyContext()
@@ -60,14 +61,22 @@ namespace TouragencyWebApi.DAL.EF
         {
 
         }
-
+        */
         #endregion RunWithMigration
 
-        /*
+
         #region RunWithoutMigration(Re-Create)
         // При першому запуску програми видаляємо БД і створюємо нову
         // Надалі коментуємо цей код і при запуску повинні виконуватись міграції, які описані вище
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<BookingData>()
+                .HasIndex(b => new { b.BookingId, b.RoomNumber, b.DateBeginPeriod, b.DateEndPeriod })
+                .IsUnique();
+            modelBuilder.Entity<BookingChildren>()
+                .HasIndex(b => new { b.BookingId, b.ChildrenCount, b.ChildrenAge })
+                .IsUnique();
+        }
         //The overrided OnConfiguring method is used to configure UseLazyLoadingProxies and UseSqlServer.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -308,6 +317,48 @@ namespace TouragencyWebApi.DAL.EF
                 HotelServiceTypes.Add(serviceServiceType);
                 SaveChanges();
 
+
+
+                /*
+                 Якщо вам потрібно знайти кількість входжень підрядка в рядок, ви можете використати клас Regex і метод Matches, як показано нижче12:
+
+                    string s = "yourString";
+                    string sub = "yourSubstring";
+                    int count = Regex.Matches(s, sub).Count;
+                    Console.WriteLine($"Кількість входжень підрядка: {count}");
+                 */
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+SGL", Description = "Дві односпальні ліжка", Capacity = 2 });
+                BedConfigurations.Add(new BedConfiguration { Label = "DBL", Description = "Двоспальне ліжко", Capacity = 2 });
+                BedConfigurations.Add(new BedConfiguration { Label = "KNG", Description = "Ліжко King-size", Capacity = 2 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SFA", Description = "Ліжко-диван", Capacity = 2 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+DBL", Description = "Односпальне та двоспальне ліжка", Capacity = 3 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+KNG", Description = "Односпальне ліжко та ліжко King-size", Capacity = 3 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+SFA", Description = "Односпальне ліжко та ліжко-диван", Capacity = 3 });
+                BedConfigurations.Add(new BedConfiguration { Label = "DBL+KNG", Description = "Двоспальне ліжко та ліжко King-size", Capacity = 4 });
+                BedConfigurations.Add(new BedConfiguration { Label = "DBL+SFA", Description = "Двоспальне ліжко та ліжко-диван", Capacity = 4 });
+                BedConfigurations.Add(new BedConfiguration { Label = "KNG+SFA", Description = "Ліжко King-size та ліжко-диван", Capacity = 4 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+SGL+SGL", Description = "Три односпальні ліжка", Capacity = 3 });
+                BedConfigurations.Add(new BedConfiguration { Label = "DBL+DBL", Description = "Два двоспальні ліжка", Capacity = 4 });
+                BedConfigurations.Add(new BedConfiguration { Label = "KNG+KNG", Description = "Два ліжка King-size", Capacity = 4 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SFA+SFA", Description = "Два ліжка-дивана", Capacity = 4 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+DBL+KNG", Description = "Односпальне, двоспальне ліжка та ліжко King-size", Capacity = 5 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+DBL+SFA", Description = "Односпальне, двоспальне ліжка та ліжко-диван", Capacity = 5 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+KNG+SFA", Description = "Односпальне ліжко, ліжко King-size та ліжко-диван", Capacity = 5 });
+                BedConfigurations.Add(new BedConfiguration { Label = "DBL+KNG+SFA", Description = "Двоспальне ліжко, ліжко King-size та ліжко-диван", Capacity = 6 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+DBL+KNG+SFA", Description = "Односпальне, двоспальне ліжка, ліжко King-size та ліжко-диван", Capacity = 7 });
+                BedConfigurations.Add(new BedConfiguration { Label = "DBL+DBL+SFA+SFA", Description = "Два двоспальні ліжка та два ліжка-дивана", Capacity = 8 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+DBL+DBL", Description = "Односпальне та два двоспальні ліжка", Capacity = 5 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+KNG+KNG", Description = "Односпальне ліжко та два ліжка King-size", Capacity = 5 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+SFA+SFA", Description = "Односпальне ліжко та два ліжка-дивана", Capacity = 5 });
+                BedConfigurations.Add(new BedConfiguration { Label = "DBL+DBL+KNG", Description = "Два двоспальні ліжка та ліжко King-size", Capacity = 6 });
+                BedConfigurations.Add(new BedConfiguration { Label = "DBL+DBL+SFA", Description = "Два двоспальні ліжка та ліжко-диван", Capacity = 6 });
+                BedConfigurations.Add(new BedConfiguration { Label = "KNG+KNG+SFA", Description = "Два ліжка King-size та ліжко-диван", Capacity = 6 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+DBL+DBL+KNG", Description = "Односпальне, два двоспальні ліжка та ліжко King-size", Capacity = 7 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+DBL+DBL+SFA", Description = "Односпальне, два двоспальні ліжка та ліжко-диван", Capacity = 7 });
+                BedConfigurations.Add(new BedConfiguration { Label = "SGL+KNG+KNG+SFA", Description = "Односпальне ліжко, два ліжка King-size та ліжко-диван", Capacity = 7 });
+                BedConfigurations.Add(new BedConfiguration { Label = "DBL+DBL+KNG+SFA", Description = "Два двоспальні ліжка, ліжко King-size та ліжко-диван", Capacity = 8 });
+                SaveChanges();
+
                 //HotelServices.Add(new HotelService { Name = "OB", Description = "(Only Bed) - це розміщення в готелі без харчування.", HotelServiceTypeId = foodServiceType.Id });
                 //HotelServices.Add(new HotelService { Name = "BB", Description = "(Bed & Breakfast) -  у вартість проживання включено сніданок.", HotelServiceTypeId = foodServiceType.Id });
                 //HotelServices.Add(new HotelService { Name = "HB", Description = "(Half Board) - напівпансіон, що включає сніданок та вечерю.", HotelServiceTypeId = foodServiceType.Id });
@@ -359,6 +410,6 @@ namespace TouragencyWebApi.DAL.EF
         }
 
         #endregion RunWithoutMigration(Re-Create)
-        */
+        
     }
 }

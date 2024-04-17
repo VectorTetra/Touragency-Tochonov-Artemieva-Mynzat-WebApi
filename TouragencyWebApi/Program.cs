@@ -5,30 +5,47 @@ using TouragencyWebApi.BLL.Services;
 //using TouragencyWebApi.DAL.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddCors(); // добавляем сервисы CORS
+builder.Services.AddCors(); // Г¤Г®ГЎГ ГўГ«ГїГҐГ¬ Г±ГҐГ°ГўГЁГ±Г» CORS
 
 
-// Получаем строку подключения из файла конфигурации
+// ГЏГ®Г«ГіГ·Г ГҐГ¬ Г±ГІГ°Г®ГЄГі ГЇГ®Г¤ГЄГ«ГѕГ·ГҐГ­ГЁГї ГЁГ§ ГґГ Г©Г«Г  ГЄГ®Г­ГґГЁГЈГіГ°Г Г¶ГЁГЁ
 string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// добавляем контекст ApplicationContext в качестве сервиса в приложение
+// Г¤Г®ГЎГ ГўГ«ГїГҐГ¬ ГЄГ®Г­ГІГҐГЄГ±ГІ ApplicationContext Гў ГЄГ Г·ГҐГ±ГІГўГҐ Г±ГҐГ°ГўГЁГ±Г  Гў ГЇГ°ГЁГ«Г®Г¦ГҐГ­ГЁГҐ
 builder.Services.AddControllers();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTouragencyContext(connection);
 builder.Services.AddUnitOfWorkService();
+builder.Services.AddScoped<IBedConfigurationService, BedConfigurationService>();
+builder.Services.AddScoped<IBookingChildrenService, BookingChildrenService>();
+builder.Services.AddScoped<IBookingDataService, BookingDataService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IClientService, ClientService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IPhoneService, PhoneService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IHotelConfigurationService, HotelConfigurationService>();
+builder.Services.AddScoped<IHotelService, HotelService>();
+builder.Services.AddScoped<IHotelServiceService, HotelServiceService>();
+builder.Services.AddScoped<IHotelServiceTypeService, HotelServiceTypeService>();
+builder.Services.AddScoped<IPhoneService, PhoneService>();
+builder.Services.AddScoped<IPositionService, PositionService>();
+builder.Services.AddScoped<IReviewImageService, ReviewImageService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<ISettlementService, SettlementService>();
 builder.Services.AddScoped<ITourStateService, TourStateService>();
 builder.Services.AddScoped<ITouragencyAccountRoleService, TouragencyAccountRoleService>();
 builder.Services.AddScoped<ITouragencyEmployeeService, TouragencyEmployeeService>();
 builder.Services.AddScoped<ITouragencyAccountService, TouragencyAccountService>();
+builder.Services.AddScoped<ITourNameService, TourNameService>();
+builder.Services.AddScoped<ITourService, TourService>();
+builder.Services.AddScoped<ITransportTypeService, TransportTypeService>();
+
+
+
 
 var app = builder.Build();
-// настраиваем CORS
+// Г­Г Г±ГІГ°Г ГЁГўГ ГҐГ¬ CORS
 app.UseCors(builder => builder.AllowAnyOrigin());
 //app.UseCors(builder => builder.WithOrigins("https://localhost:7110")
 //                            .AllowAnyHeader()
