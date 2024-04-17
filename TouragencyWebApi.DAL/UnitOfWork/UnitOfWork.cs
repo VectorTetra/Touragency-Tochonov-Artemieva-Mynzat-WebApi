@@ -1,6 +1,7 @@
 ﻿using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DAL.Repositories;
+using TouragencyWebApi.DAL.Entities;
 
 namespace TouragencyWebApi.DAL.UnitOfWork
 {
@@ -28,6 +29,10 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private IHotelConfigurationRepository _hotelConfigurations;
         private IHotelServiceTypeRepository _hotelServiceTypes;
         private IHotelServiceRepository _hotelServices;
+        private ITouragencyAccountRepository _account;
+        private ITouragencyAccountRoleRepository _role;
+        private ITouragencyEmployeeRepository _employee;
+
 
         public UnitOfWork(TouragencyContext context)
         {
@@ -215,6 +220,35 @@ namespace TouragencyWebApi.DAL.UnitOfWork
                 return _statuses;
             }
         }
+
+        public ITouragencyEmployeeRepository TouragencyEmployees
+        {
+            get
+            {
+                if (_employee == null)
+                    _employee = new TouragencyEmployeeRepository(_context);
+                return _employee;
+            }
+        }
+        public ITouragencyAccountRoleRepository TouragencyAccountRoles
+        {
+            get
+            {
+                if(_role == null)
+                    _role = new TouragencyAccountRoleRepository(_context);
+                return _role;
+            }
+        }
+        public ITouragencyAccountRepository TouragencyAccounts
+        {
+            get
+            {
+                if(_account == null)
+                    _account = new TouragencyAccountRepository(_context);
+                return _account;
+             }
+        }
+
         public IReviewRepository Reviews
         {
             get
