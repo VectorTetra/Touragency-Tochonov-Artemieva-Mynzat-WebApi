@@ -25,8 +25,8 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.Person.Firstname, opt => opt.MapFrom(c => c.Person.Firstname))
         .ForPath(d => d.Person.Lastname, opt => opt.MapFrom(c => c.Person.Lastname))
         .ForPath(d => d.Person.Middlename, opt => opt.MapFrom(c => c.Person.Middlename))
-        .ForPath(d => d.Person.Phones, opt => opt.MapFrom(c => c.Person.Phones))
-        .ForPath(d => d.Person.Emails, opt => opt.MapFrom(c => c.Person.Emails))
+        .ForPath(d => d.Person.PhoneIds, opt => opt.MapFrom(c => c.Person.Phones.Select(ph=>ph.Id)))
+        .ForPath(d => d.Person.EmailIds, opt => opt.MapFrom(c => c.Person.Emails.Select(em=>em.Id)))
         .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
         .ForPath(d => d.TourIds, opt => opt.MapFrom(c => c.Tours.Select(b => b.Id)))
         .ForPath(d => d.ReviewIds, opt => opt.MapFrom(c => c.Reviews.Select(b => b.Id)))
@@ -185,6 +185,8 @@ namespace TouragencyWebApi.BLL.Services
                 {
                     throw new ValidationException("Неправильний логін або пароль", "");
                 }
+                var phoneIdsCollec = MeaningUser.Person.Phones.Select(ph => ph.Id);
+                var emailIdsCollec = MeaningUser.Person.Emails.Select(em => em.Id);
                 return new ClientDTO
                 {
                     Id = MeaningUser.Id,
@@ -195,10 +197,8 @@ namespace TouragencyWebApi.BLL.Services
                         Lastname = MeaningUser.Person.Lastname,
                         Firstname = MeaningUser.Person.Firstname,
                         Middlename = MeaningUser.Person.Middlename,
-                        Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId, 
-                        PersonIds = ph.Persons.Select(p => p.Id).ToList()}).ToList(),
-                        Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId,
-                            PersonIds = em.Persons.Select(p => p.Id).ToList()}).ToList(),
+                        PhoneIds = phoneIdsCollec.ToList(),
+                        EmailIds = emailIdsCollec.ToList(),
                         ClientId = MeaningUser.Id
                     },
                     BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
@@ -233,8 +233,8 @@ namespace TouragencyWebApi.BLL.Services
                     Lastname = MeaningUser.Person.Lastname,
                     Firstname = MeaningUser.Person.Firstname,
                     Middlename = MeaningUser.Person.Middlename,
-                    Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList(),
-                    Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList()
+                    PhoneIds = MeaningUser.Person.Phones.Select(ph => ph.Id).ToList(),
+                    EmailIds = MeaningUser.Person.Emails.Select(em => em.Id).ToList()
                 },
                 BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
                 AvatarImagePath = MeaningUser.AvatarImagePath
@@ -257,8 +257,8 @@ namespace TouragencyWebApi.BLL.Services
                     Lastname = MeaningUser.Person.Lastname,
                     Firstname = MeaningUser.Person.Firstname,
                     Middlename = MeaningUser.Person.Middlename,
-                    Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList(),
-                    Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList()
+                    PhoneIds = MeaningUser.Person.Phones.Select(ph => ph.Id).ToList(),
+                    EmailIds = MeaningUser.Person.Emails.Select(em => em.Id).ToList()
                 },
                 BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
                 AvatarImagePath = MeaningUser.AvatarImagePath
@@ -281,8 +281,8 @@ namespace TouragencyWebApi.BLL.Services
                     Lastname = MeaningUser.Person.Lastname,
                     Firstname = MeaningUser.Person.Firstname,
                     Middlename = MeaningUser.Person.Middlename,
-                    Phones = MeaningUser.Person.Phones.Select(ph => new PhoneDTO { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList(),
-                    Emails = MeaningUser.Person.Emails.Select(em => new EmailDTO { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList()
+                    PhoneIds = MeaningUser.Person.Phones.Select(ph => ph.Id).ToList(),
+                    EmailIds = MeaningUser.Person.Emails.Select(em => em.Id).ToList()
                 },
                 BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
                 AvatarImagePath = MeaningUser.AvatarImagePath
@@ -315,15 +315,34 @@ namespace TouragencyWebApi.BLL.Services
             {
                 throw new ValidationException("Такого користувача не існує!", "");
             }
+           
             else
             {
+                client.Person.Phones.Clear();
+                foreach (var id in clientDTO.Person.PhoneIds)
+                {
+                    var phone = await Database.Phones.GetById(id);
+                    if (phone == null)
+                    {
+                        throw new ValidationException("Такого телефону не існує!", "");
+                    }
+                    client.Person.Phones.Add(phone);
+                }
+                client.Person.Emails.Clear();
+                foreach (var id in clientDTO.Person.EmailIds)
+                {
+                    var email = await Database.Emails.GetById(id);
+                    if (email == null)
+                    {
+                        throw new ValidationException("Такого email не існує!", "");
+                    }
+                    client.Person.Emails.Add(email);
+                }
                 client.AvatarImagePath = clientDTO.AvatarImagePath;
                 client.TouristNickname = clientDTO.TouristNickname;
                 client.Person.Firstname = clientDTO.Person.Firstname;
                 client.Person.Lastname = clientDTO.Person.Lastname;
                 client.Person.Middlename = clientDTO.Person.Middlename;
-                client.Person.Phones = clientDTO.Person.Phones.Select(ph => new Phone { Id = ph.Id, PhoneNumber = ph.PhoneNumber, ContactTypeId = ph.ContactTypeId }).ToList();
-                client.Person.Emails = clientDTO.Person.Emails.Select(em => new Email { Id = em.Id, EmailAddress = em.EmailAddress, ContactTypeId = em.ContactTypeId }).ToList();
                 Database.Clients.Update(client);
                 await Database.Save();
             }
