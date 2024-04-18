@@ -24,13 +24,16 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Tour>> GetByHotelName(string hotelNameSubstring);
         Task<IEnumerable<Tour>> GetByHotelId(int hotelId);
         Task<IEnumerable<Tour>> GetByDateRange(DateTime startDate, DateTime endDate);
-        Task<IEnumerable<Tour>> GetByTourDuration(params int[] durationDays);
-        Task<IEnumerable<Tour>> GetByHotelServicesIds(params int[] hotelServicesIds); 
+        Task<IEnumerable<Tour>> GetByTourDuration(int[] durationDays);
+        Task<IEnumerable<Tour>> GetByHotelServicesIds(int[] hotelServicesIds); 
         Task<IEnumerable<Tour>> GetByTransportType(TransportType transportType);
         Task<IEnumerable<Tour>> GetByTransportTypeId(int id);
         Task<IEnumerable<Tour>> GetByTransportTypeName(string transportTypeNameSubstring);
+        Task<IEnumerable<Tour>> GetByTourStateId(int tourStateId);
+        Task<IEnumerable<Tour>> GetByCompositeSearch(int? tourNameId, int? countryid, int? settlementId, int? hotelId,
+            DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId);
         Task Create(Tour tour);
         void Update(Tour tour);
-        Task Delete(int id);
+        Task Delete(long id);
     }
 }

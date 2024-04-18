@@ -33,6 +33,22 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.TourNames.Where(t => t.Name.Contains(tourNameSubstring)).ToListAsync();
         }
 
+        public async Task<IEnumerable<TourName>> GetByPageJSONStructureUrlSubstring(string pageJSONStructureUrlSubstring)
+        {
+            return await _context.TourNames.Where(t => t.PageJSONStructureUrl.Contains(pageJSONStructureUrlSubstring)).ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<TourName>> GetByTourId(long tourId)
+        {
+            return await _context.TourNames.Where(t => t.Tours.Any(tt => tt.Id == tourId) ).ToListAsync();
+        }
+
+        public async Task<IEnumerable<TourName>> GetByTourImageId(long tourImageId)
+        {
+            return await _context.TourNames.Where(t => t.TourImages.Any(ti=> ti.Id == tourImageId)).ToListAsync();
+        }
+
         public async Task Create(TourName tourName)
         {
             await _context.TourNames.AddAsync(tourName);

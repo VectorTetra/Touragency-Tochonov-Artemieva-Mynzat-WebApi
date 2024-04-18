@@ -41,6 +41,13 @@ namespace TouragencyWebApi.DAL.Repositories
                 .Where(p => p.Description.Contains(positionDescriptionSubstring))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Position>> GetByNameSubstring(string positionNameSubstring)
+        {
+            return await _context.Positions
+                .Where(p => p.Name.Contains(positionNameSubstring))
+                .ToListAsync();
+        }
         public async Task<Position?> GetByPersonId(int id)
         {
             return await _context.Positions

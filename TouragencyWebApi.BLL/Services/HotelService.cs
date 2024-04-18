@@ -23,6 +23,7 @@ namespace TouragencyWebApi.BLL.Services
         MapperConfiguration Hotel_HotelDTOMapConfig = new MapperConfiguration(cfg => cfg.CreateMap<Hotel, HotelDTO>()
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
+        .ForMember("Description", opt => opt.MapFrom(c => c.Description))
         .ForMember("Stars", opt => opt.MapFrom(c => c.Stars))
         .ForPath(d => d.HotelConfigurationIds, opt => opt.MapFrom(c => c.HotelConfigurations.Select(b => b.Id)))
         .ForPath(d => d.BedConfigurationIds, opt => opt.MapFrom(c => c.BedConfigurations.Select(b => b.Id)))
@@ -30,6 +31,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.TourIds, opt => opt.MapFrom(c => c.Tours.Select(b => b.Id)))
         .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
         .ForPath(d => d.HotelServiceIds, opt => opt.MapFrom(c => c.HotelServices.Select(b => b.Id)))
+        .ForPath(d => d.HotelImageIds, opt => opt.MapFrom(c => c.HotelImages.Select(b => b.Id)))
         );
         public async Task<IEnumerable<HotelDTO>> GetAll()
         {
@@ -47,6 +49,12 @@ namespace TouragencyWebApi.BLL.Services
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByNameSubstring(nameSubstring));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetByDescriptionSubstring(string descriptionSubstring)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByDescriptionSubstring(descriptionSubstring));
         }
 
         public async Task<IEnumerable<HotelDTO>> GetByStars(int[] selectedStarsRatings)
@@ -85,10 +93,22 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByBookingId(bookingId));
         }
 
-        public async Task<IEnumerable<HotelDTO>> GetByHotelServiceId(int settlementId)
+        public async Task<IEnumerable<HotelDTO>> GetByHotelServiceId(int hotelServiceId)
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
-            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByHotelServiceId(settlementId));
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByHotelServiceId(hotelServiceId));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetByHotelImageId(long hotelImageId)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByHotelImageId(hotelImageId));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring, int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, long? tourId, long? bookingId, int? hotelServiceId, long? hotelImageId)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByCompositeSearch(nameSubstring, descriptionSubstring, stars, hotelConfigurationId, bedConfigurationId, settlementId, tourId, bookingId, hotelServiceId, hotelImageId));
         }
 
         public async Task Create(HotelDTO hotelDTO)
@@ -149,7 +169,7 @@ namespace TouragencyWebApi.BLL.Services
                 Bookings.Add(booking);
             }
             //======================================================================
-            var HotelServices = new List<HotelService>();
+            var HotelServices = new List<TouragencyWebApi.DAL.Entities.HotelService>();
             foreach (var id in hotelDTO.HotelServiceIds)
             {
                 var hotelService = await Database.HotelServices.GetById(id);

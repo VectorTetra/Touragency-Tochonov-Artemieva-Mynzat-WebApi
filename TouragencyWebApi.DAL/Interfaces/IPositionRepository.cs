@@ -13,6 +13,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task Delete(int id);
         Task<IEnumerable<Position>> GetAll();
         Task<IEnumerable<Position>> GetByDescriptionSubstring(string positionDescriptionSubstring);
+        Task<IEnumerable<Position>> GetByNameSubstring(string positionNameSubstring);
         Task<Position?> GetByPersonId(int id);
         Task<Position?> GetByTouragencyEmployeeId(int id);
         Task<Position?> GetById(int id);

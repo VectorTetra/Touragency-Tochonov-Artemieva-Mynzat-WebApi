@@ -11,7 +11,7 @@ using AutoMapper;
 using TouragencyWebApi.DAL.Entities;
 namespace TouragencyWebApi.BLL.Services
 {
-    public class PositionService: IPositionService
+    public class PositionService : IPositionService
     {
         IUnitOfWork Database;
         public PositionService(IUnitOfWork uow)
@@ -21,6 +21,7 @@ namespace TouragencyWebApi.BLL.Services
         MapperConfiguration Position_PositionDTOMapConfig = new MapperConfiguration(cfg => cfg.CreateMap<Position, PositionDTO>()
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
         .ForMember("Description", opt => opt.MapFrom(c => c.Description))
+        .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForPath(d => d.TouragencyEmployeeIds, opt => opt.MapFrom(c => c.TouragencyEmployees.Select(te => te.Id)))
         );
         public async Task Create(PositionDTO positionDTO)
@@ -33,6 +34,7 @@ namespace TouragencyWebApi.BLL.Services
             }
             var newPosition = new Position
             {
+                Name = positionDTO.Name,
                 Description = positionDTO.Description,
                 TouragencyEmployees = new List<TouragencyEmployee>()
             };
@@ -50,27 +52,25 @@ namespace TouragencyWebApi.BLL.Services
         }
         public async Task Update(PositionDTO positionDTO)
         {
-            var BusyPositionId = await Database.Positions.GetById(positionDTO.Id);
+            var BusyPosition = await Database.Positions.GetById(positionDTO.Id);
             //Якщо такий tourId вже зайнято, кидаємо виключення
-            if (BusyPositionId != null)
+            if (BusyPosition != null)
             {
                 throw new ValidationException("Такий positionId вже зайнято!", nameof(positionDTO.Id));
             }
-            var newPosition = new Position
-            {
-                Id = positionDTO.Id,
-                Description = positionDTO.Description,
-                TouragencyEmployees = new List<TouragencyEmployee>()
-            };
+            BusyPosition.Description = positionDTO.Description;
+            BusyPosition.Name = positionDTO.Name;
+            BusyPosition.TouragencyEmployees.Clear();
             foreach (var id in positionDTO.TouragencyEmployeeIds)
             {
                 var touragencyEmployee = await Database.TouragencyEmployees.GetById(id);
-                if (touragencyEmployee != null)
+                if (touragencyEmployee == null)
                 {
-                    newPosition.TouragencyEmployees.Add(touragencyEmployee);
+                    throw new ValidationException("Такий touragencyEmployeeId не знайдено", nameof(positionDTO.TouragencyEmployeeIds));
                 }
+                    BusyPosition.TouragencyEmployees.Add(touragencyEmployee);
             }
-            Database.Positions.Update(newPosition);
+            Database.Positions.Update(BusyPosition);
             await Database.Save();
         }
         public async Task Delete(int id)
@@ -93,6 +93,13 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(Position_PositionDTOMapConfig);
             return mapper.Map<IEnumerable<Position>, IEnumerable<PositionDTO>>(await Database.Positions.GetByDescriptionSubstring(positionDescriptionSubstring));
         }
+
+        public async Task<IEnumerable<PositionDTO>> GetByNameSubstring(string positionNameSubstring)
+        {
+            var mapper = new Mapper(Position_PositionDTOMapConfig);
+            return mapper.Map<IEnumerable<Position>, IEnumerable<PositionDTO>>(await Database.Positions.GetByNameSubstring(positionNameSubstring));
+        }
+
         public async Task<PositionDTO?> GetByPersonId(int id)
         {
             var position = await Database.Positions.GetByPersonId(id);

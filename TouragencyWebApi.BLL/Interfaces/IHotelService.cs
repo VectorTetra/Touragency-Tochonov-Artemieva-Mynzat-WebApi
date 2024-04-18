@@ -13,13 +13,18 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<HotelDTO>> GetAll();
         Task<HotelDTO?> GetById(int id);
         Task<IEnumerable<HotelDTO>> GetByNameSubstring(string nameSubstring);
+        Task<IEnumerable<HotelDTO>> GetByDescriptionSubstring(string descriptionSubstring);
         Task<IEnumerable<HotelDTO>> GetByStars(int[] selectedStarsRatings);
         Task<IEnumerable<HotelDTO>> GetByHotelConfigurationId(int hotelConfigurationId);
         Task<IEnumerable<HotelDTO>> GetByBedConfigurationId(int bedConfigurationId);
         Task<IEnumerable<HotelDTO>> GetBySettlementId(int settlementId);
         Task<IEnumerable<HotelDTO>> GetByTourId(long tourId);
         Task<IEnumerable<HotelDTO>> GetByBookingId(long bookingId);
-        Task<IEnumerable<HotelDTO>> GetByHotelServiceId(int settlementId);
+        Task<IEnumerable<HotelDTO>> GetByHotelServiceId(int hotelServiceId);
+        Task<IEnumerable<HotelDTO>> GetByHotelImageId(long hotelImageId);
+        Task<IEnumerable<HotelDTO>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring,
+            int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, long? tourId,
+            long? bookingId, int? hotelServiceId, long? hotelImageId);
         Task Create(HotelDTO hotel);
         Task Update(HotelDTO hotel);
         Task Delete(int id);

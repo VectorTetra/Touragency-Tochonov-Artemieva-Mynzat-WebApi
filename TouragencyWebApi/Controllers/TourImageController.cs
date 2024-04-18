@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
@@ -6,23 +7,22 @@ using TouragencyWebApi.BLL.Interfaces;
 
 namespace TouragencyWebApi.Controllers
 {
-    [Route("api/Position")]
+    [Route("api/TourImage")]
     [ApiController]
-    public class PositionController : ControllerBase
+    public class TourImageController : ControllerBase
     {
-        private readonly IPositionService _serv;
-        public PositionController(IPositionService serv)
+        private readonly ITourImageService _serv;
+        public TourImageController(ITourImageService serv)
         {
             _serv = serv;
         }
-
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PositionDTO>>> GetPositions([FromQuery] PositionQuery positionQuery)
+        public async Task<ActionResult<IEnumerable<TourImageDTO>>> GetTourImages([FromQuery] TourImageQuery tourImageQuery)
         {
             try
             {
-                IEnumerable<PositionDTO> collection = null;
-                switch (positionQuery.SearchParameter)
+                IEnumerable<TourImageDTO> collection = null;
+                switch (tourImageQuery.SearchParameter)
                 {
                     case "GetAll":
                         {
@@ -31,47 +31,38 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetById":
                         {
-                            if (positionQuery.Id == null)
+                            if (tourImageQuery.Id is null)
                             {
-                                throw new ValidationException("Не вказано PositionId для пошуку!", nameof(PositionQuery.Id));
+                                throw new ValidationException("Не вказано TourImageId для пошуку!", nameof(tourImageQuery.Id));
                             }
-                            else
+                            var acc = await _serv.GetById((long)tourImageQuery.Id);
+                            if (acc != null)
                             {
-                                var n = await _serv.GetById((int)positionQuery.Id);
-                                if (n != null)
-                                {
-                                    collection = new List<PositionDTO> { n };
-                                }
+                                collection = new List<TourImageDTO?> { acc };
                             }
                         }
                         break;
-                    case "GetByName":
+                    case "GetByImageUrl":
                         {
-                            if (positionQuery.Name == null)
+                            if (tourImageQuery.ImageUrl is null)
                             {
-                                throw new ValidationException("Не вказано Position.Name для пошуку!", nameof(PositionQuery.Name));
+                                throw new ValidationException("Не вказано ImageUrl для пошуку!", nameof(tourImageQuery.ImageUrl));
                             }
-                            else
-                            {
-                                collection = await _serv.GetByNameSubstring(positionQuery.Name);
-                            }
+                            collection = await _serv.GetByImageUrlSubstring(tourImageQuery.ImageUrl);
                         }
                         break;
-                    case "GetByDescription":
+                    case "GetByTourNameId":
                         {
-                            if (positionQuery.Description == null)
+                            if (tourImageQuery.TourNameId is null)
                             {
-                                throw new ValidationException("Не вказано Position.Name для пошуку!", nameof(PositionQuery.Description));
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(tourImageQuery.TourNameId));
                             }
-                            else
-                            {
-                                collection = await _serv.GetByDescriptionSubstring(positionQuery.Description);
-                            }
+                            collection = await _serv.GetByTourNameId((int)tourImageQuery.TourNameId);
                         }
                         break;
                     default:
                         {
-                            throw new ValidationException("Невірно вказаний параметр пошуку!", nameof(PositionQuery.SearchParameter));
+                            throw new ValidationException("Невідомий параметр пошуку!", nameof(tourImageQuery.SearchParameter));
                         }
                 }
                 if (collection.IsNullOrEmpty())
@@ -91,12 +82,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PositionDTO>> CreatePosition(PositionDTO positionDTO)
+        public async Task<ActionResult<TourImageDTO>> CreateTourImage(TourImageDTO tourImageDTO)
         {
             try
             {
-                await _serv.Create(positionDTO);
-                return new ObjectResult(positionDTO);
+                await _serv.Create(tourImageDTO);
+                return Ok(tourImageDTO);
             }
             catch (ValidationException ex)
             {
@@ -109,12 +100,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<PositionDTO>> UpdatePosition(PositionDTO positionDTO)
+        public async Task<ActionResult<TourImageDTO>> UpdateTourImage(TourImageDTO tourImageDTO)
         {
             try
             {
-                await _serv.Update(positionDTO);
-                return Ok();
+                await _serv.Update(tourImageDTO);
+                return Ok(tourImageDTO);
             }
             catch (ValidationException ex)
             {
@@ -127,7 +118,7 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult<PositionDTO>> DeletePosition(int id)
+        public async Task<ActionResult<TourImageDTO>> DeleteTourImage(long id)
         {
             try
             {
@@ -145,11 +136,11 @@ namespace TouragencyWebApi.Controllers
         }
     }
 
-    public class PositionQuery
+    public class TourImageQuery
     {
         public string SearchParameter { get; set; }
-        public int? Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+        public long? Id { get; set; }
+        public string? ImageUrl { get; set; }
+        public int? TourNameId { get; set; }
     }
 }

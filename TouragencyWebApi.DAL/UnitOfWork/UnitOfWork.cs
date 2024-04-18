@@ -1,4 +1,5 @@
-﻿using TouragencyWebApi.DAL.EF;
+﻿using System.Data;
+using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DAL.Repositories;
 
@@ -28,10 +29,61 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private IHotelConfigurationRepository _hotelConfigurations;
         private IHotelServiceTypeRepository _hotelServiceTypes;
         private IHotelServiceRepository _hotelServices;
+        private IHotelImageRepository _hotelImages;
+        private ITourImageRepository _tourImages;
+        private ITouragencyAccountRepository _account;
+        private ITouragencyAccountRoleRepository _role;
+        private ITouragencyEmployeeRepository _employee;
+
 
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
+        }
+        public ITouragencyEmployeeRepository TouragencyEmployees
+        {
+            get
+            {
+                if (_employee == null)
+                    _employee = new TouragencyEmployeeRepository(_context);
+                return _employee;
+            }
+        }
+        public ITouragencyAccountRoleRepository TouragencyAccountRoles
+        {
+            get
+            {
+                if (_role == null)
+                    _role = new TouragencyAccountRoleRepository(_context);
+                return _role;
+            }
+        }
+        public ITouragencyAccountRepository TouragencyAccounts
+        {
+            get
+            {
+                if (_account == null)
+                    _account = new TouragencyAccountRepository(_context);
+                return _account;
+            }
+        }
+        public ITourImageRepository TourImages
+        {
+            get
+            {
+                if (_tourImages == null)
+                    _tourImages = new TourImageRepository(_context);
+                return _tourImages;
+            }
+        }
+        public IHotelImageRepository HotelImages
+        {
+            get
+            {
+                if (_hotelImages == null)
+                    _hotelImages = new HotelImageRepository(_context);
+                return _hotelImages;
+            }
         }
 
         public IHotelServiceRepository HotelServices

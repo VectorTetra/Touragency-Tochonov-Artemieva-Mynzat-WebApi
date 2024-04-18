@@ -18,13 +18,15 @@ namespace TouragencyWebApi.BLL.Services
         MapperConfiguration TourName_TourNameDTOMapConfig = new MapperConfiguration(cfg => cfg.CreateMap<TourName, TourNameDTO>()
        .ForMember("Id", opt => opt.MapFrom(c => c.Id))
        .ForMember("Name", opt => opt.MapFrom(c => c.Name))
+       .ForMember("PageJSONStructureUrl", opt => opt.MapFrom(c => c.PageJSONStructureUrl))
        .ForPath(d => d.TourIds, opt => opt.MapFrom(c => c.Tours.Select(b => b.Id)))
+       .ForPath(d => d.TourImageIds, opt => opt.MapFrom(c => c.TourImages.Select(b => b.Id)))
         );
         public TourNameService(IUnitOfWork uow)
         {
             Database = uow;
         }
-        
+
         public async Task<IEnumerable<TourNameDTO>> GetAll()
         {
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
@@ -55,10 +57,20 @@ namespace TouragencyWebApi.BLL.Services
             foreach (var id in tourNameDTO.TourIds)
             {
                 var tour = await Database.Tours.GetById(id);
-                if (tour != null)
+                if (tour == null)
                 {
-                    newTourName.Tours.Add(tour);
+                    throw new ValidationException($"Тур з id {id} не знайдено", "");
                 }
+                newTourName.Tours.Add(tour);
+            }
+            foreach( var id in tourNameDTO.TourImageIds)
+            {
+                var tourImage = await Database.TourImages.GetById(id);
+                if (tourImage == null)
+                {
+                    throw new ValidationException($"Зображення туру з id {id} не знайдено", "");
+                }
+                newTourName.TourImages.Add(tourImage);
             }
             await Database.TourNames.Create(newTourName);
             await Database.Save();
@@ -72,13 +84,24 @@ namespace TouragencyWebApi.BLL.Services
             }
             tourName.Name = tourNameDTO.Name;
             tourName.Tours.Clear();
+            tourName.TourImages.Clear();
             foreach (var id in tourNameDTO.TourIds)
             {
                 var tour = await Database.Tours.GetById(id);
-                if (tour != null)
+                if (tour == null)
                 {
-                    tourName.Tours.Add(tour);
+                    throw new ValidationException($"Тур з id {id} не знайдено", "");
                 }
+                tourName.Tours.Add(tour);
+            }
+            foreach (var id in tourNameDTO.TourImageIds)
+            {
+                var tourImage = await Database.TourImages.GetById(id);
+                if (tourImage == null)
+                {
+                    throw new ValidationException($"Зображення туру з id {id} не знайдено", "");
+                }
+                tourName.TourImages.Add(tourImage);
             }
             Database.TourNames.Update(tourName);
             await Database.Save();
@@ -88,6 +111,6 @@ namespace TouragencyWebApi.BLL.Services
             await Database.TourNames.Delete(id);
             await Database.Save();
         }
-       
+
     }
 }

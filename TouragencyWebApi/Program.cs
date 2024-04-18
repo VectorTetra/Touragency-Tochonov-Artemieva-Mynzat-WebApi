@@ -26,6 +26,7 @@ builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IHotelConfigurationService, HotelConfigurationService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
+builder.Services.AddScoped<IHotelImageService, HotelImageService>();
 builder.Services.AddScoped<IHotelServiceService, HotelServiceService>();
 builder.Services.AddScoped<IHotelServiceTypeService, HotelServiceTypeService>();
 builder.Services.AddScoped<IPhoneService, PhoneService>();
@@ -35,8 +36,12 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<ISettlementService, SettlementService>();
 builder.Services.AddScoped<ITourStateService, TourStateService>();
 builder.Services.AddScoped<ITourNameService, TourNameService>();
+builder.Services.AddScoped<ITourImageService, TourImageService>();
 builder.Services.AddScoped<ITourService, TourService>();
 builder.Services.AddScoped<ITransportTypeService, TransportTypeService>();
+builder.Services.AddScoped<ITouragencyAccountRoleService, TouragencyAccountRoleService>();
+builder.Services.AddScoped<ITouragencyEmployeeService, TouragencyEmployeeService>();
+builder.Services.AddScoped<ITouragencyAccountService, TouragencyAccountService>();
 
 
 

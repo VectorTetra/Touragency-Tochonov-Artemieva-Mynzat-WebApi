@@ -41,5 +41,20 @@ namespace TouragencyWebApi.DAL.Entities
 		public virtual ICollection<Booking> Bookings { get; set; }
 		public virtual ICollection<Client> Clients { get; set; }
 
-	}
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var otherTour = (Tour)obj;
+            return Id == otherTour.Id;
+        }
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+    }
 }

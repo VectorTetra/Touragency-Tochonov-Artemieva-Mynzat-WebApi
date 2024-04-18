@@ -79,11 +79,11 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Tours.Where(t => t.ArrivalDate >= startDate && t.DepartureDate <= endDate).ToListAsync();
         }
-        public async Task<IEnumerable<Tour>> GetByTourDuration(params int[] durationDays)
+        public async Task<IEnumerable<Tour>> GetByTourDuration(int[] durationDays)
         {
             return await _context.Tours.Where(t => durationDays.Contains((t.DepartureDate - t.ArrivalDate).Days)).ToListAsync();
         }
-        public async Task<IEnumerable<Tour>> GetByHotelServicesIds(params int[] hotelServicesIds)
+        public async Task<IEnumerable<Tour>> GetByHotelServicesIds(int[] hotelServicesIds)
         {
             return await _context.Tours.Where(t => t.Hotels.Any(h => h.HotelServices.Any(s => hotelServicesIds.Contains(s.Id)))).ToListAsync();
         }
@@ -99,6 +99,68 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Tours.Where(t => t.TransportTypes.Any(tt => tt.Name.Contains(transportTypeNameSubstring))).ToListAsync();
         }
+        public async Task<IEnumerable<Tour>> GetByTourStateId(int tourStateId)
+        {
+            return await _context.Tours.Where(t => t.TourState.Id == tourStateId).ToListAsync();
+        }
+        public async Task<IEnumerable<Tour>> GetByCompositeSearch(int? tourNameId, int? countryId, int? settlementId, int? hotelId,
+                       DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId,int? tourStateId)
+        {
+            var tourCollections = new List<IEnumerable<Tour>>();
+
+            if (tourNameId != null)
+            {
+                var hotelsByHotelServiceId = await GetByTourNameId(tourNameId.Value);
+                tourCollections.Add(hotelsByHotelServiceId);
+            }
+            if (countryId != null)
+            {
+                var hotelsByCountryId = await GetByCountryId(countryId.Value);
+                tourCollections.Add(hotelsByCountryId);
+            }
+            if (settlementId != null)
+            {
+                var hotelsBySettlementId = await GetBySettlementId(settlementId.Value);
+                tourCollections.Add(hotelsBySettlementId);
+            }
+            if (hotelId != null)
+            {
+                var hotelsByHotelId = await GetByHotelId(hotelId.Value);
+                tourCollections.Add(hotelsByHotelId);
+            }
+            if (startDate != null && endDate != null)
+            {
+                var hotelsByDateRange = await GetByDateRange(startDate.Value, endDate.Value);
+                tourCollections.Add(hotelsByDateRange);
+            }
+            if (durationDays != null)
+            {
+                var hotelsByDuration = await GetByTourDuration(durationDays);
+                tourCollections.Add(hotelsByDuration);
+            }
+            if (hotelServicesIds != null)
+            {
+                var hotelsByHotelServicesIds = await GetByHotelServicesIds(hotelServicesIds);
+                tourCollections.Add(hotelsByHotelServicesIds);
+            }
+            if (transportTypeId != null)
+            {
+                var hotelsByTransportTypeId = await GetByTransportTypeId(transportTypeId.Value);
+                tourCollections.Add(hotelsByTransportTypeId);
+            }
+            if (tourStateId != null)
+            {
+                var hotelsByTourStateId = await GetByTourStateId(tourStateId.Value);
+                tourCollections.Add(hotelsByTourStateId);
+            }
+
+            if (!tourCollections.Any())
+            {
+                return new List<Tour>();
+            }
+
+            return tourCollections.Aggregate((previousList, nextList) => previousList.Intersect(nextList).ToList());
+        }
         public async Task Create(Tour tour)
         {
             await _context.Tours.AddAsync(tour);
@@ -107,7 +169,7 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             _context.Entry(tour).State = EntityState.Modified;
         }
-        public async Task Delete(int id)
+        public async Task Delete(long id)
         {
             var tour = await _context.Tours.FindAsync(id);
             if (tour != null)

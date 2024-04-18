@@ -7,11 +7,12 @@ using TouragencyWebApi.DAL.Entities;
 
 namespace TouragencyWebApi.BLL.DTO
 {
-    public class PositionDTO
+    public class TouragencyEmployeeAccountDTO
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public virtual ICollection<int> TouragencyEmployeeIds { get; set; }
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public int TouragencyAccountRoleId { get; set; }
+        public int TouragencyEmployeeId { get; set; }
     }
 }

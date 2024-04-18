@@ -31,7 +31,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
         .ForPath(d => d.ClientIds, opt => opt.MapFrom(c => c.Clients.Select(cl => cl.Id)))
         );
-        public async Task<IEnumerable<TourDTO>> GetAll(TourDTO searchTourDTO)
+        public async Task<IEnumerable<TourDTO>> GetAll()
         {
             var mapper = new Mapper(Tour_TourDTOMapConfig);
             var tours = await Database.Tours.GetAll();
@@ -44,10 +44,6 @@ namespace TouragencyWebApi.BLL.Services
             var tour = await Database.Tours.GetById(id);
             var tourDTO = mapper.Map<Tour, TourDTO>(tour);
             return tourDTO;
-        }
-        public async Task<IEnumerable<TourDTO>> GetByExtendedSearch(TourDTO searchTourDTO)
-        {
-            throw new NotImplementedException();
         }
         public async Task<IEnumerable<TourDTO>> GetByTourName(TourName tourName)
         {
@@ -175,6 +171,23 @@ namespace TouragencyWebApi.BLL.Services
             var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
             return tourDTO;
         }
+        public async Task<IEnumerable<TourDTO>> GetByTourStateId(int tourStateId)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByTourStateId(tourStateId);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
+        public async Task<IEnumerable<TourDTO>> GetByCompositeSearch(int? tourNameId, int? countryid, int? settlementId, int? hotelId,
+            DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByCompositeSearch(tourNameId, countryid, settlementId, hotelId, startDate, endDate, durationDays, hotelServicesIds, transportTypeId, tourStateId);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
+
+
 
         // Для повної реалізації цього сервісу (TourService) потрібно додати створити репозиторій для:
         // ? Booking,
@@ -244,7 +257,7 @@ namespace TouragencyWebApi.BLL.Services
             await Database.Tours.Create(tour);
             await Database.Save();
         }
-        public async void Update(TourDTO tourDTO) 
+        public async Task Update(TourDTO tourDTO) 
         { 
             var tour = await Database.Tours.GetById(tourDTO.Id);
             if (tour == null)
@@ -325,7 +338,7 @@ namespace TouragencyWebApi.BLL.Services
             Database.Tours.Update(tour);
             await Database.Save();
         }
-        public async Task Delete(int id) 
+        public async Task Delete(long id) 
         {
             Tour tour = await Database.Tours.GetById(id);
             if (tour == null)

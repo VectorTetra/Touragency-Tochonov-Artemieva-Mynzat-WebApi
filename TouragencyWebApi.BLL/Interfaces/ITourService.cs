@@ -5,9 +5,8 @@ namespace TouragencyWebApi.BLL.Interfaces
 {
     public interface ITourService
     {
-        Task<IEnumerable<TourDTO>> GetAll(TourDTO searchTourDTO);
+        Task<IEnumerable<TourDTO>> GetAll();
         Task<TourDTO?> GetById(long id);
-        Task<IEnumerable<TourDTO>> GetByExtendedSearch(TourDTO searchTourDTO);
         Task<IEnumerable<TourDTO>> GetByTourName(TourName tourName);
         Task<IEnumerable<TourDTO>> GetByTourNameId(int tourNameId);
         Task<IEnumerable<TourDTO>> GetByTourNameStringName(string tourNameSubstring);
@@ -26,8 +25,11 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<TourDTO>> GetByDateRange(DateTime startDate, DateTime endDate);
         Task<IEnumerable<TourDTO>> GetByTourDuration(params int[] durationDays);
         Task<IEnumerable<TourDTO>> GetByHotelServicesIds(params int[] hotelServicesIds);
+        Task<IEnumerable<TourDTO>> GetByTourStateId(int tourStateId);
+        Task<IEnumerable<TourDTO>> GetByCompositeSearch(int? tourNameId, int? countryid, int? settlementId, int? hotelId,
+            DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId);
         Task Create(TourDTO tour);
-        void Update(TourDTO tour);
-        Task Delete(int id);
+        Task Update(TourDTO tour);
+        Task Delete(long id);
     }
 }

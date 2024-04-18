@@ -14,6 +14,7 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task Delete(int id);
         Task<IEnumerable<PositionDTO>> GetAll();
         Task<IEnumerable<PositionDTO>> GetByDescriptionSubstring(string positionDescriptionSubstring);
+        Task<IEnumerable<PositionDTO>> GetByNameSubstring(string positionNameSubstring);
         Task<PositionDTO> GetByPersonId(int id);
         Task<PositionDTO> GetByTouragencyEmployeeId(int id);
         Task<PositionDTO> GetById(int id);
