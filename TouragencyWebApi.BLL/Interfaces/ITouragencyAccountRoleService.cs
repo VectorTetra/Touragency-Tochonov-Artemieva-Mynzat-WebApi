@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.DAL.Entities;
+using TouragencyWebApi.DTO;
 
 namespace TouragencyWebApi.BLL.Interfaces
 {
     public interface ITouragencyAccountRoleService
-    {
+    { 
         Task<IEnumerable<TouragencyAccountRoleDTO>> GetAll();
         Task<TouragencyAccountRoleDTO?> GetById(int id);
         Task<IEnumerable<TouragencyAccountRoleDTO>> GetByName(string name);

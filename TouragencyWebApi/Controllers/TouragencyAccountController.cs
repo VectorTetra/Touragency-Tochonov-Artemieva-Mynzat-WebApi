@@ -85,23 +85,6 @@ namespace TouragencyWebApi.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddAccount(TouragencyEmployeeAccountDTO accountDTO)
-        {
-            try
-            {
-                await _serv.Add(accountDTO);
-                return Ok();
-            }
-            catch (ValidationException ex)
-            {
-                return new ObjectResult(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return new ObjectResult(ex.Message);
-            }
-        }
 
         [HttpPut]
         public async Task<ActionResult> UpdateAccount(TouragencyEmployeeAccountDTO accountDTO)
