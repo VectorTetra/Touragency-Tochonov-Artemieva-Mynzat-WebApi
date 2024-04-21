@@ -56,10 +56,15 @@ namespace TouragencyWebApi.BLL.Services
             {
                 throw new ValidationException("Таке зображення туру вже існує", "");
             }
+            
             TourName? tourName = null;
             if (tourImage.TourNameId != null)
             {
                 tourName = await Database.TourNames.GetById((int)tourImage.TourNameId);
+            }
+            if (tourName == null)
+            {
+                throw new ValidationException("Такого TourName не існує", "");
             }
             var newTourImage = new TourImage
             {
