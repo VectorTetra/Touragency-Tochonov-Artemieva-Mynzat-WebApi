@@ -13,8 +13,8 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<CountryDTO>> GetAll();
         Task<CountryDTO?> GetById(int id);
         Task<IEnumerable<CountryDTO>> GetByName(string countryName);
-        Task Add(CountryDTO countryDTO);
-        Task Update(CountryDTO countryDTO);
-        Task Delete(int id);
+        Task<CountryDTO> Add(CountryDTO countryDTO);
+        Task<CountryDTO> Update(CountryDTO countryDTO);
+        Task<CountryDTO> Delete(int id);
     }
 }

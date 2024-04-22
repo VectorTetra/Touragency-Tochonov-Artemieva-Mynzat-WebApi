@@ -28,7 +28,7 @@ namespace TouragencyWebApi.BLL.Services
         {
             Database = uow;
         }
-        public async Task Add(CountryDTO countryDTO)
+        public async Task<CountryDTO> Add(CountryDTO countryDTO)
         {
             var PreExistedCountry = await Database.Countries.GetByName(countryDTO.Name);
             if (PreExistedCountry.Any(em => em.Name == countryDTO.Name))
@@ -51,9 +51,12 @@ namespace TouragencyWebApi.BLL.Services
             }
             await Database.Countries.Create(newCountry);
             await Database.Save();
+
+            countryDTO.Id = newCountry.Id;
+            return countryDTO;
         }
 
-        public async Task Update(CountryDTO countryDTO)
+        public async Task<CountryDTO> Update(CountryDTO countryDTO)
         {
             Country country = await Database.Countries.GetById(countryDTO.Id);
             if (country == null)
@@ -73,17 +76,20 @@ namespace TouragencyWebApi.BLL.Services
             }
             Database.Countries.Update(country);
             await Database.Save();
+            return countryDTO;
         }
 
-        public async Task Delete(int id)
+        public async Task<CountryDTO> Delete(int id)
         {
             Country country = await Database.Countries.GetById(id);
             if (country == null)
             {
                 throw new ValidationException("Країну не знайдено", "");
             }
+            var countryDTO = await GetById(id);
             await Database.Countries.Delete(id);
             await Database.Save();
+            return countryDTO;
         }
 
         public async Task<IEnumerable<CountryDTO>> GetAll()

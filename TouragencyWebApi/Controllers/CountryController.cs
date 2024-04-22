@@ -74,12 +74,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddCountry(CountryDTO countryDTO)
+        public async Task<ActionResult<CountryDTO>> AddCountry(CountryDTO countryDTO)
         {
             try
             {
-                await _serv.Add(countryDTO);
-                return Ok();
+                var createdCountry = await _serv.Add(countryDTO);
+                return Ok(createdCountry);
             }
             catch (ValidationException ex)
             {
@@ -96,8 +96,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(countryDTO);
-                return Ok();
+                var updatedCountry = await _serv.Update(countryDTO);
+                return Ok(updatedCountry);
             }
             catch (ValidationException ex)
             {
@@ -114,8 +114,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var deletedCountry = await _serv.Delete(id);
+                return Ok(deletedCountry);
             }
             catch (ValidationException ex)
             {
