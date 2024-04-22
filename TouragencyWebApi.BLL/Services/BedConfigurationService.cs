@@ -27,7 +27,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.BookingDataIds, opt => opt.MapFrom(c => c.BookingDatas.Select(t => t.Id)))
         .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Hotels.Select(t => t.Id)))
         );
-        public async Task Create(BedConfigurationDTO bedConfigurationDTO)
+        public async Task<BedConfigurationDTO> Create(BedConfigurationDTO bedConfigurationDTO)
         {
             //Намагаємось визначити, чи ще не існує BedConfigurations з таким Id
             var BusyBedConfigurationId = await Database.BedConfigurations.GetById(bedConfigurationDTO.Id);
@@ -89,8 +89,10 @@ namespace TouragencyWebApi.BLL.Services
             };
             await Database.BedConfigurations.Create(bedConfiguration);
             await Database.Save();
+            bedConfigurationDTO.Id = bedConfiguration.Id;
+            return bedConfigurationDTO;
         }
-        public async Task Update(BedConfigurationDTO bedConfigurationDTO)
+        public async Task<BedConfigurationDTO> Update(BedConfigurationDTO bedConfigurationDTO)
         { //Намагаємось визначити, чи існує BedConfigurations з таким Id
             var BedConfiguration = await Database.BedConfigurations.GetById(bedConfigurationDTO.Id);
             //Якщо такий Id не знайдено, кидаємо виключення
@@ -156,16 +158,19 @@ namespace TouragencyWebApi.BLL.Services
             //=======================================================================================================
             Database.BedConfigurations.Update(BedConfiguration);
             await Database.Save();
+            return bedConfigurationDTO;
         }
-        public async Task Delete(int id)
+        public async Task<BedConfigurationDTO> Delete(int id)
         {
             var BedConfiguration = await Database.BedConfigurations.GetById(id);
             if (BedConfiguration == null)
             {
                 throw new ValidationException("Такий bedConfigurationId не знайдено!", "");
             }
+            var bedConfigurationDTO = await GetById(id);
             await Database.BedConfigurations.Delete(id);
             await Database.Save();
+            return bedConfigurationDTO;
         }
 
         public async Task<IEnumerable<BedConfigurationDTO>> GetAll()

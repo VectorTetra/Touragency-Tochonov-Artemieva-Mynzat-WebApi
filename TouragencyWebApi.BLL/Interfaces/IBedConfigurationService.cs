@@ -17,8 +17,8 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<BedConfigurationDTO>> GetByCapacity(short capacity);
         Task<IEnumerable<BedConfigurationDTO>> GetByLabelSubstring(string labelSubstring);
         Task<IEnumerable<BedConfigurationDTO>> GetByDescriptionSubstring(string descriptionSubstring);
-        Task Create(BedConfigurationDTO BedConfigurationDTO);
-        Task Update(BedConfigurationDTO BedConfigurationDTO);
-        Task Delete(int id);
+        Task<BedConfigurationDTO> Create(BedConfigurationDTO BedConfigurationDTO);
+        Task<BedConfigurationDTO> Update(BedConfigurationDTO BedConfigurationDTO);
+        Task<BedConfigurationDTO> Delete(int id);
     }
 }

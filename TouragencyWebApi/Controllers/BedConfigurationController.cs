@@ -112,8 +112,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(bedConfigurationDTO);
-                return Ok();
+                var createdBConf = await _serv.Create(bedConfigurationDTO);
+                return Ok(createdBConf);
             }
             catch (ValidationException ex)
             {
@@ -129,8 +129,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(bedConfigurationDTO);
-                return Ok();
+                var BConf = await _serv.Update(bedConfigurationDTO);
+                return Ok(BConf);
             }
             catch (ValidationException ex)
             {
@@ -142,12 +142,12 @@ namespace TouragencyWebApi.Controllers
             }
         }
         [HttpDelete]
-        public async Task<ActionResult> DeleteBedConfiguration(int id)
+        public async Task<ActionResult<BedConfigurationDTO>> DeleteBedConfiguration(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var BConf = await _serv.Delete(id);
+                return Ok(BConf);
             }
             catch (ValidationException ex)
             {
