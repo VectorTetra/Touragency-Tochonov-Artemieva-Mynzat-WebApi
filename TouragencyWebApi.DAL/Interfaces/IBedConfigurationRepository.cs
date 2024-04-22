@@ -11,6 +11,7 @@ namespace TouragencyWebApi.DAL.Interfaces
     {
         Task<BedConfiguration?> GetById(int id);
         Task<IEnumerable<BedConfiguration>> GetAll();
+        Task<IEnumerable<BedConfiguration>> Get200Last();
         Task<IEnumerable<BedConfiguration>> GetByHotelId(int hotelId);
         Task<IEnumerable<BedConfiguration>> GetByBookingDataId(long bookingDataId);
         Task<IEnumerable<BedConfiguration>> GetByCapacity(short capacity);

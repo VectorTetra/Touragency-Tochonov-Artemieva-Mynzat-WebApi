@@ -10,6 +10,7 @@ namespace TouragencyWebApi.DAL.Interfaces
     public interface ICountriesRepository
     {
         Task<IEnumerable<Country>> GetAll();
+        Task<IEnumerable<Country>> Get200Last();
         Task<Country?> GetById(int id);
         Task<IEnumerable<Country>> GetByName(string countryName);
         Task Create(Country country);

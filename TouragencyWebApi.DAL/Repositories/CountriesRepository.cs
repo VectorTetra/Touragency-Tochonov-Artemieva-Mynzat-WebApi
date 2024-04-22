@@ -23,6 +23,11 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Countries.ToListAsync();
         }
+
+        public async Task<IEnumerable<Country>> Get200Last()
+        {
+            return await _context.Countries.OrderByDescending(p => p.Id).Take(200).ToListAsync();
+        }
         public async Task<Country?> GetById(int id)
         {
             return await _context.Countries.FindAsync(id);

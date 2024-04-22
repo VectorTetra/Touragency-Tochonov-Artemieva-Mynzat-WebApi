@@ -33,7 +33,7 @@ namespace TouragencyWebApi.BLL.Services
             var PreExistedCountry = await Database.Countries.GetByName(countryDTO.Name);
             if (PreExistedCountry.Any(em => em.Name == countryDTO.Name))
             {
-                throw new ValidationException("Така країна вже існує", "");
+                throw new ValidationException($"Така країна вже існує (countryDTO.Name : {countryDTO.Name})", "");
             }
             var newCountry = new Country
             {
@@ -44,10 +44,11 @@ namespace TouragencyWebApi.BLL.Services
             foreach (var id in countryDTO.SettlementIds)
             {
                 var settlement = await Database.Settlements.GetById(id);
-                if (settlement != null)
+                if (settlement == null)
                 {
-                    newCountry.Settlements.Add(settlement);
+                    throw new ValidationException($"Населений пункт із вказаним id не знайдено! (settlementId : {id})", "");
                 }
+                newCountry.Settlements.Add(settlement);
             }
             await Database.Countries.Create(newCountry);
             await Database.Save();
@@ -61,18 +62,19 @@ namespace TouragencyWebApi.BLL.Services
             Country country = await Database.Countries.GetById(countryDTO.Id);
             if (country == null)
             {
-                throw new ValidationException("Країну не знайдено", "");
+                throw new ValidationException($"Країну з вказаним Id не знайдено (countryDTO.Id : {countryDTO.Id})", "");
             }
             country.Name = countryDTO.Name;
             country.FlagUrl = countryDTO.FlagUrl;
             country.Settlements.Clear();
             foreach (var id in countryDTO.SettlementIds)
             {
-                var person = await Database.Settlements.GetById(id);
-                if (person != null)
+                var settlement = await Database.Settlements.GetById(id);
+                if (settlement == null)
                 {
-                    country.Settlements.Add(person);
+                    throw new ValidationException($"Населений пункт із вказаним id не знайдено! (settlementId : {id})", "");
                 }
+                country.Settlements.Add(settlement);
             }
             Database.Countries.Update(country);
             await Database.Save();
@@ -84,7 +86,7 @@ namespace TouragencyWebApi.BLL.Services
             Country country = await Database.Countries.GetById(id);
             if (country == null)
             {
-                throw new ValidationException("Країну не знайдено", "");
+                throw new ValidationException($"Країну з вказаним Id не знайдено (id : {id})", "");
             }
             var countryDTO = await GetById(id);
             await Database.Countries.Delete(id);
@@ -96,6 +98,12 @@ namespace TouragencyWebApi.BLL.Services
         {
             var mapper = new Mapper(Country_CountryDTOMapConfig);
             return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetAll());
+        }
+
+        public async Task<IEnumerable<CountryDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.Get200Last());
         }
 
         public async Task<CountryDTO?> GetById(int id)

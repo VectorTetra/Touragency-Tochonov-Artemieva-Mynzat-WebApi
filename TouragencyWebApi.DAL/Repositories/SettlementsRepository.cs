@@ -22,6 +22,10 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Settlements.ToListAsync();
         }
+        public async Task<IEnumerable<Settlement>> Get200Last()
+        {
+            return await _context.Settlements.OrderByDescending(p => p.Id).Take(200).ToListAsync();
+        }
         public async Task<Settlement?> GetById(int id)
         {
             return await _context.Settlements.FindAsync(id);

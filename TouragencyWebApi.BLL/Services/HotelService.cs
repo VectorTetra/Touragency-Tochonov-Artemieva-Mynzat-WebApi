@@ -39,6 +39,11 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetAll());
         }
 
+        public async Task<IEnumerable<HotelDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.Get200Last());
+        }
         public async Task<HotelDTO?> GetById(int id)
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
@@ -105,13 +110,25 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByHotelImageId(hotelImageId));
         }
 
-        public async Task<IEnumerable<HotelDTO>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring, int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, long? tourId, long? bookingId, int? hotelServiceId, long? hotelImageId)
+        public async Task<IEnumerable<HotelDTO>> GetByCountryNameSubstring(string countryNameSubstring)
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
-            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByCompositeSearch(nameSubstring, descriptionSubstring, stars, hotelConfigurationId, bedConfigurationId, settlementId, tourId, bookingId, hotelServiceId, hotelImageId));
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByCountryNameSubstring(countryNameSubstring));
         }
 
-        public async Task Create(HotelDTO hotelDTO)
+        public async Task<IEnumerable<HotelDTO>> GetBySettlementNameSubstring(string settlementNameSubstring)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetBySettlementNameSubstring(settlementNameSubstring));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetByCompositeSearch(string? nameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? descriptionSubstring, int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, long? tourId, long? bookingId, int? hotelServiceId, long? hotelImageId)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByCompositeSearch(nameSubstring, countryNameSubstring, settlementNameSubstring, descriptionSubstring, stars, hotelConfigurationId, bedConfigurationId, settlementId, tourId, bookingId, hotelServiceId, hotelImageId));
+        }
+
+        public async Task<HotelDTO> Create(HotelDTO hotelDTO)
         {
             var PreExistedHotelId = await Database.Hotels.GetById(hotelDTO.Id);
             if (PreExistedHotelId != null)
@@ -185,6 +202,7 @@ namespace TouragencyWebApi.BLL.Services
                 Id = hotelDTO.Id,
                 Name = hotelDTO.Name,
                 Stars = hotelDTO.Stars,
+                Description = hotelDTO.Description,
                 HotelConfigurations = HotelConfigurations,
                 BedConfigurations = BedConfigurations,
                 Settlement = Settlement,
@@ -195,9 +213,13 @@ namespace TouragencyWebApi.BLL.Services
 
             await Database.Hotels.Create(newHotel);
             await Database.Save();
+            hotelDTO.Id = newHotel.Id;
+            return hotelDTO;
+
+
         }
 
-        public async Task Update(HotelDTO hotelDTO)
+        public async Task<HotelDTO> Update(HotelDTO hotelDTO)
         {
             Hotel hotelEntity = await Database.Hotels.GetById(hotelDTO.Id);
             if (hotelEntity == null)
@@ -272,17 +294,20 @@ namespace TouragencyWebApi.BLL.Services
 
             Database.Hotels.Update(hotelEntity);
             await Database.Save();
+            return hotelDTO;
         }
 
-        public async Task Delete(int id)
+        public async Task<HotelDTO> Delete(int id)
         {
             Hotel hotel = await Database.Hotels.GetById(id);
             if (hotel == null)
             {
-                throw new ValidationException("Готель не знайдено", "");
+                throw new ValidationException($"Готель з вказаним id не знайдено (id : {id})", "");
             }
+            var dto = await GetById(id);
             await Database.Hotels.Delete(id);
             await Database.Save();
+            return dto;
         }
     }
 }

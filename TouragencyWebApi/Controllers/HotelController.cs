@@ -29,6 +29,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (hotelQuery.Id is null)
@@ -49,6 +54,24 @@ namespace TouragencyWebApi.Controllers
                                 throw new ValidationException("Не вказано Name для пошуку!", nameof(hotelQuery.Name));
                             }
                             collection = await _serv.GetByNameSubstring(hotelQuery.Name);
+                        }
+                        break;
+                    case "GetByCountryName":
+                        {
+                            if (hotelQuery.CountryName is null)
+                            {
+                                throw new ValidationException("Не вказано CountryName для пошуку!", nameof(hotelQuery.CountryName));
+                            }
+                            collection = await _serv.GetByCountryNameSubstring(hotelQuery.CountryName);
+                        }
+                        break;
+                    case "GetBySettlementName":
+                        {
+                            if (hotelQuery.SettlementName is null)
+                            {
+                                throw new ValidationException("Не вказано SettlementName для пошуку!", nameof(hotelQuery.SettlementName));
+                            }
+                            collection = await _serv.GetBySettlementNameSubstring(hotelQuery.SettlementName);
                         }
                         break;
                     case "GetByDescription":
@@ -134,10 +157,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByHotelImageId((long)hotelQuery.HotelImageId);
                         }
                         break;
-                        case "GetByCompositeSearch":
+                    case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(hotelQuery.Name, hotelQuery.Description, hotelQuery.Stars, hotelQuery.HotelConfigurationId, hotelQuery.BedConfigurationId, hotelQuery.SettlementId, hotelQuery.TourId, hotelQuery.BookingId, hotelQuery.HotelServiceId, hotelQuery.HotelImageId);
-                        }break;
+                            collection = await _serv.GetByCompositeSearch(hotelQuery.Name, hotelQuery.CountryName, hotelQuery.SettlementName, hotelQuery.Description, hotelQuery.Stars, hotelQuery.HotelConfigurationId, hotelQuery.BedConfigurationId, hotelQuery.SettlementId, hotelQuery.TourId, hotelQuery.BookingId, hotelQuery.HotelServiceId, hotelQuery.HotelImageId);
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Невірно вказаний параметр пошуку!", nameof(hotelQuery.SearchParameter));
@@ -164,8 +188,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(hotelDTO);
-                return Ok();
+                var dto = await _serv.Create(hotelDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -182,8 +206,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(hotelDTO);
-                return Ok();
+                var dto = await _serv.Update(hotelDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -200,8 +224,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -219,6 +243,8 @@ namespace TouragencyWebApi.Controllers
         public string SearchParameter { get; set; }
         public int? Id { get; set; }
         public string? Name { get; set; }
+        public string? SettlementName { get; set; }
+        public string? CountryName { get; set; }
         public string? Description { get; set; }
         public int[]? Stars { get; set; }
         //public virtual Resort Resort { get; set; }

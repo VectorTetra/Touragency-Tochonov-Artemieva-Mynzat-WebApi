@@ -10,6 +10,7 @@ namespace TouragencyWebApi.DAL.Interfaces
     public interface ISettlementsRepository
     {
         Task<IEnumerable<Settlement>> GetAll();
+        Task<IEnumerable<Settlement>> Get200Last();
         Task<Settlement?> GetById(int id);
         Task<IEnumerable<Settlement>> GetByName(string name);
         Task<IEnumerable<Settlement>> GetByCountryName(string countryName);

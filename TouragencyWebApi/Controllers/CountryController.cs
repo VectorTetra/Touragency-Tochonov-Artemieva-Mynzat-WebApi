@@ -30,13 +30,18 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
-                            if (countryQuery.CountryId == null)
+                            if (countryQuery.Id == null)
                             {
-                                throw new ValidationException("Не вказано CountryId для пошуку!", nameof(countryQuery.CountryId));
+                                throw new ValidationException("Не вказано CountryId для пошуку!", nameof(countryQuery.Id));
                             }
-                            var cntr = await _serv.GetById((int)countryQuery.CountryId);
+                            var cntr = await _serv.GetById((int)countryQuery.Id);
                             if (cntr != null)
                             {
                                 collection = new List<CountryDTO?> { cntr };
@@ -133,7 +138,7 @@ namespace TouragencyWebApi.Controllers
     public class CountryQuery
     {
         public string SearchParameter { get; set; } = "";
-        public int? CountryId { get; set; }
+        public int? Id { get; set; }
         public string? CountryName { get; set; }
 
     }

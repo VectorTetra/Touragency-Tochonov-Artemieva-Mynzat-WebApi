@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TouragencyWebApi.DAL.Repositories
 {
-    public class HotelRepository: IHotelRepository
+    public class HotelRepository : IHotelRepository
     {
         private readonly TouragencyContext _context;
         public HotelRepository(TouragencyContext context)
@@ -20,6 +20,11 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<IEnumerable<Hotel>> GetAll()
         {
             return await _context.Hotels.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Hotel>> Get200Last()
+        {
+            return await _context.Hotels.OrderByDescending(h => h.Id).Take(200).ToListAsync();
         }
 
         public async Task<Hotel?> GetById(int id)
@@ -76,7 +81,17 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Hotels.Where(h => h.HotelImages.Any(hi => hi.Id == hotelImageId)).ToListAsync();
         }
-        public async Task<IEnumerable<Hotel>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring,
+
+        public async Task<IEnumerable<Hotel>> GetByCountryNameSubstring(string countryNameSubstring)
+        {
+            return await _context.Hotels.Where(h => h.Settlement.Country.Name.Contains(countryNameSubstring)).ToListAsync();
+        }
+        public async Task<IEnumerable<Hotel>> GetBySettlementNameSubstring(string settlementNameSubstring)
+        {
+            return await _context.Hotels.Where(h => h.Settlement.Name.Contains(settlementNameSubstring)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Hotel>> GetByCompositeSearch(string? nameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? descriptionSubstring,
             int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, long? tourId,
             long? bookingId, int? hotelServiceId, long? hotelImageId)
         {
@@ -87,7 +102,19 @@ namespace TouragencyWebApi.DAL.Repositories
                 var hotelsByName = await GetByNameSubstring(nameSubstring);
                 hotelCollections.Add(hotelsByName);
             }
-            if(descriptionSubstring != null)
+
+            if (countryNameSubstring != null)
+            {
+                var hotelsByCountryName = await GetByCountryNameSubstring(countryNameSubstring);
+                hotelCollections.Add(hotelsByCountryName);
+            }
+
+            if (settlementNameSubstring != null)
+            {
+                var hotelsBySettlementName = await GetBySettlementNameSubstring(settlementNameSubstring);
+                hotelCollections.Add(hotelsBySettlementName);
+            }
+            if (descriptionSubstring != null)
             {
                 var hotelsByDescription = await GetByDescriptionSubstring(descriptionSubstring);
                 hotelCollections.Add(hotelsByDescription);

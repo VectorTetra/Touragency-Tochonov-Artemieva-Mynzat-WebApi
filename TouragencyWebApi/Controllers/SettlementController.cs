@@ -28,6 +28,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (settlementQuery.Id == null)
@@ -112,12 +117,12 @@ namespace TouragencyWebApi.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult> AddSettlement(SettlementDTO settlementDTO)
+        public async Task<ActionResult<SettlementDTO>> AddSettlement(SettlementDTO settlementDTO)
         {
             try
             {
-                await _serv.Add(settlementDTO);
-                return Ok();
+                var dto = await _serv.Add(settlementDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -130,12 +135,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateSettlement(SettlementDTO settlementDTO)
+        public async Task<ActionResult<SettlementDTO>> UpdateSettlement(SettlementDTO settlementDTO)
         {
             try
             {
-                await _serv.Update(settlementDTO);
-                return Ok();
+                var dto = await _serv.Update(settlementDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -147,12 +152,12 @@ namespace TouragencyWebApi.Controllers
             }
         }
         [HttpDelete]
-        public async Task<ActionResult> DeleteSettlement(int id)
+        public async Task<ActionResult<SettlementDTO>> DeleteSettlement(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {

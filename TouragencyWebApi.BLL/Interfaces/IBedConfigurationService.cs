@@ -12,6 +12,7 @@ namespace TouragencyWebApi.BLL.Interfaces
     {
         Task<BedConfigurationDTO?> GetById(int id);
         Task<IEnumerable<BedConfigurationDTO>> GetAll();
+        Task<IEnumerable<BedConfigurationDTO>> Get200Last();
         Task<IEnumerable<BedConfigurationDTO>> GetByHotelId(int hotelId);
         Task<IEnumerable<BedConfigurationDTO>> GetByBookingDataId(long bookingDataId);
         Task<IEnumerable<BedConfigurationDTO>> GetByCapacity(short capacity);
