@@ -52,8 +52,9 @@ namespace TouragencyWebApi.BLL.Services
             var newTourName = new TourName
             {
                 Name = tourNameDTO.Name,
-
-                Tours = new List<Tour>()
+                PageJSONStructureUrl = tourNameDTO.PageJSONStructureUrl,
+                Tours = new List<Tour>(),
+                TourImages = new List<TourImage>()
             };
             foreach (var id in tourNameDTO.TourIds)
             {
