@@ -16,6 +16,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Settlement>> GetByCountryName(string countryName);
         Task<IEnumerable<Settlement>> GetByCountryId(int countryId);
         Task<IEnumerable<Settlement>> GetByTourId(long tourId);
+        Task<IEnumerable<Settlement>> GetByCompositeSearch(string? name, string? countryName, int? countryId, long? tourId);
         Task<Settlement?> GetByHotelId(int hotelId);
         Task Create(Settlement settlement);
         void Update(Settlement settlement);

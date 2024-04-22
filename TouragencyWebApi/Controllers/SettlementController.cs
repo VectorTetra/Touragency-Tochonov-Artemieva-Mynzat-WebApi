@@ -95,7 +95,11 @@ namespace TouragencyWebApi.Controllers
                             }
                         }
                         break;
-
+                        case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(settlementQuery.Name, settlementQuery.CountryName, settlementQuery.CountryId, settlementQuery.TourId);
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Вказано неправильний параметр settlementQuery.SearchParameter!", nameof(settlementQuery.SearchParameter));

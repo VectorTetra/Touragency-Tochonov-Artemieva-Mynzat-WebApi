@@ -174,5 +174,11 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
             return mapper.Map<Settlement, SettlementDTO>(await Database.Settlements.GetByHotelId(hotelId));
         }
+
+        public async Task<IEnumerable<SettlementDTO>> GetByCompositeSearch(string? name, string? countryName, int? countryId, long? tourId)
+        {
+            var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
+            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCompositeSearch(name, countryName, countryId, tourId));
+        }
     }
 }

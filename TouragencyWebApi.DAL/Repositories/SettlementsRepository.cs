@@ -57,6 +57,42 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Settlements.FirstOrDefaultAsync(p => p.Hotels.Any(h => h.Id == hotelId));
         }
+
+        public async Task<IEnumerable<Settlement>> GetByCompositeSearch(string? name, string? countryName, int? countryId, long? tourId)
+        {
+            var settlementsCollections = new List<IEnumerable<Settlement>>();
+
+            if (name != null)
+            {
+                var settlementsByName = await GetByName(name);
+                settlementsCollections.Add(settlementsByName);
+            }
+
+            if (countryName != null)
+            {
+                var settlementsByCountryName = await GetByCountryName(countryName);
+                settlementsCollections.Add(settlementsByCountryName);
+            }
+
+            if (countryId != null)
+            {
+                var settlementsByCountryId = await GetByCountryId((int)countryId);
+                settlementsCollections.Add(settlementsByCountryId);
+            }
+
+            if (tourId != null)
+            {
+                var settlementsByTourId = await GetByTourId((long)tourId);
+                settlementsCollections.Add(settlementsByTourId);
+            }
+
+            if (!settlementsCollections.Any())
+            {
+                return new List<Settlement>();
+            }
+
+            return settlementsCollections.Aggregate((previousList, nextList) => previousList.Intersect(nextList).ToList());
+        }
         public async Task Create(Settlement settlement)
         {
             await _context.Settlements.AddAsync(settlement);

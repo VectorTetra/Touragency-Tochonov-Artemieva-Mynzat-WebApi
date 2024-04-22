@@ -17,6 +17,7 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<SettlementDTO>> GetByCountryName(string countryName);
         Task<IEnumerable<SettlementDTO>> GetByCountryId(int countryId);
         Task<IEnumerable<SettlementDTO>> GetByTourId(long tourId);
+        Task<IEnumerable<SettlementDTO>> GetByCompositeSearch(string? name, string? countryName, int? countryId, long? tourId);
         Task<SettlementDTO?> GetByHotelId(int hotelId);
         Task<SettlementDTO> Add(SettlementDTO settlementDTO);
         Task<SettlementDTO> Update(SettlementDTO settlementDTO);
