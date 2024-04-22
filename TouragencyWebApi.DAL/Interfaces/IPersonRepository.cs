@@ -9,12 +9,15 @@ namespace TouragencyWebApi.DAL.Interfaces
     public interface IPersonRepository
     {
         Task<IEnumerable<Person>> GetAll();
-        Task<IEnumerable<Person>> GetAllByIds(ICollection<int> ids);
-        Task<IEnumerable<Person>> GetAllByPhoneNumber(string phoneNumber);
-        Task<IEnumerable<Person>> GetAllByEmailAddress(string emailAddress);
-        Task<IEnumerable<Person>> GetAllByFirstname(string firstname);
-        Task<IEnumerable<Person>> GetAllByLastname(string lastname);
-        Task<IEnumerable<Person>> GetAllByMiddleName(string middlename);
+        Task<IEnumerable<Person>> Get200Last();
+        Task<IEnumerable<Person>> GetByIds(ICollection<int> ids);
+        Task<IEnumerable<Person>> GetByPhoneNumberSubstring(string phoneNumberSubstring);
+        Task<IEnumerable<Person>> GetByEmailAddressSubstring(string emailAddressSubstring);
+        Task<IEnumerable<Person>> GetByFirstnameSubstring(string firstnameSubstring);
+        Task<IEnumerable<Person>> GetByLastnameSubstring(string lastnameSubstring);
+        Task<IEnumerable<Person>> GetByMiddlenameSubstring(string middlenameSubstring);
+        Task<IEnumerable<Person>> GetByCompositeSearch(ICollection<int>? ids, string? firstnameSubstring,
+            string? lastnameSubstring, string? middlenameSubstring, string? phoneNumberSubstring, string? emailAddressSubstring);
         Task<Person?> GetById(int id);
         Task<Person?> GetByClientId(int clientId);
         Task<Person?> GetByTouragencyEmployeeId(int touragencyEmployeeId);

@@ -20,7 +20,7 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Reviews.FindAsync(id);
         }
-        public async Task<IEnumerable<Review>> GetByTourId(int tourId)
+        public async Task<IEnumerable<Review>> GetByTourId(long tourId)
         {
             return await _context.Reviews
                 .Where(r => r.TourId == tourId)
@@ -105,6 +105,147 @@ namespace TouragencyWebApi.DAL.Repositories
             Review? review = await _context.Reviews.FindAsync(id);
             if (review != null)
                 _context.Reviews.Remove(review);
+        }
+
+        public async Task<IEnumerable<Review>> Get200Last()
+        {
+            return await _context.Reviews
+                .OrderByDescending(r => r.CreationDate)
+                .Take(200)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Review>> GetByTourNameSubstring(string tourNameSubstring)
+        {
+            return await _context.Reviews
+                .Where(r => r.Tour.Name.Name.Contains(tourNameSubstring))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Review>> GetByTouristNicknameSubstring(string touristNicknameSubstring)
+        {
+            return await _context.Reviews
+                .Where(r => r.Client.TouristNickname.Contains(touristNicknameSubstring))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Review>> GetByClientFirstnameSubstring(string clientFirstnameSubstring)
+        {
+            return await _context.Reviews
+                .Where(r => r.Client.Person.Firstname.Contains(clientFirstnameSubstring))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Review>> GetByClientLastnameSubstring(string clientLastnameSubstring)
+        {
+            return await _context.Reviews
+                .Where(r => r.Client.Person.Lastname.Contains(clientLastnameSubstring))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Review>> GetByClientMiddlenameSubstring(string clientMiddlenameSubstring)
+        {
+            return await _context.Reviews
+                .Where(r => r.Client.Person.Middlename.Contains(clientMiddlenameSubstring))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Review>> GetByCountryNameSubstring(string countryNameSubstring)
+        {
+            return await _context.Reviews
+                .Where(r => r.Tour.Settlements.Any(st => st.Country.Name.Contains(countryNameSubstring)))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Review>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring,
+                       string? reviewTextSubstring, short? startRating, short? endRating, DateTime? startDate, DateTime? endDate, string? tourNameSubstring,
+                                  string? touristNicknameSubstring, string? clientFirstnameSubstring, string? clientLastnameSubstring, string? clientMiddlenameSubstring,
+                                             string? countryNameSubstring)
+        {
+            var reviewCollections = new List<IEnumerable<Review>>();
+
+            if (tourId != null)
+            {
+                var reviewsByTourId = await GetByTourId(tourId.Value);
+                reviewCollections.Add(reviewsByTourId);
+            }
+
+            if (clientId != null)
+            {
+                var reviewsByClientId = await GetByClientId(clientId.Value);
+                reviewCollections.Add(reviewsByClientId);
+            }
+
+            if (countryId != null)
+            {
+                var reviewsByCountryId = await GetByCountryId(countryId.Value);
+                reviewCollections.Add(reviewsByCountryId);
+            }
+
+            if (reviewImageId != null)
+            {
+                var reviewsByReviewImageId = await GetByReviewImageId(reviewImageId.Value);
+                reviewCollections.Add(reviewsByReviewImageId);
+            }
+
+            if (!string.IsNullOrEmpty(reviewCaptionSubstring))
+            {
+                var reviewsByReviewCaptionSubstring = await GetByReviewCaptionSubstring(reviewCaptionSubstring);
+                reviewCollections.Add(reviewsByReviewCaptionSubstring);
+            }
+
+            if (!string.IsNullOrEmpty(reviewTextSubstring))
+            {
+                var reviewsByReviewTextSubstring = await GetByReviewTextSubstring(reviewTextSubstring);
+                reviewCollections.Add(reviewsByReviewTextSubstring);
+            }
+
+            if (startRating != null && endRating != null)
+            {
+                var reviewsByRatingDiapazone = await GetByRatingDiapazone(startRating.Value, endRating.Value);
+                reviewCollections.Add(reviewsByRatingDiapazone);
+            }
+
+            if (startDate != null && endDate != null)
+            {
+                var reviewsByCreationDateDiapazone = await GetByCreationDateDiapazone(startDate.Value, endDate.Value);
+                reviewCollections.Add(reviewsByCreationDateDiapazone);
+            }
+
+            if (!string.IsNullOrEmpty(tourNameSubstring))
+            {
+                var reviewsByTourNameSubstring = await GetByTourNameSubstring(tourNameSubstring);
+                reviewCollections.Add(reviewsByTourNameSubstring);
+            }
+
+            if (!string.IsNullOrEmpty(touristNicknameSubstring))
+            {
+                var reviewsByTouristNicknameSubstring = await GetByTouristNicknameSubstring(touristNicknameSubstring);
+                reviewCollections.Add(reviewsByTouristNicknameSubstring);
+            }
+
+            if (!string.IsNullOrEmpty(clientFirstnameSubstring))
+            {
+                var reviewsByClientFirstnameSubstring = await GetByClientFirstnameSubstring(clientFirstnameSubstring);
+                reviewCollections.Add(reviewsByClientFirstnameSubstring);
+            }
+
+            if (!string.IsNullOrEmpty(clientLastnameSubstring))
+            {
+                var reviewsByClientLastnameSubstring = await GetByClientLastnameSubstring(clientLastnameSubstring);
+                reviewCollections.Add(reviewsByClientLastnameSubstring);
+            }
+
+            if (!string.IsNullOrEmpty(clientMiddlenameSubstring))
+            {
+                var reviewsByClientMiddlenameSubstring = await GetByClientMiddlenameSubstring(clientMiddlenameSubstring);
+                reviewCollections.Add(reviewsByClientMiddlenameSubstring);
+            }
+
+            if (!string.IsNullOrEmpty(countryNameSubstring))
+            {
+                var reviewsByCountryNameSubstring = await GetByCountryNameSubstring(countryNameSubstring);
+                reviewCollections.Add(reviewsByCountryNameSubstring);
+            }
+
+            if (!reviewCollections.Any())
+            {
+                return new List<Review>();
+            }
+            return reviewCollections.Aggregate((previousList, nextList) => previousList.Intersect(nextList).ToList());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.BLL.Interfaces;
@@ -75,15 +76,19 @@ namespace TouragencyWebApi.Controllers
                             throw new ValidationException("Невідомий параметр пошуку!", nameof(transportTypeQuery.SearchParameter));
                         }
                 }
-                return Ok(collection);
+                if (collection.IsNullOrEmpty())
+                {
+                    return NoContent();
+                }
+                return collection?.ToList();
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -97,11 +102,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
         [HttpPut]
@@ -114,11 +119,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -132,11 +137,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }

@@ -138,7 +138,7 @@ namespace TouragencyWebApi.BLL.Services
                     BedConfiguration.BookingDatas = new List<BookingData>();
                 }
                 BedConfiguration.BookingDatas.Clear();
-                foreach (var item in bedConfigurationDTO.HotelIds)
+                foreach (var item in bedConfigurationDTO.BookingDataIds)
                 {
                     var hotel = await Database.BookingDatas.GetById(item);
                     if (hotel == null)

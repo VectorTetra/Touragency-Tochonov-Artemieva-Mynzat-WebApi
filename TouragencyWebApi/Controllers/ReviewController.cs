@@ -107,6 +107,10 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByReviewImageId((long)reviewQuery.ReviewImageId);
                         }
                         break;
+                        case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(reviewQuery.TourId, reviewQuery.ClientId, reviewQuery.CountryId, reviewQuery.ReviewImageId, reviewQuery.ReviewCaption, reviewQuery.ReviewText, reviewQuery.RatingMinValue, reviewQuery.RatingMaxValue, reviewQuery.CreationDateMinValue, reviewQuery.CreationDateMaxValue, reviewQuery.TourName, reviewQuery.TouristNickname, reviewQuery.ClientFirstname, reviewQuery.ClientLastname, reviewQuery.ClientMiddlename, reviewQuery.CountryName);
+                        }break;
                     default:
                         {
                             throw new ValidationException("Вказано неправильний параметр reviewQuery.SearchParameter!", nameof(reviewQuery.SearchParameter));
@@ -120,11 +124,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -138,11 +142,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -156,11 +160,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
         [HttpDelete]
@@ -173,11 +177,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }
@@ -190,8 +194,15 @@ namespace TouragencyWebApi.Controllers
         public short? RatingMaxValue { get; set; }
         public int? ClientId { get; set; }
         public int? TourId { get; set; }
+        public int? CountryId { get; set; }
         public string? ReviewCaption { get; set; }
         public string? ReviewText { get; set; }
+        public string? TourName { get; set; }
+        public string? TouristNickname { get; set; }
+        public string? ClientFirstname { get; set; }
+        public string? ClientLastname { get; set; }
+        public string? ClientMiddlename { get; set; }
+        public string? CountryName { get; set; }
         public DateTime? CreationDateMinValue { get; set; }
         public DateTime? CreationDateMaxValue { get; set; }
         public long? ReviewImageId { get; set; }

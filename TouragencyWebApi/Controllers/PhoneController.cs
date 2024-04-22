@@ -98,11 +98,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -116,11 +116,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -134,11 +134,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -152,11 +152,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }

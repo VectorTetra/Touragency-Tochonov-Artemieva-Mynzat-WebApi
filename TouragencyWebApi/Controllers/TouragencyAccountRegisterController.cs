@@ -9,7 +9,7 @@ namespace TouragencyWebApi.Controllers
 
     [Route("api/TouragencyAccountRegister")]
     [ApiController]
-    public class TouragencyAccountRegisterController
+    public class TouragencyAccountRegisterController : ControllerBase
     {
         private readonly ITouragencyAccountService _serv;
         public TouragencyAccountRegisterController(ITouragencyAccountService serv)
@@ -27,7 +27,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
             }
 
         }

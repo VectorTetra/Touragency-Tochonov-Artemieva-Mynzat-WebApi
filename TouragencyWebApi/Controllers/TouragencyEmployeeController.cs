@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.BLL.Interfaces;
@@ -63,15 +64,19 @@ namespace TouragencyWebApi.Controllers
                         }
                         break;
                 }
+                if (collection.IsNullOrEmpty())
+                {
+                    return NoContent();
+                }
                 return collection?.ToList();
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -85,11 +90,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -103,11 +108,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -121,11 +126,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }

@@ -151,5 +151,53 @@ namespace TouragencyWebApi.BLL.Services
             await Database.Reviews.Delete(review.Id);
             await Database.Save();
         }
+
+        public async Task<IEnumerable<ReviewDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Review_ReviewDTOMapConfig);
+            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.Get200Last());
+        }
+
+        public async Task<IEnumerable<ReviewDTO>> GetByTourNameSubstring(string tourNameSubstring)
+        {
+            var mapper = new Mapper(Review_ReviewDTOMapConfig);
+            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByTourNameSubstring(tourNameSubstring));
+        }
+
+        public async Task<IEnumerable<ReviewDTO>> GetByTouristNicknameSubstring(string touristNicknameSubstring)
+        {
+            var mapper = new Mapper(Review_ReviewDTOMapConfig);
+            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByTouristNicknameSubstring(touristNicknameSubstring));
+        }
+
+        public async Task<IEnumerable<ReviewDTO>> GetByClientFirstnameSubstring(string clientFirstnameSubstring)
+        {
+            var mapper = new Mapper(Review_ReviewDTOMapConfig);
+            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByClientFirstnameSubstring(clientFirstnameSubstring));
+        }
+
+        public async Task<IEnumerable<ReviewDTO>> GetByClientLastnameSubstring(string clientLastnameSubstring)
+        {
+            var mapper = new Mapper(Review_ReviewDTOMapConfig);
+            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByClientLastnameSubstring(clientLastnameSubstring));
+        }
+
+        public async Task<IEnumerable<ReviewDTO>> GetByClientMiddlenameSubstring(string clientMiddlenameSubstring)
+        {
+            var mapper = new Mapper(Review_ReviewDTOMapConfig);
+            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByClientMiddlenameSubstring(clientMiddlenameSubstring));
+        }
+
+        public async Task<IEnumerable<ReviewDTO>> GetByCountryNameSubstring(string countryNameSubstring)
+        {
+            var mapper = new Mapper(Review_ReviewDTOMapConfig);
+            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByCountryNameSubstring(countryNameSubstring));
+        }
+
+        public async Task<IEnumerable<ReviewDTO>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring, string? reviewTextSubstring, short? startRating, short? endRating, DateTime? startDate, DateTime? endDate, string? tourNameSubstring, string? touristNicknameSubstring, string? clientFirstnameSubstring, string? clientLastnameSubstring, string? clientMiddlenameSubstring, string? countryNameSubstring)
+        {
+            var mapper = new Mapper(Review_ReviewDTOMapConfig);
+            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByCompositeSearch(tourId, clientId, countryId, reviewImageId, reviewCaptionSubstring, reviewTextSubstring, startRating, endRating, startDate, endDate, tourNameSubstring, touristNicknameSubstring, clientFirstnameSubstring, clientLastnameSubstring, clientMiddlenameSubstring, countryNameSubstring));
+        }
     }
 }
