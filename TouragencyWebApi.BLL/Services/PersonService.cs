@@ -29,7 +29,7 @@ namespace TouragencyWebApi.BLL.Services
         {
             Database = uow;
         }
-        public async Task Create(PersonDTO personDTO)
+        public async Task<PersonDTO> Create(PersonDTO personDTO)
         {
             var isExist = await Database.Persons.GetById(personDTO.Id);
             if (isExist != null)
@@ -89,8 +89,10 @@ namespace TouragencyWebApi.BLL.Services
             }
             await Database.Persons.Create(person);
             await Database.Save();
+            personDTO.Id = person.Id;
+            return personDTO;
         }
-        public async Task Update(PersonDTO personDTO)
+        public async Task<PersonDTO> Update(PersonDTO personDTO)
         {
             var person = await Database.Persons.GetById(personDTO.Id);
             if (person == null)
@@ -146,16 +148,19 @@ namespace TouragencyWebApi.BLL.Services
             }
             Database.Persons.Update(person);
             await Database.Save();
+            return personDTO;
         }
-        public async Task Delete(int id)
+        public async Task<PersonDTO> Delete(int id)
         {
             var person = await Database.Persons.GetById(id);
             if (person == null)
             {
                 throw new Exception($"Людину з таким id {id} не знайдено");
             }
+            var dto = await GetById(id);
             await Database.Persons.Delete(id);
             await Database.Save();
+            return dto;
         }
 
         public async Task<IEnumerable<PersonDTO>> GetAll()

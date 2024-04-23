@@ -146,12 +146,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddPerson(PersonDTO personDTO)
+        public async Task<ActionResult<PersonDTO>> AddPerson(PersonDTO personDTO)
         {
             try
             {
-                await _personService.Create(personDTO);
-                return Ok();
+                var dto = await _personService.Create(personDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -164,12 +164,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdatePerson(PersonDTO personDTO)
+        public async Task<ActionResult<PersonDTO>> UpdatePerson(PersonDTO personDTO)
         {
             try
             {
-                await _personService.Update(personDTO);
-                return Ok();
+                var dto = await _personService.Update(personDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -182,12 +182,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeletePerson(int id)
+        public async Task<ActionResult<PersonDTO>> DeletePerson(int id)
         {
             try
             {
-                await _personService.Delete(id);
-                return Ok();
+                var dto = await _personService.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {

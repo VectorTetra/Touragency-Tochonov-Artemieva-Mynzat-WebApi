@@ -23,8 +23,8 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<PersonDTO> GetById(int id);
         Task<PersonDTO> GetByClientId(int clientId);
         Task<PersonDTO> GetByTouragencyEmployeeId(int touragencyEmployeeId);
-        Task Create(PersonDTO personDTO);
-        Task Update(PersonDTO personDTO);
-        Task Delete(int id);
+        Task<PersonDTO> Create(PersonDTO personDTO);
+        Task<PersonDTO> Update(PersonDTO personDTO);
+        Task<PersonDTO> Delete(int id);
     }
 }
