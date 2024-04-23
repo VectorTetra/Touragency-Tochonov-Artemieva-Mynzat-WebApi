@@ -11,14 +11,17 @@ namespace TouragencyWebApi.BLL.Interfaces
     public interface IHotelConfigurationService
     {
         Task<IEnumerable<HotelConfigurationDTO>> GetAll();
+        Task<IEnumerable<HotelConfigurationDTO>> Get200Last();
         Task<HotelConfigurationDTO?> GetById(int id);
         Task<IEnumerable<HotelConfigurationDTO>> GetByHotelId(int hotelId);
         Task<IEnumerable<HotelConfigurationDTO>> GetByCompassSideSubstring(string compassSideSubstring);
         Task<IEnumerable<HotelConfigurationDTO>> GetByWindowViewSubstring(string WindowViewSubstring);
         Task<IEnumerable<HotelConfigurationDTO>> GetByIsAllowChildren(bool isAllowChildren);
         Task<IEnumerable<HotelConfigurationDTO>> GetByIsAllowPets(bool isAllowPets);
-        Task Create(HotelConfigurationDTO hotelConfigurationDTO);
-        Task Update(HotelConfigurationDTO hotelConfigurationDTO);
-        Task Delete(int id);
+        Task<IEnumerable<HotelConfigurationDTO>> GetByCompositeSearch(int? hotelId, string? compassSideSubstring, string? WindowViewSubstring,
+            bool? isAllowChildren, bool? isAllowPets);
+        Task<HotelConfigurationDTO> Create(HotelConfigurationDTO hotelConfigurationDTO);
+        Task<HotelConfigurationDTO> Update(HotelConfigurationDTO hotelConfigurationDTO);
+        Task<HotelConfigurationDTO> Delete(int id);
     }
 }

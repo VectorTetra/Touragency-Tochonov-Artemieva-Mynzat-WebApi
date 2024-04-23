@@ -30,6 +30,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (hotelConfigurationQuery.Id is null)
@@ -88,6 +93,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByIsAllowPets((bool)hotelConfigurationQuery.IsAllowPets);
                         }
                         break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(hotelConfigurationQuery.HotelId, hotelConfigurationQuery.CompassSide, hotelConfigurationQuery.WindowView, hotelConfigurationQuery.IsAllowChildren, hotelConfigurationQuery.IsAllowPets);
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Неправильно вказаний параметр пошуку!", nameof(hotelConfigurationQuery.SearchParameter));
@@ -111,12 +121,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateHotelConfiguration(HotelConfigurationDTO hotelConfigurationDTO)
+        public async Task<ActionResult<HotelConfigurationDTO>> CreateHotelConfiguration(HotelConfigurationDTO hotelConfigurationDTO)
         {
             try
             {
-                await _serv.Create(hotelConfigurationDTO);
-                return Ok();
+                var dto = await _serv.Create(hotelConfigurationDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -129,12 +139,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateHotelConfiguration(HotelConfigurationDTO hotelConfigurationDTO)
+        public async Task<ActionResult<HotelConfigurationDTO>> UpdateHotelConfiguration(HotelConfigurationDTO hotelConfigurationDTO)
         {
             try
             {
-                await _serv.Update(hotelConfigurationDTO);
-                return Ok();
+                var dto = await _serv.Update(hotelConfigurationDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -146,12 +156,12 @@ namespace TouragencyWebApi.Controllers
             }
         }
         [HttpDelete]
-        public async Task<ActionResult> DeleteHotelConfiguration(int id)
+        public async Task<ActionResult<HotelConfigurationDTO>> DeleteHotelConfiguration(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {

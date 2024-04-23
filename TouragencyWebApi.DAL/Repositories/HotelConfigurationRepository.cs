@@ -22,6 +22,10 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.HotelConfigurations.ToListAsync();
         }
 
+        public async Task<IEnumerable<HotelConfiguration>> Get200Last()
+        {
+            return await _context.HotelConfigurations.OrderByDescending(h => h.Id).Take(200).ToListAsync();
+        }
         public async Task<HotelConfiguration?> GetById(int id)
         {
             return await _context.HotelConfigurations.FindAsync(id);
@@ -50,6 +54,37 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<IEnumerable<HotelConfiguration>> GetByIsAllowPets(bool isAllowPets)
         {
             return await _context.HotelConfigurations.Where(h => h.IsAllowPets == isAllowPets).ToListAsync();
+        }
+
+        public async Task<IEnumerable<HotelConfiguration>> GetByCompositeSearch(int? hotelId, string? compassSideSubstring, string? WindowViewSubstring, bool? isAllowChildren, bool? isAllowPets)
+        {
+            var hotelConfigurationCollections = new List<IEnumerable<HotelConfiguration>>();
+            
+            if (hotelId != null)
+            {
+                hotelConfigurationCollections.Add(await GetByHotelId(hotelId.Value));
+            }
+            if (compassSideSubstring != null)
+            {
+                hotelConfigurationCollections.Add(await GetByCompassSideSubstring(compassSideSubstring));
+            }
+            if (WindowViewSubstring != null)
+            {
+                hotelConfigurationCollections.Add(await GetByWindowViewSubstring(WindowViewSubstring));
+            }
+            if (isAllowChildren != null)
+            {
+                hotelConfigurationCollections.Add(await GetByIsAllowChildren(isAllowChildren.Value));
+            }
+            if (isAllowPets != null)
+            {
+                hotelConfigurationCollections.Add(await GetByIsAllowPets(isAllowPets.Value));
+            }
+            if (!hotelConfigurationCollections.Any())
+            {
+                return new List<HotelConfiguration>();
+            }
+            return hotelConfigurationCollections.Aggregate((previousList, nextList) => previousList.Intersect(nextList).ToList());
         }
 
         public async Task Create(HotelConfiguration hotelConfiguration)
