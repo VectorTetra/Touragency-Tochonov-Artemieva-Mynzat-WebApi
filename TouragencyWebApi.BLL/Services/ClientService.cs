@@ -25,8 +25,8 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.Person.Firstname, opt => opt.MapFrom(c => c.Person.Firstname))
         .ForPath(d => d.Person.Lastname, opt => opt.MapFrom(c => c.Person.Lastname))
         .ForPath(d => d.Person.Middlename, opt => opt.MapFrom(c => c.Person.Middlename))
-        .ForPath(d => d.Person.PhoneIds, opt => opt.MapFrom(c => c.Person.Phones.Select(ph=>ph.Id)))
-        .ForPath(d => d.Person.EmailIds, opt => opt.MapFrom(c => c.Person.Emails.Select(em=>em.Id)))
+        .ForPath(d => d.Person.PhoneIds, opt => opt.MapFrom(c => c.Person.Phones.Select(ph => ph.Id)))
+        .ForPath(d => d.Person.EmailIds, opt => opt.MapFrom(c => c.Person.Emails.Select(em => em.Id)))
         .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
         .ForPath(d => d.TourIds, opt => opt.MapFrom(c => c.Tours.Select(b => b.Id)))
         .ForPath(d => d.ReviewIds, opt => opt.MapFrom(c => c.Reviews.Select(b => b.Id)))
@@ -35,20 +35,29 @@ namespace TouragencyWebApi.BLL.Services
         {
             Database = uow;
         }
-        public async Task TryToRegister(ClientRegisterDTO regDto)
+        public async Task<ClientDTO> TryToRegister(ClientRegisterDTO regDto)
         {
             //Перш ніж зареєструватись, треба перевірити, чи є такий нік туриста в БД
             var BusyLoginClientsCollection = await Database.Clients.GetByTouristNickname(regDto.TouristNickname);
             if (BusyLoginClientsCollection.ToList().Any(x => x.TouristNickname == regDto.TouristNickname))
             {
-                throw new ValidationException("Такий нік туриста вже зайнято!", "");
+                throw new ValidationException($"Такий нік туриста вже зайнято! (regDto.TouristNickname : {regDto.TouristNickname})", "");
             }
             // Також треба перевірити, чи паролі співпадають
             if (regDto.Password != regDto.PasswordConfirm)
             {
                 throw new ValidationException("Паролі не співпадають!", "");
             }
-
+            var isPhoneExist = await Database.Phones.GetByPhoneNumber(regDto.Phone);
+            if (isPhoneExist.ToList().Count != 0)
+            {
+                throw new ValidationException("Такий телефон вже зареєстровано!", "");
+            }
+            var isEmailExist = await Database.Emails.GetByEmailAddress(regDto.Email);
+            if (isEmailExist.ToList().Count != 0)
+            {
+                throw new ValidationException("Такий email вже зареєстровано!", "");
+            }
             try
             {
                 byte[] saltbuf = new byte[16];
@@ -90,10 +99,13 @@ namespace TouragencyWebApi.BLL.Services
                 };
                 await Database.Clients.Create(newClient);
                 await Database.Save();
+                var mapper = new Mapper(Client_ClientDTOMapConfig);
+                var clDto = mapper.Map<Client, ClientDTO>(newClient);
+                return clDto;
             }
             catch (Exception ex)
             {
-                new ValidationException(ex.Message, "");
+                throw new ValidationException(ex.Message, "");
             }
 
         }
@@ -216,7 +228,13 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(Client_ClientDTOMapConfig);
             return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetAll());
         }
-        public async Task<ClientDTO?> GetByClientId(int clientId)
+
+        public async Task<IEnumerable<ClientDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.Get200Last());
+        }
+        public async Task<ClientDTO?> GetById(int clientId)
         {
             Client? MeaningUser = await Database.Clients.GetById(clientId);
             if (MeaningUser == null)
@@ -264,7 +282,7 @@ namespace TouragencyWebApi.BLL.Services
                 AvatarImagePath = MeaningUser.AvatarImagePath
             };
         }
-        public async Task<ClientDTO?> GetByBookingId(int bookingId)
+        public async Task<ClientDTO?> GetByBookingId(long bookingId)
         {
             Client? MeaningUser = await Database.Clients.GetByBookingId(bookingId);
             if (MeaningUser == null)
@@ -308,14 +326,31 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(Client_ClientDTOMapConfig);
             return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByMiddlename(middlename));
         }
-        public async Task Update(ClientDTO clientDTO)
+
+        public async Task<IEnumerable<ClientDTO>> GetByPhoneNumber(string phoneNumber)
+        {
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByPhoneNumber(phoneNumber));
+        }
+        public async Task<IEnumerable<ClientDTO>> GetByEmailAddress(string emailAddress)
+        {
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByEmailAddress(emailAddress));
+        }
+        public async Task<IEnumerable<ClientDTO>> GetByCompositeSearch(string? touristNickname, string? emailAddress,
+                       string? phoneNumber, string? firstname, string? lastname, string? middlename)
+        {
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<IEnumerable<Client>, IEnumerable<ClientDTO>>(await Database.Clients.GetByCompositeSearch(touristNickname, emailAddress, phoneNumber, firstname, lastname, middlename));
+        }
+        public async Task<ClientDTO> Update(ClientDTO clientDTO)
         {
             var client = await Database.Clients.GetById(clientDTO.Id);
             if (client == null)
             {
                 throw new ValidationException("Такого користувача не існує!", "");
             }
-           
+
             else
             {
                 client.Person.Phones.Clear();
@@ -345,22 +380,20 @@ namespace TouragencyWebApi.BLL.Services
                 client.Person.Middlename = clientDTO.Person.Middlename;
                 Database.Clients.Update(client);
                 await Database.Save();
+                return clientDTO;
             }
         }
-        public async Task Delete(int id)
+        public async Task<ClientDTO> Delete(int id)
         {
             var User = await Database.Clients.GetById(id);
             if (User == null)
             {
-                throw new ValidationException("Такого користувача не існує!", "");
+                throw new ValidationException($"Такого користувача з вказаним id не існує! (id : {id})", "");
             }
-            else
-            {
-                await Database.Clients.Delete(id);
-                await Database.Save();
-            }
+            var dto = await GetById(id);
+            await Database.Clients.Delete(id);
+            await Database.Save();
+            return dto;
         }
-
-
     }
 }
