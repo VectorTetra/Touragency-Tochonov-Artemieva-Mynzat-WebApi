@@ -26,7 +26,7 @@ namespace TouragencyWebApi.BLL.Services
         {
             Database = uow;
         }
-        public async Task TryToAddNewEmail(EmailDTO emailDTO)
+        public async Task<EmailDTO> TryToAddNewEmail(EmailDTO emailDTO)
         {
             var BusyEmail= await Database.Emails.GetByEmailAddress(emailDTO.EmailAddress);
             if (BusyEmail.Any(em => em.EmailAddress == emailDTO.EmailAddress))
@@ -50,9 +50,11 @@ namespace TouragencyWebApi.BLL.Services
             }
             await Database.Emails.Create(newEmail);
             await Database.Save();
+            emailDTO.Id = newEmail.Id;
+            return emailDTO;
         }
 
-        public async Task Update(EmailDTO emailDTO)
+        public async Task<EmailDTO> Update(EmailDTO emailDTO)
         {
             Email email = await Database.Emails.GetById(emailDTO.Id);
             if (email == null)
@@ -72,23 +74,32 @@ namespace TouragencyWebApi.BLL.Services
             }
             Database.Emails.Update(email);
             await Database.Save();
+            return emailDTO;
         }
 
-        public async Task Delete(long id)
+        public async Task<EmailDTO> Delete(long id)
         {
             Email email = await Database.Emails.GetById(id);
             if (email == null)
             {
                 throw new ValidationException("Email не знайдено", "");
             }
+            var dto = await GetById(id);
             await Database.Emails.Delete(id);
             await Database.Save();
+            return dto;
         }
 
         public async Task<IEnumerable<EmailDTO>> GetAll()
         {
             var mapper = new Mapper(Email_EmailDTOMapConfig);
             return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.GetAll());
+        }
+
+        public async Task<IEnumerable<EmailDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Email_EmailDTOMapConfig);
+            return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.Get200Last());
         }
 
         public async Task<EmailDTO?> GetById(long id)
@@ -125,6 +136,39 @@ namespace TouragencyWebApi.BLL.Services
         {
             var mapper = new Mapper(Email_EmailDTOMapConfig);
             return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.GetByEmailAddress(emailAddressSubstring));
+        }
+
+        public async Task<IEnumerable<EmailDTO>> GetByFirstname(string firstname)
+        {
+            var mapper = new Mapper(Email_EmailDTOMapConfig);
+            return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.GetByFirstname(firstname));
+        }
+
+        public async Task<IEnumerable<EmailDTO>> GetByLastname(string lastname)
+        {
+            var mapper = new Mapper(Email_EmailDTOMapConfig);
+            return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.GetByLastname(lastname));
+        }
+
+        public async Task<IEnumerable<EmailDTO>> GetByMiddlename(string middlename)
+        {
+            var mapper = new Mapper(Email_EmailDTOMapConfig);
+            return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.GetByMiddlename(middlename));
+        }
+
+        public async Task<IEnumerable<EmailDTO>> GetByTouristNickname(string touristNickname)
+        {
+            var mapper = new Mapper(Email_EmailDTOMapConfig);
+            return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.GetByTouristNickname(touristNickname));
+        }
+
+        public async Task<IEnumerable<EmailDTO>> GetByCompositeSearch(int? clientId, int? personId, int? touragencyEmployeeId,
+                       string? touristNickname, int? contactTypeId, string? emailAddressSubstring, string? firstname,
+                                  string? lastname, string? middlename)
+        {
+            var mapper = new Mapper(Email_EmailDTOMapConfig);
+            return mapper.Map<IEnumerable<Email>, IEnumerable<EmailDTO>>(await Database.Emails.GetByCompositeSearch(clientId, personId, touragencyEmployeeId,
+                               touristNickname, contactTypeId, emailAddressSubstring, firstname, lastname, middlename));
         }
     }
 }
