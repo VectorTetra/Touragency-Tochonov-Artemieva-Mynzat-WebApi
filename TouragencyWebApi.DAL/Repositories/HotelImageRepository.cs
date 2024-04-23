@@ -22,6 +22,11 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.HotelImages.ToListAsync();
         }
 
+        public async Task<IEnumerable<HotelImage>> Get200Last()
+        {
+            return await _context.HotelImages.OrderByDescending(hi => hi.Id).Take(200).ToListAsync();
+        }
+
         public async Task<HotelImage?> GetById(long id)
         {
             return await _context.HotelImages.FindAsync(id);

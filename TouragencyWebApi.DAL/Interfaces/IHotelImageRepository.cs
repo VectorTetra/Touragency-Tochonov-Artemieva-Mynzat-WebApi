@@ -10,6 +10,7 @@ namespace TouragencyWebApi.DAL.Interfaces
     public interface IHotelImageRepository
     {
         Task<IEnumerable<HotelImage>> GetAll();
+        Task<IEnumerable<HotelImage>> Get200Last();
         Task<HotelImage?> GetById(long id);
         Task<IEnumerable<HotelImage>> GetByHotelId(int hotelId);
         Task<IEnumerable<HotelImage>> GetByImageUrlSubstring(string imageUrlSubstring);

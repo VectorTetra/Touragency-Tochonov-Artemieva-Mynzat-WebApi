@@ -40,7 +40,8 @@ namespace TouragencyWebApi.Controllers
                             {
                                 collection = new List<HotelImageDTO?> { acc };
                             }
-                        } break;
+                        }
+                        break;
                     case "GetByHotelId":
                         {
                             if (hotelImageQuery.HotelId is null)
@@ -48,7 +49,8 @@ namespace TouragencyWebApi.Controllers
                                 throw new ValidationException("Не вказано HotelId для пошуку!", nameof(hotelImageQuery.HotelId));
                             }
                             collection = await _serv.GetByHotelId((int)hotelImageQuery.HotelId);
-                        } break;
+                        }
+                        break;
                     case "GetByImageUrl":
                         {
                             if (hotelImageQuery.ImageUrl is null)
@@ -56,7 +58,8 @@ namespace TouragencyWebApi.Controllers
                                 throw new ValidationException("Не вказано ImageUrl для пошуку!", nameof(hotelImageQuery.ImageUrl));
                             }
                             collection = await _serv.GetByImageUrlSubstring(hotelImageQuery.ImageUrl);
-                        } break;
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Невідомий параметр пошуку!", nameof(hotelImageQuery.SearchParameter));
@@ -83,8 +86,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(hotelImageDTO);
-                return Ok(hotelImageDTO);
+                var dto = await _serv.Create(hotelImageDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -101,8 +104,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(hotelImageDTO);
-                return Ok(hotelImageDTO);
+                var dto = await _serv.Update(hotelImageDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -119,8 +122,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {

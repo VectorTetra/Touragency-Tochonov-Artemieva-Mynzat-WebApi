@@ -10,11 +10,12 @@ namespace TouragencyWebApi.BLL.Interfaces
     public interface IHotelImageService
     {
         Task<IEnumerable<HotelImageDTO>> GetAll();
+        Task<IEnumerable<HotelImageDTO>> Get200Last();
         Task<HotelImageDTO?> GetById(long id);
         Task<IEnumerable<HotelImageDTO>> GetByHotelId(int hotelId);
         Task<IEnumerable<HotelImageDTO>> GetByImageUrlSubstring(string imageUrlSubstring);
-        Task Create(HotelImageDTO hotelImage);
-        Task Update(HotelImageDTO hotelImage);
-        Task Delete(long id);
+        Task<HotelImageDTO> Create(HotelImageDTO hotelImage);
+        Task<HotelImageDTO> Update(HotelImageDTO hotelImage);
+        Task<HotelImageDTO> Delete(long id);
     }
 }

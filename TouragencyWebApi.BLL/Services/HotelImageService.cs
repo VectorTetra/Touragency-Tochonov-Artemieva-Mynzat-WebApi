@@ -25,7 +25,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("ImageUrl", opt => opt.MapFrom(c => c.ImageUrl))
         .ForPath(d => d.HotelId, opt => opt.MapFrom(c => c.Hotel.Id))
         );
-        public async Task Create(HotelImageDTO hotelImageDTO)
+        public async Task<HotelImageDTO> Create(HotelImageDTO hotelImageDTO)
         {
             var BusyHotelImageUrl = await Database.HotelImages.GetByImageUrlSubstring(hotelImageDTO.ImageUrl);
             if (BusyHotelImageUrl.Any(hi => hi.ImageUrl == hotelImageDTO.ImageUrl))
@@ -53,8 +53,10 @@ namespace TouragencyWebApi.BLL.Services
             };
             await Database.HotelImages.Create(newHotelImage);
             await Database.Save();
+            hotelImageDTO.Id = newHotelImage.Id;
+            return hotelImageDTO;
         }
-        public async Task Update(HotelImageDTO hotelImageDTO)
+        public async Task<HotelImageDTO> Update(HotelImageDTO hotelImageDTO)
         {
             var BusyHotelImage = await Database.HotelImages.GetById(hotelImageDTO.Id);
             if (BusyHotelImage == null)
@@ -79,17 +81,20 @@ namespace TouragencyWebApi.BLL.Services
             BusyHotelImage.Hotel = hotel;
             Database.HotelImages.Update(BusyHotelImage);
             await Database.Save();
+            return hotelImageDTO;
         }
 
-        public async Task Delete(long id)
+        public async Task<HotelImageDTO> Delete(long id)
         {
             var BusyHotelImageId = await Database.HotelImages.GetById(id);
             if (BusyHotelImageId == null)
             {
                 throw new ValidationException("Зображення готелю не знайдено", "");
             }
+            var dto = await GetById(id);
             await Database.HotelImages.Delete(id);
             await Database.Save();
+            return dto;
         }
 
         public async Task<IEnumerable<HotelImageDTO>> GetAll()
@@ -97,6 +102,13 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(HotelImage_HotelImageDTOMapConfig);
             return mapper.Map<IEnumerable<HotelImage>, IEnumerable<HotelImageDTO>>(await Database.HotelImages.GetAll());
         }
+
+        public async Task<IEnumerable<HotelImageDTO>> Get200Last()
+        {
+            var mapper = new Mapper(HotelImage_HotelImageDTOMapConfig);
+            return mapper.Map<IEnumerable<HotelImage>, IEnumerable<HotelImageDTO>>(await Database.HotelImages.Get200Last());
+        }
+
 
         public async Task<HotelImageDTO?> GetById(long id)
         {
