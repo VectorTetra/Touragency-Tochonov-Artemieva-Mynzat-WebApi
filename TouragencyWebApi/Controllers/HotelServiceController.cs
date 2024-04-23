@@ -43,6 +43,35 @@ namespace TouragencyWebApi.Controllers
                             }
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(hotelServiceQuery.HotelId, hotelServiceQuery.HotelServiceTypeId, hotelServiceQuery.HotelServiceTypeNameSubstring,
+                                                               hotelServiceQuery.HotelNameSubstring, hotelServiceQuery.Name, hotelServiceQuery.Description);
+                        }
+                        break;
+                    case "GetByHotelNameSubstring":
+                        {
+                            if (hotelServiceQuery.HotelNameSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано HotelNameSubstring для пошуку!", nameof(hotelServiceQuery.HotelNameSubstring));
+                            }
+                            collection = await _serv.GetByHotelNameSubstring(hotelServiceQuery.HotelNameSubstring);
+                        }
+                        break;
+                    case "GetByHotelServiceTypeNameSubstring":
+                        {
+                            if (hotelServiceQuery.HotelServiceTypeNameSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано HotelServiceTypeNameSubstring для пошуку!", nameof(hotelServiceQuery.HotelServiceTypeNameSubstring));
+                            }
+                            collection = await _serv.GetByHotelServiceTypeNameSubstring(hotelServiceQuery.HotelServiceTypeNameSubstring);
+                        }
+                        break;
                     case "GetByDescriptionSubstring":
                         {
                             if (hotelServiceQuery.Description is null)
@@ -106,8 +135,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(hotelServiceDTO);
-                return Ok();
+                var dto = await _serv.Create(hotelServiceDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -124,8 +153,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(hotelServiceDTO);
-                return Ok();
+                var dto = await _serv.Update(hotelServiceDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -142,8 +171,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -158,9 +187,11 @@ namespace TouragencyWebApi.Controllers
 
     public class HotelServiceQuery
     {
-        public string SearchParameter { get; set; }
+        public string SearchParameter { get; set; } = "";
         public int? Id { get; set; }
         public string? Description { get; set; }
+        public string? HotelNameSubstring { get; set; }
+        public string? HotelServiceTypeNameSubstring { get; set; }
         public string? Name { get; set; }
         public int? HotelServiceTypeId { get; set; }
         public int? HotelId { get; set; }
