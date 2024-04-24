@@ -23,6 +23,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
         .ForMember("Login", opt => opt.MapFrom(c => c.Login))
         .ForMember("Password", opt => opt.MapFrom(c => c.Password))
+        .ForMember("Salt", opt => opt.MapFrom(c => c.Salt))
         .ForMember("TouragencyAccountRoleId", opt => opt.MapFrom(c => c.TouragencyAccountRoleId))
         .ForMember("TouragencyEmployeeId", opt => opt.MapFrom(c => c.TouragencyEmployeeId))
         );
@@ -32,12 +33,12 @@ namespace TouragencyWebApi.BLL.Services
             Database = uow;
         }
 
-        public async Task TryToRegister(TouragencyAccountRegisterDTO reg)
+        public async Task<TouragencyEmployeeAccountDTO> TryToRegister(TouragencyAccountRegisterDTO reg)
         {
             var TakenLogin = await Database.TouragencyAccounts.GetByLogin(reg.Login);
             if (TakenLogin.ToList().Any(x => x.Login == reg.Login))
             {
-                throw new ValidationException("Такий нік туриста вже зайнято!", "");
+                throw new ValidationException("Такий логін вже зайнято!", "");
             }
             
             if (reg.Password != reg.PasswordConfirm)
@@ -93,12 +94,15 @@ namespace TouragencyWebApi.BLL.Services
                     TouragencyEmployee = touragencyEmployee,
                     TouragencyAccountRoleId = reg.TouragencyAccountRoleId 
                 };
+
                 await Database.TouragencyAccounts.Create(newTouragencyAccount);
                 await Database.Save();
+                var dto = await GetById(newTouragencyAccount.Id);
+                return dto;
             }
             catch (Exception ex)
             {
-                new ValidationException(ex.Message, "");
+                throw new ValidationException(ex.Message, "");
             }
 
         }
@@ -165,7 +169,7 @@ namespace TouragencyWebApi.BLL.Services
             throw new ValidationException("Вказано неправильні дані", "");
         }
 
-        public async Task Update(TouragencyEmployeeAccountDTO accountDTO)
+        public async Task<TouragencyEmployeeAccountDTO> Update(TouragencyEmployeeAccountDTO accountDTO)
         {
             TouragencyEmployeeAccount account = await Database.TouragencyAccounts.GetById(accountDTO.Id);
             if (account == null)
@@ -185,23 +189,32 @@ namespace TouragencyWebApi.BLL.Services
 
             Database.TouragencyAccounts.Update(account);
             await Database.Save();
+            return accountDTO;
         }
 
-        public async Task Delete(int id)
+        public async Task<TouragencyEmployeeAccountDTO> Delete(int id)
         {
             TouragencyEmployeeAccount account = await Database.TouragencyAccounts.GetById(id);
             if (account == null)
             {
                 throw new ValidationException("Такий аккаунт вже існує", "");
             }
+            var dto = await GetById(id);
             await Database.TouragencyAccounts.Delete(id);
             await Database.Save();
+            return dto;
         }
 
         public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> GetAll()
         {
             var mapper = new Mapper(Account_AccountDTOMapConfig);
             return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetAll());
+        }
+
+        public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Account_AccountDTOMapConfig);
+            return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.Get200Last());
         }
 
         public async Task<TouragencyEmployeeAccountDTO?> GetById(int id)
@@ -215,15 +228,41 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(Account_AccountDTOMapConfig);
             return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetByLogin(login));
         }
-        public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> GetByRole(string role)
+
+        public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> GetByRoleName(string roleName)
         {
             var mapper = new Mapper(Account_AccountDTOMapConfig);
-            return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetByRole(role));
+            return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetByRoleName(roleName));
         }
-        public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> GetByEmployeeName(string employeeName)
+
+        public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> GetByRoleDescription(string roleDescription)
         {
             var mapper = new Mapper(Account_AccountDTOMapConfig);
-            return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetByEmployeeName(employeeName));
+            return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetByRoleDescription(roleDescription));
+        }
+
+        public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> GetByEmployeeFirstname(string employeeFirstname)
+        {
+            var mapper = new Mapper(Account_AccountDTOMapConfig);
+            return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetByEmployeeFirstname(employeeFirstname));
+        }
+
+        public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> GetByEmployeeLastname(string employeeLastname)
+        {
+            var mapper = new Mapper(Account_AccountDTOMapConfig);
+            return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetByEmployeeLastname(employeeLastname));
+        }
+
+        public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> GetByEmployeeMiddlename(string employeeMiddlename)
+        {
+            var mapper = new Mapper(Account_AccountDTOMapConfig);
+            return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetByEmployeeMiddlename(employeeMiddlename));
+        }
+
+        public async Task<IEnumerable<TouragencyEmployeeAccountDTO>> GetByCompositeSearch(string? login, string? roleName, string? roleDescription, string? employeeFirstname, string? employeeLastname, string? employeeMiddlename)
+        {
+            var mapper = new Mapper(Account_AccountDTOMapConfig);
+            return mapper.Map<IEnumerable<TouragencyEmployeeAccount>, IEnumerable<TouragencyEmployeeAccountDTO>>(await Database.TouragencyAccounts.GetByCompositeSearch(login, roleName, roleDescription, employeeFirstname, employeeLastname, employeeMiddlename));
         }
     }
 }

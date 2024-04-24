@@ -21,7 +21,7 @@ namespace TouragencyWebApi.Controllers
             try
             {
                 await _serv.TryToLogin(accountLogin);
-                return new ObjectResult(accountLogin);
+                return Ok(accountLogin);
             }
             catch (ValidationException ex)
             {

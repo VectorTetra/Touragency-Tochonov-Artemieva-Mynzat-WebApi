@@ -30,6 +30,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (accountQuery.AccountId == null)
@@ -50,22 +55,55 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByLogin(accountQuery.Login);
                         }
                         break;
-                    case "GetByRole":
+
+                    case "GetByRoleName":
                         {
-                            if (accountQuery.Role == null)
+                            if (accountQuery.RoleName == null)
                             {
-                                throw new ValidationException("Не вказано accountQuery для пошуку!", nameof(accountQuery.Role));
+                                throw new ValidationException("Не вказано RoleName для пошуку!", nameof(accountQuery.RoleName));
                             }
-                            collection = await _serv.GetByRole(accountQuery.Role);
+                            collection = await _serv.GetByRoleName(accountQuery.RoleName);
                         }
                         break;
-                    case "GetByEmployeeName":
+                    case "GetByRoleDescription":
                         {
-                            if (accountQuery.EmployeeName == null)
+                            if (accountQuery.RoleDescription == null)
                             {
-                                throw new ValidationException("Не вказано accountQuery для пошуку!", nameof(accountQuery.EmployeeName));
+                                throw new ValidationException("Не вказано RoleDescription для пошуку!", nameof(accountQuery.RoleDescription));
                             }
-                            collection = await _serv.GetByRole(accountQuery.EmployeeName);
+                            collection = await _serv.GetByRoleDescription(accountQuery.RoleDescription);
+                        }
+                        break;
+                    case "GetByEmployeeFirstname":
+                        {
+                            if (accountQuery.EmployeeFirstname == null)
+                            {
+                                throw new ValidationException("Не вказано EmployeeFirstname для пошуку!", nameof(accountQuery.EmployeeFirstname));
+                            }
+                            collection = await _serv.GetByEmployeeFirstname(accountQuery.EmployeeFirstname);
+                        }
+                        break;
+                    case "GetByEmployeeLastname":
+                        {
+                            if (accountQuery.EmployeeLastname == null)
+                            {
+                                throw new ValidationException("Не вказано EmployeeLastname для пошуку!", nameof(accountQuery.EmployeeLastname));
+                            }
+                            collection = await _serv.GetByEmployeeLastname(accountQuery.EmployeeLastname);
+                        }
+                        break;
+                    case "GetByEmployeeMiddlename":
+                        {
+                            if (accountQuery.EmployeeMiddlename == null)
+                            {
+                                throw new ValidationException("Не вказано EmployeeMiddlename для пошуку!", nameof(accountQuery.EmployeeMiddlename));
+                            }
+                            collection = await _serv.GetByEmployeeMiddlename(accountQuery.EmployeeMiddlename);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(accountQuery.Login, accountQuery.RoleName, accountQuery.RoleDescription, accountQuery.EmployeeFirstname, accountQuery.EmployeeLastname, accountQuery.EmployeeMiddlename);
                         }
                         break;
                     default:
@@ -92,12 +130,12 @@ namespace TouragencyWebApi.Controllers
 
 
         [HttpPut]
-        public async Task<ActionResult> UpdateAccount(TouragencyEmployeeAccountDTO accountDTO)
+        public async Task<ActionResult<TouragencyEmployeeAccountDTO>> UpdateAccount(TouragencyEmployeeAccountDTO accountDTO)
         {
             try
             {
-                await _serv.Update(accountDTO);
-                return Ok();
+                var dto = await _serv.Update(accountDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -110,12 +148,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteAccount(int id)
+        public async Task<ActionResult<TouragencyEmployeeAccountDTO>> DeleteAccount(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -130,10 +168,13 @@ namespace TouragencyWebApi.Controllers
 
     public class AccountQuery
     {
-        public string SearchParameter { get; set; } = "";
+        public string SearchParameter { get; set; } = "Get200Last";
         public int AccountId { get; set; }
         public string? Login { get; set; }
-        public string? Role { get; set; }
-        public string? EmployeeName { get; set; }
+        public string? RoleName { get; set; }
+        public string? RoleDescription { get; set; }
+        public string? EmployeeFirstname { get; set; }
+        public string? EmployeeLastname { get; set; }
+        public string? EmployeeMiddlename { get; set; }
     }
 }
