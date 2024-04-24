@@ -33,7 +33,7 @@ namespace TouragencyWebApi.Controllers
                         {
                             if (roleQuery.RoleId == null)
                             {
-                                throw new ValidationException("Не вказано EmployeeId для пошуку!", nameof(roleQuery.RoleId));
+                                throw new ValidationException("Не вказано RoleId для пошуку!", nameof(roleQuery.RoleId));
 
                             }
                             var cntr = await _serv.GetById(roleQuery.RoleId);
@@ -44,27 +44,77 @@ namespace TouragencyWebApi.Controllers
                         {
                             if (roleQuery.Name == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(roleQuery.Name));
+                                throw new ValidationException("Не вказано RoleName для пошуку!", nameof(roleQuery.Name));
                             }
                             collection = await _serv.GetByName(roleQuery.Name);
                         }
                         break;
-                    case "GetByEmployeeName":
+                    case "GetByDescription":
                         {
-                            if (roleQuery.EmployeeName == null)
+                            if (roleQuery.Description == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(roleQuery.EmployeeName));
+                                throw new ValidationException("Не вказано Description для пошуку!", nameof(roleQuery.Description));
                             }
-                            collection = await _serv.GetByEmployeeName(roleQuery.EmployeeName);
+                            collection = await _serv.GetByDescription(roleQuery.Description);
                         }
                         break;
-                    case "GetByClientName":
+                    case "GetByEmployeeFirstname":
                         {
-                            if (roleQuery.ClientName == null)
+                            if (roleQuery.EmployeeFirstname == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(roleQuery.ClientName));
+                                throw new ValidationException("Не вказано EmployeeFirstname для пошуку!", nameof(roleQuery.EmployeeFirstname));
                             }
-                            collection = await _serv.GetByClientName(roleQuery.ClientName);
+                            collection = await _serv.GetByEmployeeFirstname(roleQuery.EmployeeFirstname);
+                        }
+                        break;
+                    case "GetByEmployeeLastname":
+                        {
+                            if (roleQuery.EmployeeLastname == null)
+                            {
+                                throw new ValidationException("Не вказано EmployeeLastname для пошуку!", nameof(roleQuery.EmployeeLastname));
+                            }
+                            collection = await _serv.GetByEmployeeLastname(roleQuery.EmployeeLastname);
+                        }
+                        break;
+                    case "GetByEmployeeMiddlename":
+                        {
+                            if (roleQuery.EmployeeMiddlename == null)
+                            {
+                                throw new ValidationException("Не вказано EmployeeMiddlename для пошуку!", nameof(roleQuery.EmployeeMiddlename));
+                            }
+                            collection = await _serv.GetByEmployeeMiddlename(roleQuery.EmployeeMiddlename);
+                        }
+                        break;
+                    case "GetByClientFirstname":
+                        {
+                            if (roleQuery.ClientFirstname == null)
+                            {
+                                throw new ValidationException("Не вказано ClientFirstname для пошуку!", nameof(roleQuery.ClientFirstname));
+                            }
+                            collection = await _serv.GetByClientFirstname(roleQuery.ClientFirstname);
+                        }
+                        break;
+                    case "GetByClientLastname":
+                        {
+                            if (roleQuery.ClientLastname == null)
+                            {
+                                throw new ValidationException("Не вказано ClientLastname для пошуку!", nameof(roleQuery.ClientLastname));
+                            }
+                            collection = await _serv.GetByClientLastname(roleQuery.ClientLastname);
+                        }
+                        break;
+                    case "GetByClientMiddlename":
+                        {
+                            if (roleQuery.ClientMiddlename == null)
+                            {
+                                throw new ValidationException("Не вказано ClientMiddlename для пошуку!", nameof(roleQuery.ClientMiddlename));
+                            }
+                            collection = await _serv.GetByClientMiddlename(roleQuery.ClientMiddlename);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(roleQuery.Name, roleQuery.Description, roleQuery.EmployeeFirstname, roleQuery.EmployeeLastname, roleQuery.EmployeeMiddlename, roleQuery.ClientFirstname, roleQuery.ClientLastname, roleQuery.ClientMiddlename);
                         }
                         break;
                     default:
@@ -89,12 +139,12 @@ namespace TouragencyWebApi.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult> AddRole(TouragencyAccountRoleDTO entity)
+        public async Task<ActionResult<TouragencyAccountRoleDTO>> AddRole(TouragencyAccountRoleDTO entity)
         {
             try
             {
-                await _serv.Add(entity);
-                return Ok();
+                var dto = await _serv.Add(entity);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -107,12 +157,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateRole(TouragencyAccountRoleDTO entity)
+        public async Task<ActionResult<TouragencyAccountRoleDTO>> UpdateRole(TouragencyAccountRoleDTO entity)
         {
             try
             {
-                await _serv.Update(entity);
-                return Ok();
+                var dto = await _serv.Update(entity);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -125,12 +175,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteRole(int id)
+        public async Task<ActionResult<TouragencyAccountRoleDTO>> DeleteRole(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -148,7 +198,12 @@ namespace TouragencyWebApi.Controllers
         public string SearchParameter { get; set; } = "";
         public int RoleId { get; set; }
         public string? Name { get; set; }
-        public string? EmployeeName { get; set; }
-        public string? ClientName { get; set; }
+        public string? Description { get; set; }
+        public string? EmployeeFirstname { get; set; }
+        public string? EmployeeLastname { get; set; }
+        public string? EmployeeMiddlename { get; set; }
+        public string? ClientFirstname { get; set; }
+        public string? ClientLastname { get; set; }
+        public string? ClientMiddlename { get; set; }
     }
 }
