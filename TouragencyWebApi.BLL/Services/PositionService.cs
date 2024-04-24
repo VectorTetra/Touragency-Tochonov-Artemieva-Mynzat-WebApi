@@ -24,7 +24,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForPath(d => d.TouragencyEmployeeIds, opt => opt.MapFrom(c => c.TouragencyEmployees.Select(te => te.Id)))
         );
-        public async Task Create(PositionDTO positionDTO)
+        public async Task<PositionDTO> Create(PositionDTO positionDTO)
         {
             var BusyPositionId = await Database.Positions.GetById(positionDTO.Id);
             //Якщо такий tourId вже зайнято, кидаємо виключення
@@ -49,8 +49,10 @@ namespace TouragencyWebApi.BLL.Services
             }
             await Database.Positions.Create(newPosition);
             await Database.Save();
+            positionDTO.Id = newPosition.Id;
+            return positionDTO;
         }
-        public async Task Update(PositionDTO positionDTO)
+        public async Task<PositionDTO> Update(PositionDTO positionDTO)
         {
             var BusyPosition = await Database.Positions.GetById(positionDTO.Id);
             //Якщо такий tourId вже зайнято, кидаємо виключення
@@ -72,21 +74,30 @@ namespace TouragencyWebApi.BLL.Services
             }
             Database.Positions.Update(BusyPosition);
             await Database.Save();
+            return positionDTO;
         }
-        public async Task Delete(int id)
+        public async Task<PositionDTO> Delete(int id)
         {
             Position position = await Database.Positions.GetById(id);
             if (position == null)
             {
                 throw new ValidationException("Посаду не знайдено", "");
             }
+            var dto = await GetById(id);
             await Database.Positions.Delete(id);
             await Database.Save();
+            return dto;
         }
         public async Task<IEnumerable<PositionDTO>> GetAll()
         {
             var mapper = new Mapper(Position_PositionDTOMapConfig);
             return mapper.Map<IEnumerable<Position>, IEnumerable<PositionDTO>>(await Database.Positions.GetAll());
+        }
+
+        public async Task<IEnumerable<PositionDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Position_PositionDTOMapConfig);
+            return mapper.Map<IEnumerable<Position>, IEnumerable<PositionDTO>>(await Database.Positions.Get200Last());
         }
         public async Task<IEnumerable<PositionDTO>> GetByDescriptionSubstring(string positionDescriptionSubstring)
         {
@@ -144,6 +155,31 @@ namespace TouragencyWebApi.BLL.Services
                 TouragencyEmployeeIds = position.TouragencyEmployees.Select(te => te.Id).ToList()
             };
             return positionDTO;
+        }
+
+        public async Task<IEnumerable<PositionDTO>> GetByPersonFirstnameSubstring(string personFirstnameSubstring)
+        {
+            var mapper = new Mapper(Position_PositionDTOMapConfig);
+            return mapper.Map<IEnumerable<Position>, IEnumerable<PositionDTO>>(await Database.Positions.GetByPersonFirstnameSubstring(personFirstnameSubstring));
+        }
+
+        public async Task<IEnumerable<PositionDTO>> GetByPersonLastnameSubstring(string personLastnameSubstring)
+        {
+            var mapper = new Mapper(Position_PositionDTOMapConfig);
+            return mapper.Map<IEnumerable<Position>, IEnumerable<PositionDTO>>(await Database.Positions.GetByPersonLastnameSubstring(personLastnameSubstring));
+        }
+
+        public async Task<IEnumerable<PositionDTO>> GetByPersonMiddlenameSubstring(string personMiddlenameSubstring)
+        {
+            var mapper = new Mapper(Position_PositionDTOMapConfig);
+            return mapper.Map<IEnumerable<Position>, IEnumerable<PositionDTO>>(await Database.Positions.GetByPersonMiddlenameSubstring(personMiddlenameSubstring));
+        }
+
+        public async Task<IEnumerable<PositionDTO>> GetByCompositeSearch(string? positionNameSubstring, string? positionDescriptionSubstring,
+                       string? personFirstnameSubstring, string? personLastnameSubstring, string? personMiddlenameSubstring)
+        {
+            var mapper = new Mapper(Position_PositionDTOMapConfig);
+            return mapper.Map<IEnumerable<Position>, IEnumerable<PositionDTO>>(await Database.Positions.GetByCompositeSearch(positionNameSubstring, positionDescriptionSubstring, personFirstnameSubstring, personLastnameSubstring, personMiddlenameSubstring));
         }
     }
 }

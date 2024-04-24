@@ -35,6 +35,11 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Positions.ToListAsync();
         }
+
+        public async Task<IEnumerable<Position>> Get200Last()
+        {
+            return await _context.Positions.OrderByDescending(p => p.Id).Take(200).ToListAsync();
+        }
         public async Task<IEnumerable<Position>> GetByDescriptionSubstring(string positionDescriptionSubstring)
         {
             return await _context.Positions
@@ -61,6 +66,58 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<Position?> GetById(int id)
         {
             return await _context.Positions.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Position>> GetByCompositeSearch(string? positionNameSubstring, string? positionDescriptionSubstring,
+                       string? personFirstnameSubstring, string? personLastnameSubstring, string? personMiddlenameSubstring)
+        {
+            var positions = new List<IEnumerable<Position>>();
+            if (positionNameSubstring != null)
+            {
+                positions.Add(await GetByNameSubstring(positionNameSubstring));
+            }
+            if (positionDescriptionSubstring != null)
+            {
+                positions.Add(await GetByDescriptionSubstring(positionDescriptionSubstring));
+            }
+            if (personFirstnameSubstring != null)
+            {
+                positions.Add(await GetByPersonFirstnameSubstring(personFirstnameSubstring));
+            }
+            if (personLastnameSubstring != null)
+            {
+                positions.Add(await GetByPersonLastnameSubstring(personLastnameSubstring));
+            }
+            if (personMiddlenameSubstring != null)
+            {
+                positions.Add(await GetByPersonMiddlenameSubstring(personMiddlenameSubstring));
+            }
+            if(!positions.Any())
+            {
+                return new List<Position>();
+            }
+            return positions.Aggregate((a, b) => a.Intersect(b));
+        }
+
+        public async Task<IEnumerable<Position>> GetByPersonFirstnameSubstring(string personFirstnameSubstring)
+        {
+            return await _context.Positions
+                .Where(p => p.TouragencyEmployees.Any(t => t.Person.Firstname.Contains(personFirstnameSubstring)))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Position>> GetByPersonLastnameSubstring(string personLastnameSubstring)
+        {
+            return await _context.Positions
+                .Where(p => p.TouragencyEmployees.Any(t => t.Person.Lastname.Contains(personLastnameSubstring)))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Position>> GetByPersonMiddlenameSubstring(string personMiddlenameSubstring)
+        {
+            return await _context.Positions
+                .Where(p => p.TouragencyEmployees.Any(t => t.Person.Middlename.Contains(personMiddlenameSubstring)))
+                .ToListAsync();
         }
     }
 }

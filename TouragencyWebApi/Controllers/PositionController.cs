@@ -29,6 +29,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (positionQuery.Id == null)
@@ -69,6 +74,47 @@ namespace TouragencyWebApi.Controllers
                             }
                         }
                         break;
+                    case "GetByPersonFirstname":
+                        {
+                            if (positionQuery.PersonFirstname == null)
+                            {
+                                throw new ValidationException("Не вказано Person.Firstname для пошуку!", nameof(PositionQuery.PersonFirstname));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByPersonFirstnameSubstring(positionQuery.PersonFirstname);
+                            }
+                        }
+                        break;
+                    case "GetByPersonLastname":
+                        {
+                            if (positionQuery.PersonLastname == null)
+                            {
+                                throw new ValidationException("Не вказано Person.Lastname для пошуку!", nameof(PositionQuery.PersonLastname));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByPersonLastnameSubstring(positionQuery.PersonLastname);
+                            }
+                        }
+                        break;
+                    case "GetByPersonMiddlename":
+                        {
+                            if (positionQuery.PersonMiddlename == null)
+                            {
+                                throw new ValidationException("Не вказано Person.Middlename для пошуку!", nameof(PositionQuery.PersonMiddlename));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByPersonMiddlenameSubstring(positionQuery.PersonMiddlename);
+                            }
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(positionQuery.Name, positionQuery.Description, positionQuery.PersonFirstname, positionQuery.PersonLastname, positionQuery.PersonMiddlename);
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Невірно вказаний параметр пошуку!", nameof(PositionQuery.SearchParameter));
@@ -95,8 +141,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(positionDTO);
-                return new ObjectResult(positionDTO);
+                var dto = await _serv.Create(positionDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -113,8 +159,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(positionDTO);
-                return Ok();
+                var dto = await _serv.Update(positionDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -131,8 +177,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -151,5 +197,9 @@ namespace TouragencyWebApi.Controllers
         public int? Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
+        public string? PersonFirstname { get; set; }
+        public string? PersonLastname { get; set; }
+        public string? PersonMiddlename { get; set; }
+
     }
 }
