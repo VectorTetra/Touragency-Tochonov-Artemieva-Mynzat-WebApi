@@ -40,22 +40,55 @@ namespace TouragencyWebApi.Controllers
                             collection = new List<TouragencyEmployeeDTO?> { cntr };
                         }
                         break;
-                    case "GetByName":
+                    case "GetByFirstname":
                         {
-                            if (employeeQuery.EmployeeName == null)
+                            if (employeeQuery.EmployeeFirstname == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.EmployeeName));
+                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.EmployeeFirstname));
                             }
-                            collection = await _serv.GetByName(employeeQuery.EmployeeName);
+                            collection = await _serv.GetByFirstname(employeeQuery.EmployeeFirstname);
                         }
                         break;
-                    case "GetByPosition":
+                    case "GetByLastname":
                         {
-                            if (employeeQuery.Position == null)
+                            if (employeeQuery.EmployeeLastname == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.Position));
+                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.EmployeeLastname));
                             }
-                            collection = await _serv.GetByPosition(employeeQuery.Position);
+                            collection = await _serv.GetByLastname(employeeQuery.EmployeeLastname);
+                        }
+                        break;
+                    case "GetByMiddlename":
+                        {
+                            if (employeeQuery.EmployeeMiddlename == null)
+                            {
+                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.EmployeeMiddlename));
+                            }
+                            collection = await _serv.GetByMiddlename(employeeQuery.EmployeeMiddlename);
+                        }
+                        break;
+                    case "GetByPositionName":
+                        {
+                            if (employeeQuery.PositionName == null)
+                            {
+                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.PositionName));
+                            }
+                            collection = await _serv.GetByPositionName(employeeQuery.PositionName);
+                        }
+                        break;
+                    case "GetByPositionDescription":
+                        {
+                            if (employeeQuery.PositionDescription == null)
+                            {
+                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.PositionDescription));
+                            }
+                            collection = await _serv.GetByPositionDescription(employeeQuery.PositionDescription);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(employeeQuery.EmployeeFirstname, employeeQuery.EmployeeLastname,
+                                                               employeeQuery.EmployeeMiddlename, employeeQuery.PositionName, employeeQuery.PositionDescription);
                         }
                         break;
                     default:
@@ -81,12 +114,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddEmployee(TouragencyEmployeeDTO employeeDTO)
+        public async Task<ActionResult<TouragencyEmployeeDTO>> AddEmployee(TouragencyEmployeeDTO employeeDTO)
         {
             try
             {
-                await _serv.Add(employeeDTO);
-                return Ok();
+                var dto = await _serv.Add(employeeDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -99,12 +132,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateEmployee(TouragencyEmployeeDTO employeeDTO)
+        public async Task<ActionResult<TouragencyEmployeeDTO>> UpdateEmployee(TouragencyEmployeeDTO employeeDTO)
         {
             try
             {
-                await _serv.Update(employeeDTO);
-                return Ok();
+                var dto = await _serv.Update(employeeDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -117,12 +150,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteEmployee(int id)
+        public async Task<ActionResult<TouragencyEmployeeDTO>> DeleteEmployee(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -139,7 +172,10 @@ namespace TouragencyWebApi.Controllers
     {
         public string SearchParameter { get; set; } = "";
         public int EmployeeId { get; set; }
-        public string? EmployeeName { get; set; }
-        public string? Position { get; set; }
+        public string? EmployeeFirstname { get; set; }
+        public string? EmployeeLastname { get; set; }
+        public string? EmployeeMiddlename { get; set; }
+        public string? PositionName { get; set; }
+        public string? PositionDescription { get; set; }
     }
 }

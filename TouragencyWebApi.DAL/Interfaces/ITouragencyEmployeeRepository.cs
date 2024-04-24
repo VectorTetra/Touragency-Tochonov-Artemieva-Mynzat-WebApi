@@ -11,9 +11,15 @@ namespace TouragencyWebApi.DAL.Interfaces
     public interface ITouragencyEmployeeRepository
     {
         Task<IEnumerable<TouragencyEmployee>> GetAll();
+        Task<IEnumerable<TouragencyEmployee>> Get200Last();
         Task<TouragencyEmployee?> GetById(int id);
-        Task<IEnumerable<TouragencyEmployee>> GetByName(string name);
-        Task<IEnumerable<TouragencyEmployee>> GetByPosition(string position);
+        Task<IEnumerable<TouragencyEmployee>> GetByFirstname(string firstname);
+        Task<IEnumerable<TouragencyEmployee>> GetByLastname(string lastname);
+        Task<IEnumerable<TouragencyEmployee>> GetByMiddlename(string middlename);
+        Task<IEnumerable<TouragencyEmployee>> GetByPositionName(string positionName);
+        Task<IEnumerable<TouragencyEmployee>> GetByPositionDescription(string positionDescription);
+        Task<IEnumerable<TouragencyEmployee>> GetByCompositeSearch(string? firstname, string? lastname,
+            string? middlename, string? positionName, string? positionDescription);
         Task Create(TouragencyEmployee employee);
         void Update(TouragencyEmployee employee);
         Task Delete(int id);

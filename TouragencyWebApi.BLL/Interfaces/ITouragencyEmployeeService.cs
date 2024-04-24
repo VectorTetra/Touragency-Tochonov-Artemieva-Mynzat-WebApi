@@ -12,10 +12,17 @@ namespace TouragencyWebApi.BLL.Interfaces
     {
         Task<IEnumerable<TouragencyEmployeeDTO>> GetAll();
         Task<TouragencyEmployeeDTO?> GetById(int id);
-        Task<IEnumerable<TouragencyEmployeeDTO>> GetByName(string name);
-        Task<IEnumerable<TouragencyEmployeeDTO>> GetByPosition(string position);
-        Task Add(TouragencyEmployeeDTO employee);
-        Task Update(TouragencyEmployeeDTO employee);
-        Task Delete(int id);
+        Task<TouragencyEmployeeDTO> Add(TouragencyEmployeeDTO employee);
+        Task<TouragencyEmployeeDTO> Update(TouragencyEmployeeDTO employee);
+        Task<TouragencyEmployeeDTO> Delete(int id);
+
+        Task<IEnumerable<TouragencyEmployeeDTO>> Get200Last();
+        Task<IEnumerable<TouragencyEmployeeDTO>> GetByFirstname(string firstname);
+        Task<IEnumerable<TouragencyEmployeeDTO>> GetByLastname(string lastname);
+        Task<IEnumerable<TouragencyEmployeeDTO>> GetByMiddlename(string middlename);
+        Task<IEnumerable<TouragencyEmployeeDTO>> GetByPositionName(string positionName);
+        Task<IEnumerable<TouragencyEmployeeDTO>> GetByPositionDescription(string positionDescription);
+        Task<IEnumerable<TouragencyEmployeeDTO>> GetByCompositeSearch(string? firstname, string? lastname,
+           string? middlename, string? positionName, string? positionDescription);
     }
 }

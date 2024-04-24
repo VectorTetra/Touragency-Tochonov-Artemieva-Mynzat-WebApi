@@ -8,6 +8,7 @@ using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Xml;
 
 namespace TouragencyWebApi.DAL.Repositories
 {
@@ -23,21 +24,80 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.TouragencyEmployees.ToListAsync();
         }
+        public async Task<IEnumerable<TouragencyEmployee>> Get200Last()
+        {
+            return await _context.TouragencyEmployees
+                .OrderByDescending(p => p.Id)
+                .Take(200)
+                .ToListAsync();
+        }
         public async Task<TouragencyEmployee?> GetById(int id)
         {
             return await _context.TouragencyEmployees.FindAsync(id);
         }
-        public async Task<IEnumerable<TouragencyEmployee>> GetByName(string name)
+
+        public async Task<IEnumerable<TouragencyEmployee>> GetByFirstname(string firstname)
         {
             return await _context.TouragencyEmployees
-                .Where(p => p.Person.Lastname.Contains(name))
+                .Where(p => p.Person.Firstname.Contains(firstname))
                 .ToListAsync();
         }
-        public async Task<IEnumerable<TouragencyEmployee>> GetByPosition(string position)
+        public async Task<IEnumerable<TouragencyEmployee>> GetByLastname(string lastname)
         {
             return await _context.TouragencyEmployees
-                .Where(p => p.Position.Name.Contains(position))
+                .Where(p => p.Person.Lastname.Contains(lastname))
                 .ToListAsync();
+        }
+        public async Task<IEnumerable<TouragencyEmployee>> GetByMiddlename(string middlename)
+        {
+            return await _context.TouragencyEmployees
+                .Where(p => p.Person.Middlename.Contains(middlename))
+                .ToListAsync();
+        }
+        
+        public async Task<IEnumerable<TouragencyEmployee>> GetByPositionName(string positionName)
+        {
+            return await _context.TouragencyEmployees
+                .Where(p => p.Position.Name.Contains(positionName))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<TouragencyEmployee>> GetByPositionDescription(string positionDescription)
+        {
+            return await _context.TouragencyEmployees
+                .Where(p => p.Position.Description.Contains(positionDescription))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<TouragencyEmployee>> GetByCompositeSearch(string? firstname, string? lastname,
+                       string? middlename, string? positionName, string? positionDescription)
+        {
+            var collec = new List<IEnumerable<TouragencyEmployee>>();
+
+            if (firstname != null)
+            { 
+                collec.Add(await GetByFirstname(firstname));
+            }
+            if (lastname != null)
+            {
+                collec.Add(await GetByLastname(lastname));
+            }
+            if (middlename != null)
+            {
+                collec.Add(await GetByMiddlename(middlename));
+            }
+            if (positionName != null)
+            {
+                collec.Add(await GetByPositionName(positionName));
+            }
+            if (positionDescription != null)
+            {
+                collec.Add(await GetByPositionDescription(positionDescription));
+            }
+            if(!collec.Any())
+            {
+                return new List<TouragencyEmployee>();
+            }
+            return collec.Aggregate((a, b) => a.Intersect(b));
         }
         public async Task Create(TouragencyEmployee employee)
         {
