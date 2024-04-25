@@ -31,6 +31,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (tourNameQuery.Id == null)
@@ -42,11 +47,84 @@ namespace TouragencyWebApi.Controllers
                                 var n = await _serv.GetById((int)tourNameQuery.Id);
                                 if (n != null)
                                 {
-                                    collection= new List<TourNameDTO> { n };
+                                    collection = new List<TourNameDTO> { n };
                                 }
                             }
                         }
                         break;
+                    case "GetByCountryName":
+                        {
+                            if (tourNameQuery.CountryName == null)
+                            {
+                                throw new ValidationException("Не вказано TourName.CountryName для пошуку!", nameof(TourNameQuery.CountryName));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByCountryName(tourNameQuery.CountryName);
+                            }
+                        }
+                        break;
+                    case "GetBySettlementName":
+                        {
+                            if (tourNameQuery.SettlementName == null)
+                            {
+                                throw new ValidationException("Не вказано TourName.SettlementName для пошуку!", nameof(TourNameQuery.SettlementName));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetBySettlementName(tourNameQuery.SettlementName);
+                            }
+                        }
+                        break;
+                    case "GetByHotelName":
+                        {
+                            if (tourNameQuery.HotelName == null)
+                            {
+                                throw new ValidationException("Не вказано TourName.HotelName для пошуку!", nameof(TourNameQuery.HotelName));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByHotelName(tourNameQuery.HotelName);
+                            }
+                        }
+                        break;
+                    case "GetByTourId":
+                        {
+                            if (tourNameQuery.TourId == null)
+                            {
+                                throw new ValidationException("Не вказано TourName.TourId для пошуку!", nameof(TourNameQuery.TourId));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByTourId((long)tourNameQuery.TourId);
+                            }
+                        }
+                        break;
+                    case "GetByTourImageId":
+                        {
+                            if (tourNameQuery.TourImageId == null)
+                            {
+                                throw new ValidationException("Не вказано TourName.TourImageId для пошуку!", nameof(TourNameQuery.TourImageId));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByTourImageId((long)tourNameQuery.TourImageId);
+                            }
+                        }
+                        break;
+                    case "GetByPageJSONStructureUrl":
+                        {
+                            if (tourNameQuery.PageJSONStructureUrl == null)
+                            {
+                                throw new ValidationException("Не вказано TourName.PageJSONStructureUrl для пошуку!", nameof(TourNameQuery.PageJSONStructureUrl));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByPageJSONStructureUrlSubstring(tourNameQuery.PageJSONStructureUrl);
+                            }
+                        }
+                        break;
+
                     case "GetByName":
                         {
                             if (tourNameQuery.Name == null)
@@ -57,6 +135,11 @@ namespace TouragencyWebApi.Controllers
                             {
                                 collection = await _serv.GetByName(tourNameQuery.Name);
                             }
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(tourNameQuery.Name, tourNameQuery.CountryName, tourNameQuery.SettlementName, tourNameQuery.HotelName, tourNameQuery.PageJSONStructureUrl, tourNameQuery.TourId, tourNameQuery.TourImageId);
                         }
                         break;
                     default:
@@ -83,12 +166,12 @@ namespace TouragencyWebApi.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateTourName(TourNameDTO tourNameDTO)
+        public async Task<ActionResult<TourNameDTO>> UpdateTourName(TourNameDTO tourNameDTO)
         {
             try
             {
-                await _serv.Update(tourNameDTO);
-                return Ok();
+                var dto = await _serv.Update(tourNameDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -101,12 +184,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddTourName(TourNameDTO tourNameDTO)
+        public async Task<ActionResult<TourNameDTO>> AddTourName(TourNameDTO tourNameDTO)
         {
             try
             {
-                await _serv.Create(tourNameDTO);
-                return Ok();
+                var dto = await _serv.Create(tourNameDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -119,12 +202,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteTourName(int id)
+        public async Task<ActionResult<TourNameDTO>> DeleteTourName(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -142,5 +225,11 @@ namespace TouragencyWebApi.Controllers
         public string SearchParameter { get; set; } = "";
         public int? Id { get; set; }
         public string? Name { get; set; }
+        public string? CountryName { get; set; }
+        public string? SettlementName { get; set; }
+        public string? HotelName { get; set; }
+        public string? PageJSONStructureUrl { get; set; }
+        public long? TourId { get; set; }
+        public long? TourImageId { get; set; }
     }
 }

@@ -32,6 +32,12 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
             return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetAll());
         }
+
+        public async Task<IEnumerable<TourNameDTO>> Get200Last()
+        {
+            var mapper = new Mapper(TourName_TourNameDTOMapConfig);
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.Get200Last());
+        }
         public async Task<TourNameDTO?> GetById(int id)
         {
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
@@ -42,12 +48,52 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
             return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByName(tourNameSubstring));
         }
-        public async Task Create(TourNameDTO tourNameDTO)
+        public async Task<IEnumerable<TourNameDTO>> GetByCountryName(string countryNameSubstring)
+        {
+            var mapper = new Mapper(TourName_TourNameDTOMapConfig);
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByCountryName(countryNameSubstring));
+        }
+        public async Task<IEnumerable<TourNameDTO>> GetBySettlementName(string settlementNameSubstring)
+        {
+            var mapper = new Mapper(TourName_TourNameDTOMapConfig);
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetBySettlementName(settlementNameSubstring));
+        }
+        public async Task<IEnumerable<TourNameDTO>> GetByHotelName(string hotelNameSubstring)
+        {
+            var mapper = new Mapper(TourName_TourNameDTOMapConfig);
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByHotelName(hotelNameSubstring));
+        }
+        public async Task<IEnumerable<TourNameDTO>> GetByPageJSONStructureUrlSubstring(string pageJSONStructureUrlSubstring)
+        {
+            var mapper = new Mapper(TourName_TourNameDTOMapConfig);
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByPageJSONStructureUrlSubstring(pageJSONStructureUrlSubstring));
+        }
+        public async Task<IEnumerable<TourNameDTO>> GetByTourId(long tourId)
+        {
+            var mapper = new Mapper(TourName_TourNameDTOMapConfig);
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByTourId(tourId));
+        }
+        public async Task<IEnumerable<TourNameDTO>> GetByTourImageId(long tourImageId)
+        {
+            var mapper = new Mapper(TourName_TourNameDTOMapConfig);
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByTourImageId(tourImageId));
+        }
+        public async Task<IEnumerable<TourNameDTO>> GetByCompositeSearch(string? tourNameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? hotelNameSubstring, string? pageJSONStructureUrlSubstring, long? tourId, long? tourImageId)
+        {
+            var mapper = new Mapper(TourName_TourNameDTOMapConfig);
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByCompositeSearch(tourNameSubstring, countryNameSubstring, settlementNameSubstring, hotelNameSubstring, pageJSONStructureUrlSubstring, tourId, tourImageId));
+        }
+        public async Task<TourNameDTO> Create(TourNameDTO tourNameDTO)
         {
             var Existed = await Database.TourNames.GetByName(tourNameDTO.Name);
             if (Existed.Any(em => em.Name == tourNameDTO.Name))
             {
                 throw new ValidationException("Така назва туру вже існує", "");
+            }
+            var ExistedPageJSON = await Database.TourNames.GetByPageJSONStructureUrlSubstring(tourNameDTO.PageJSONStructureUrl);
+            if (ExistedPageJSON.Any(em => em.PageJSONStructureUrl == tourNameDTO.PageJSONStructureUrl))
+            {
+                throw new ValidationException("Така структура JSON вже існує", "");
             }
             var newTourName = new TourName
             {
@@ -76,13 +122,20 @@ namespace TouragencyWebApi.BLL.Services
             }
             await Database.TourNames.Create(newTourName);
             await Database.Save();
+            tourNameDTO.Id = newTourName.Id;
+            return tourNameDTO;
         }
-        public async Task Update(TourNameDTO tourNameDTO)
+        public async Task<TourNameDTO> Update(TourNameDTO tourNameDTO)
         {
             TourName tourName = await Database.TourNames.GetById(tourNameDTO.Id);
             if (tourName == null)
             {
                 throw new ValidationException("Така назва туру не знайдена", "");
+            }
+            var ExistedPageJSON = await Database.TourNames.GetByPageJSONStructureUrlSubstring(tourNameDTO.PageJSONStructureUrl);
+            if (ExistedPageJSON.Any(em => em.PageJSONStructureUrl == tourNameDTO.PageJSONStructureUrl && em.Id != tourNameDTO.Id))
+            {
+                throw new ValidationException("Така структура JSON вже зайнята", "");
             }
             tourName.Name = tourNameDTO.Name;
             tourName.Tours.Clear();
@@ -107,11 +160,19 @@ namespace TouragencyWebApi.BLL.Services
             }
             Database.TourNames.Update(tourName);
             await Database.Save();
+            return tourNameDTO;
         }
-        public async Task Delete(int id)
+        public async Task<TourNameDTO> Delete(int id)
         {
+            var tourName = await Database.TourNames.GetById(id);
+            if (tourName == null)
+            {
+                throw new ValidationException("Така назва туру не знайдена", "");
+            }
+            var dto = await GetById(id);
             await Database.TourNames.Delete(id);
             await Database.Save();
+            return dto;
         }
 
     }
