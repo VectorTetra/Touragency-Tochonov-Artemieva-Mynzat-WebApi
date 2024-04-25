@@ -10,7 +10,7 @@ namespace TouragencyWebApi.DAL.Entities
         public string ReviewCaption { get; set; }
         public string ReviewText { get; set; }
         public DateTime CreationDate { get; set; }
-        public int TourId { get; set; }
+        public long TourId { get; set; }
         public virtual Tour Tour { get; set; }
         public virtual ICollection<ReviewImage> ReviewImages { get; set; }
         public int Likes { get; set; }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using TouragencyWebApi.DAL.Entities;
 namespace TouragencyWebApi.DAL.EF
@@ -36,36 +37,35 @@ namespace TouragencyWebApi.DAL.EF
         
         #region RunWithMigration
         
-        static DbContextOptions<TouragencyContext> _options;
+        //static DbContextOptions<TouragencyContext> _options;
 
-        static TouragencyContext()
-        {
-            try
-            {
-                var builder = new ConfigurationBuilder();
-                builder.SetBasePath(Directory.GetCurrentDirectory());
-                builder.AddJsonFile("appsettings.json");
-                var config = builder.Build();
-                string connectionString = config.GetConnectionString("DefaultConnection");
+        //static TouragencyContext()
+        //{
+        //    try
+        //    {
+        //        var builder = new ConfigurationBuilder();
+        //        builder.SetBasePath(Directory.GetCurrentDirectory());
+        //        builder.AddJsonFile("appsettings.json");
+        //        var config = builder.Build();
+        //        string connectionString = config.GetConnectionString("DefaultConnection");
 
-                var optionsBuilder = new DbContextOptionsBuilder<TouragencyContext>();
-                _options = optionsBuilder.UseLazyLoadingProxies().UseSqlServer(connectionString).Options;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
-                throw;
-            }
-        }
+        //        var optionsBuilder = new DbContextOptionsBuilder<TouragencyContext>();
+        //        _options = optionsBuilder.UseLazyLoadingProxies().UseSqlServer(connectionString).Options;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Exception: {ex.Message}");
+        //        throw;
+        //    }
+        //}
 
-        public TouragencyContext()
+        public TouragencyContext(DbContextOptions<TouragencyContext> _options)
            : base(_options)
         {
-
         }
-        
+
         #endregion RunWithMigration
-        
+
         /*
         #region RunWithoutMigration(Re-Create)
 
@@ -414,5 +414,26 @@ namespace TouragencyWebApi.DAL.EF
 
         #endregion RunWithoutMigration(Re-Create)
         */
+
+
+    }
+    // Класс необходим исключительно для миграций
+    public class SampleContextFactory : IDesignTimeDbContextFactory<TouragencyContext>
+    {
+        public TouragencyContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<TouragencyContext>();
+
+            // получаем конфигурацию из файла appsettings.json
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.SetBasePath(Directory.GetCurrentDirectory());
+            builder.AddJsonFile("appsettings.json");
+            IConfigurationRoot config = builder.Build();
+
+            // получаем строку подключения из файла appsettings.json
+            string connectionString = config.GetConnectionString("DefaultConnection");
+            optionsBuilder.UseSqlServer(connectionString);
+            return new TouragencyContext(optionsBuilder.Options);
+        }
     }
 }
