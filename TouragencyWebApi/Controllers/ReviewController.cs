@@ -88,7 +88,60 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByReviewTextSubstring(reviewQuery.ReviewText);
                         }
                         break;
-
+                    case "GetByTourName":
+                        {
+                            if (reviewQuery.TourName is null)
+                            {
+                                throw new ValidationException("Не вказано TourName для пошуку!", nameof(reviewQuery.TourName));
+                            }
+                            collection = await _serv.GetByTourNameSubstring(reviewQuery.TourName);
+                        }
+                        break;
+                    case "GetByTouristNickname":
+                        {
+                            if (reviewQuery.TouristNickname is null)
+                            {
+                                throw new ValidationException("Не вказано TouristNickname для пошуку!", nameof(reviewQuery.TouristNickname));
+                            }
+                            collection = await _serv.GetByTouristNicknameSubstring(reviewQuery.TouristNickname);
+                        }
+                        break;
+                    case "GetByClientFirstname":
+                        {
+                            if (reviewQuery.ClientFirstname is null)
+                            {
+                                throw new ValidationException("Не вказано ClientFirstname для пошуку!", nameof(reviewQuery.ClientFirstname));
+                            }
+                            collection = await _serv.GetByClientFirstnameSubstring(reviewQuery.ClientFirstname);
+                        }
+                        break;
+                    case "GetByClientLastname":
+                        {
+                            if (reviewQuery.ClientLastname is null)
+                            {
+                                throw new ValidationException("Не вказано ClientLastname для пошуку!", nameof(reviewQuery.ClientLastname));
+                            }
+                            collection = await _serv.GetByClientLastnameSubstring(reviewQuery.ClientLastname);
+                        }
+                        break;
+                    case "GetByClientMiddlename":
+                        {
+                            if (reviewQuery.ClientMiddlename is null)
+                            {
+                                throw new ValidationException("Не вказано ClientMiddlename для пошуку!", nameof(reviewQuery.ClientMiddlename));
+                            }
+                            collection = await _serv.GetByClientMiddlenameSubstring(reviewQuery.ClientMiddlename);
+                        }
+                        break;
+                    case "GetByCountryName":
+                        {
+                            if (reviewQuery.CountryName is null)
+                            {
+                                throw new ValidationException("Не вказано CountryName для пошуку!", nameof(reviewQuery.CountryName));
+                            }
+                            collection = await _serv.GetByCountryNameSubstring(reviewQuery.CountryName);
+                        }
+                        break;
                     case "GetByCreationDate":
                         {
                             if (reviewQuery.CreationDateMinValue is null || reviewQuery.CreationDateMaxValue is null)
@@ -107,10 +160,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByReviewImageId((long)reviewQuery.ReviewImageId);
                         }
                         break;
-                        case "GetByCompositeSearch":
+                    case "GetByCompositeSearch":
                         {
                             collection = await _serv.GetByCompositeSearch(reviewQuery.TourId, reviewQuery.ClientId, reviewQuery.CountryId, reviewQuery.ReviewImageId, reviewQuery.ReviewCaption, reviewQuery.ReviewText, reviewQuery.RatingMinValue, reviewQuery.RatingMaxValue, reviewQuery.CreationDateMinValue, reviewQuery.CreationDateMaxValue, reviewQuery.TourName, reviewQuery.TouristNickname, reviewQuery.ClientFirstname, reviewQuery.ClientLastname, reviewQuery.ClientMiddlename, reviewQuery.CountryName);
-                        }break;
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Вказано неправильний параметр reviewQuery.SearchParameter!", nameof(reviewQuery.SearchParameter));
@@ -133,12 +187,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddReview(ReviewDTO reviewDTO)
+        public async Task<ActionResult<ReviewDTO>> AddReview(ReviewDTO reviewDTO)
         {
             try
             {
-                await _serv.Create(reviewDTO);
-                return Ok();
+                var dto = await _serv.Create(reviewDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -151,12 +205,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateReview(ReviewDTO reviewDTO)
+        public async Task<ActionResult<ReviewDTO>> UpdateReview(ReviewDTO reviewDTO)
         {
             try
             {
-                await _serv.Update(reviewDTO);
-                return Ok();
+                var dto = await _serv.Update(reviewDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -168,12 +222,12 @@ namespace TouragencyWebApi.Controllers
             }
         }
         [HttpDelete]
-        public async Task<ActionResult> DeleteReview(long id)
+        public async Task<ActionResult<ReviewDTO>> DeleteReview(long id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {

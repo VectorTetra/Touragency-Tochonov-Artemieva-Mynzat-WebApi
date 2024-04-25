@@ -43,10 +43,43 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.TransportTypes.Where(t => t.Tours.Any(t => t.Id == tourId)).ToListAsync();
         }
 
+        public async Task<IEnumerable<TransportType>> GetByTourName(string tourname)
+        {
+            return await _context.TransportTypes.Where(t => t.Tours.Any(t => t.Name.Name.Contains(tourname))).ToListAsync();
+        }
+
+        public async Task<IEnumerable<TransportType>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring, long? tourId, string? tourname)
+        {
+            var typeCollections = new List<IEnumerable<TransportType>>();
+            
+            if (nameSubstring != null)
+            {
+                typeCollections.Add(await GetByNameSubstring(nameSubstring));
+            }
+            if (descriptionSubstring != null)
+            {
+                typeCollections.Add(await GetByDescriptionSubstring(descriptionSubstring));
+            }
+            if (tourId != null)
+            {
+                typeCollections.Add(await GetByTourId(tourId.Value));
+            }
+            if (tourname != null)
+            {
+                typeCollections.Add(await GetByTourName(tourname));
+            }
+            if(!typeCollections.Any())
+            {
+                return new List<TransportType>();
+            }
+            return typeCollections.Aggregate((previousList, nextList) => previousList.Intersect(nextList).ToList());
+        }
+
         public async Task Create(TransportType transportType)
         {
             await _context.TransportTypes.AddAsync(transportType);
         }
+
 
         public void Update(TransportType transportType)
         {

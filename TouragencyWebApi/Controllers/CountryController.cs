@@ -137,7 +137,7 @@ namespace TouragencyWebApi.Controllers
 
     public class CountryQuery
     {
-        public string SearchParameter { get; set; } = "";
+        public string SearchParameter { get; set; } = "GetAll";
         public int? Id { get; set; }
         public string? CountryName { get; set; }
 

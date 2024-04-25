@@ -33,7 +33,7 @@ namespace TouragencyWebApi.DAL.EF
         public DbSet<TourImage> TourImages { get; set; }
         public DbSet<TourState> TourStates { get; set; }
         public DbSet<TransportType> TransportTypes { get; set; }
-
+        
         #region RunWithMigration
         
         static DbContextOptions<TouragencyContext> _options;
@@ -65,7 +65,7 @@ namespace TouragencyWebApi.DAL.EF
         }
         
         #endregion RunWithMigration
-
+        
         /*
         #region RunWithoutMigration(Re-Create)
 
@@ -322,14 +322,14 @@ namespace TouragencyWebApi.DAL.EF
 
 
 
-                
-                 //Якщо вам потрібно знайти кількість входжень підрядка в рядок, ви можете використати клас Regex і метод Matches, як показано нижче12:
 
-                    //string s = "yourString";
-                    //string sub = "yourSubstring";
-                    //int count = Regex.Matches(s, sub).Count;
-                    //Console.WriteLine($"Кількість входжень підрядка: {count}");
-                 
+                //Якщо вам потрібно знайти кількість входжень підрядка в рядок, ви можете використати клас Regex і метод Matches, як показано нижче12:
+
+                //string s = "yourString";
+                //string sub = "yourSubstring";
+                //int count = Regex.Matches(s, sub).Count;
+                //Console.WriteLine($"Кількість входжень підрядка: {count}");
+
                 BedConfigurations.Add(new BedConfiguration { Label = "SGL+SGL", Description = "Дві односпальні ліжка", Capacity = 2 });
                 BedConfigurations.Add(new BedConfiguration { Label = "DBL", Description = "Двоспальне ліжко", Capacity = 2 });
                 BedConfigurations.Add(new BedConfiguration { Label = "KNG", Description = "Ліжко King-size", Capacity = 2 });

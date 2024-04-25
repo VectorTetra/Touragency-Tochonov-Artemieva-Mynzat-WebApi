@@ -38,6 +38,14 @@ namespace TouragencyWebApi.BLL.Services
             var toursDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tours);
             return toursDTO;
         }
+
+        public async Task<IEnumerable<TourDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tours = await Database.Tours.Get200Last();
+            var toursDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tours);
+            return toursDTO;
+        }
         public async Task<TourDTO?> GetById(long id)
         {
             var mapper = new Mapper(Tour_TourDTOMapConfig);
@@ -178,11 +186,42 @@ namespace TouragencyWebApi.BLL.Services
             var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
             return tourDTO;
         }
-        public async Task<IEnumerable<TourDTO>> GetByCompositeSearch(int? tourNameId, int? countryid, int? settlementId, int? hotelId,
-            DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId)
+        public async Task<IEnumerable<TourDTO>> GetByTouristNickname(string touristNickname)
         {
             var mapper = new Mapper(Tour_TourDTOMapConfig);
-            var tourCollection = await Database.Tours.GetByCompositeSearch(tourNameId, countryid, settlementId, hotelId, startDate, endDate, durationDays, hotelServicesIds, transportTypeId, tourStateId);
+            var tourCollection = await Database.Tours.GetByTouristNickname(touristNickname);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
+        public async Task<IEnumerable<TourDTO>> GetByClientFirstname(string clientFirstname)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByClientFirstname(clientFirstname);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
+        public async Task<IEnumerable<TourDTO>> GetByClientLastname(string clientLastname)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByClientLastname(clientLastname);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
+        public async Task<IEnumerable<TourDTO>> GetByClientMiddlename(string clientMiddlename)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByClientMiddlename(clientMiddlename);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
+        public async Task<IEnumerable<TourDTO>> GetByCompositeSearch(int? tourNameId, int? countryid, int? settlementId, int? hotelId,
+            DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId,
+            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByCompositeSearch(tourNameId, countryid, settlementId, hotelId, startDate, 
+                endDate, durationDays, hotelServicesIds, transportTypeId, tourStateId, touristNickname, clientFirstname, 
+                clientLastname, clientMiddlename,countryName,settlementName,hotelName);
             var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
             return tourDTO;
         }
@@ -199,7 +238,7 @@ namespace TouragencyWebApi.BLL.Services
         // ---- TourState,
         // ---- TourName
         
-        public async Task Create(TourDTO tourDTO)
+        public async Task<TourDTO> Create(TourDTO tourDTO)
         {
             //Намагаємось визначити, чи ще не існує тур з таким tourId
             var BusyTourId = await Database.Tours.GetById(tourDTO.Id);
@@ -256,8 +295,10 @@ namespace TouragencyWebApi.BLL.Services
             };
             await Database.Tours.Create(tour);
             await Database.Save();
+            tourDTO.Id = tour.Id;
+            return tourDTO;
         }
-        public async Task Update(TourDTO tourDTO) 
+        public async Task<TourDTO> Update(TourDTO tourDTO) 
         { 
             var tour = await Database.Tours.GetById(tourDTO.Id);
             if (tour == null)
@@ -337,16 +378,19 @@ namespace TouragencyWebApi.BLL.Services
             tour.Route = tourDTO.Route;
             Database.Tours.Update(tour);
             await Database.Save();
+            return tourDTO;
         }
-        public async Task Delete(long id) 
+        public async Task<TourDTO> Delete(long id) 
         {
             Tour tour = await Database.Tours.GetById(id);
             if (tour == null)
             {
                 throw new ValidationException("Тур не знайдено!", "");
             }
+            var dto = await GetById(id);
             await Database.Tours.Delete(id);
             await Database.Save();
+            return dto;
         }
     }
 }

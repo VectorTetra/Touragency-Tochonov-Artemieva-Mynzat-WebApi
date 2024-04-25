@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
@@ -28,6 +27,11 @@ namespace TouragencyWebApi.Controllers
                     case "GetAll":
                         {
                             collection = await _serv.GetAll();
+                        }
+                        break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
                         }
                         break;
                     case "GetById":
@@ -79,7 +83,104 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByBookingDataId((long)bookingQuery.BookingDataId);
                         }
                         break;
-                        default:
+                    case "GetByTourNameId":
+                        {
+                            if (bookingQuery.TourNameId is null)
+                            {
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(bookingQuery.TourNameId));
+                            }
+                            collection = await _serv.GetByTourNameId((int)bookingQuery.TourNameId);
+                        }
+                        break;
+                    case "GetByTourNameSubstring":
+                        {
+                            if (bookingQuery.TourNameSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано TourNameSubstring для пошуку!", nameof(bookingQuery.TourNameSubstring));
+                            }
+                            collection = await _serv.GetByTourNameSubstring(bookingQuery.TourNameSubstring);
+                        }
+                        break;
+                    case "GetByClientFirstnameSubstring":
+                        {
+                            if (bookingQuery.ClientFirstnameSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано ClientFirstnameSubstring для пошуку!", nameof(bookingQuery.ClientFirstnameSubstring));
+                            }
+                            collection = await _serv.GetByClientFirstnameSubstring(bookingQuery.ClientFirstnameSubstring);
+                        }
+                        break;
+                    case "GetByClientLastnameSubstring":
+                        {
+                            if (bookingQuery.ClientLastnameSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано ClientLastnameSubstring для пошуку!", nameof(bookingQuery.ClientLastnameSubstring));
+                            }
+                            collection = await _serv.GetByClientLastnameSubstring(bookingQuery.ClientLastnameSubstring);
+                        }
+                        break;
+                    case "GetByClientMiddlenameSubstring":
+                        {
+                            if (bookingQuery.ClientMiddlenameSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано ClientMiddlenameSubstring для пошуку!", nameof(bookingQuery.ClientMiddlenameSubstring));
+                            }
+                            collection = await _serv.GetByClientMiddlenameSubstring(bookingQuery.ClientMiddlenameSubstring);
+                        }
+                        break;
+                    case "GetByClientPhoneNumberSubstring":
+                        {
+                            if (bookingQuery.ClientPhoneNumberSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано ClientPhoneNumberSubstring для пошуку!", nameof(bookingQuery.ClientPhoneNumberSubstring));
+                            }
+                            collection = await _serv.GetByClientPhoneNumberSubstring(bookingQuery.ClientPhoneNumberSubstring);
+                        }
+                        break;
+                    case "GetByClientEmailAddressSubstring":
+                        {
+                            if (bookingQuery.ClientEmailAddressSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано ClientEmailAddressSubstring для пошуку!", nameof(bookingQuery.ClientEmailAddressSubstring));
+                            }
+                            collection = await _serv.GetByClientEmailAddressSubstring(bookingQuery.ClientEmailAddressSubstring);
+                        }
+                        break;
+                    case "GetByHotelNameSubstring":
+                        {
+                            if (bookingQuery.HotelNameSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано HotelNameSubstring для пошуку!", nameof(bookingQuery.HotelNameSubstring));
+                            }
+                            collection = await _serv.GetByHotelNameSubstring(bookingQuery.HotelNameSubstring);
+                        }
+                        break;
+                    case "GetBySettlementNameSubstring":
+                        {
+                            if (bookingQuery.SettlementNameSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано SettlementNameSubstring для пошуку!", nameof(bookingQuery.SettlementNameSubstring));
+                            }
+                            collection = await _serv.GetBySettlementNameSubstring(bookingQuery.SettlementNameSubstring);
+                        }
+                        break;
+                    case "GetByCountryNameSubstring":
+                        {
+                            if (bookingQuery.CountryNameSubstring is null)
+                            {
+                                throw new ValidationException("Не вказано CountryNameSubstring для пошуку!", nameof(bookingQuery.CountryNameSubstring));
+                            }
+                            collection = await _serv.GetByCountryNameSubstring(bookingQuery.CountryNameSubstring);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(bookingQuery.TourId, bookingQuery.ClientId, bookingQuery.HotelId, bookingQuery.BookingDataId, bookingQuery.TourNameId,
+                                                               bookingQuery.TourNameSubstring, bookingQuery.ClientFirstnameSubstring, bookingQuery.ClientLastnameSubstring, bookingQuery.ClientMiddlenameSubstring, bookingQuery.ClientPhoneNumberSubstring,
+                                                                                              bookingQuery.ClientEmailAddressSubstring, bookingQuery.HotelNameSubstring, bookingQuery.SettlementNameSubstring, bookingQuery.CountryNameSubstring);
+                        }
+                        break;
+                    default:
                         {
                             throw new ValidationException("Невірно вказаний параметр пошуку!", nameof(bookingQuery.SearchParameter));
                         }
@@ -101,12 +202,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateBooking(BookingDTO bookingDTO)
+        public async Task<ActionResult<BookingDTO>> CreateBooking(BookingDTO bookingDTO)
         {
             try
             {
-                await _serv.Create(bookingDTO);
-                return Ok();
+                var dto = await _serv.Create(bookingDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -119,12 +220,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateBooking(BookingDTO bookingDTO)
+        public async Task<ActionResult<BookingDTO>> UpdateBooking(BookingDTO bookingDTO)
         {
             try
             {
-                await _serv.Update(bookingDTO);
-                return Ok();
+                var dto = await _serv.Update(bookingDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -137,12 +238,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteBooking(long id)
+        public async Task<ActionResult<BookingDTO>> DeleteBooking(long id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -156,11 +257,22 @@ namespace TouragencyWebApi.Controllers
     }
     public class BookingQuery
     {
-        public string SearchParameter { get; set; }
+        public string SearchParameter { get; set; } = "";
         public long? Id { get; set; }
         public int? ClientId { get; set; }
         public int? HotelId { get; set; }
         public long? TourId { get; set; }
         public long? BookingDataId { get; set; }
+        public int? TourNameId { get; set; }
+        public string? TourNameSubstring { get; set; }
+        public string? ClientFirstnameSubstring { get; set; }
+        public string? ClientLastnameSubstring { get; set; }
+        public string? ClientMiddlenameSubstring { get; set; }
+        public string? ClientPhoneNumberSubstring { get; set; }
+        public string? ClientEmailAddressSubstring { get; set; }
+        public string? HotelNameSubstring { get; set; }
+        public string? SettlementNameSubstring { get; set; }
+        public string? CountryNameSubstring { get; set; }
     }
+
 }

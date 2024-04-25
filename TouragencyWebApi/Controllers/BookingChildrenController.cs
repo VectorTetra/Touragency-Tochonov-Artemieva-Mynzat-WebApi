@@ -89,12 +89,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> CreateBookingChildren(BookingChildrenDTO bookingChildrenDTO)
+        public async Task<ActionResult<BookingChildrenDTO>> CreateBookingChildren(BookingChildrenDTO bookingChildrenDTO)
         {
             try
             {
-                await _serv.Create(bookingChildrenDTO);
-                return Ok();
+                var dto = await _serv.Create(bookingChildrenDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -107,12 +107,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<string>> UpdateBookingChildren(BookingChildrenDTO bookingChildrenDTO)
+        public async Task<ActionResult<BookingChildrenDTO>> UpdateBookingChildren(BookingChildrenDTO bookingChildrenDTO)
         {
             try
             {
-                await _serv.Update(bookingChildrenDTO);
-                return Ok();
+                var dto = await _serv.Update(bookingChildrenDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -125,12 +125,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult<string>> DeleteBookingChildren(long id)
+        public async Task<ActionResult<BookingChildrenDTO>> DeleteBookingChildren(long id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {

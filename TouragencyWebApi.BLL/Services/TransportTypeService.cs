@@ -65,7 +65,23 @@ namespace TouragencyWebApi.BLL.Services
             return transportTypeDTO;
         }
 
-        public async Task Create(TransportTypeDTO transportType)
+        public async Task<IEnumerable<TransportTypeDTO>> GetByTourName(string tourname)
+        {
+            var mapper = new Mapper(TransportType_TransportTypeDTOMapConfig);
+            var transportTypeCollection = await Database.TransportTypes.GetByTourName(tourname);
+            var transportTypeDTO = mapper.Map<IEnumerable<TransportType>, IEnumerable<TransportTypeDTO>>(transportTypeCollection);
+            return transportTypeDTO;
+        }
+
+        public async Task<IEnumerable<TransportTypeDTO>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring, long? tourId, string? tourname)
+        {
+            var mapper = new Mapper(TransportType_TransportTypeDTOMapConfig);
+            var transportTypeCollection = await Database.TransportTypes.GetByCompositeSearch(nameSubstring, descriptionSubstring, tourId, tourname);
+            var transportTypeDTO = mapper.Map<IEnumerable<TransportType>, IEnumerable<TransportTypeDTO>>(transportTypeCollection);
+            return transportTypeDTO;
+        }
+
+        public async Task<TransportTypeDTO> Create(TransportTypeDTO transportType)
         {
             //Намагаємось визначити, чи ще не існує тур з таким tourId
             var BusyTrTypeId = await Database.TransportTypes.GetById(transportType.Id);
@@ -93,11 +109,14 @@ namespace TouragencyWebApi.BLL.Services
                 Description = transportType.Description,
                 Tours = TourCollection
             };
+
             await Database.TransportTypes.Create(newTrType);
             await Database.Save();
+            transportType.Id = newTrType.Id;
+            return transportType;
         }
 
-        public async Task Update(TransportTypeDTO transportType)
+        public async Task<TransportTypeDTO> Update(TransportTypeDTO transportType)
         {
             //Намагаємось визначити, чи ще не існує тур з таким tourId
             var TrType = await Database.TransportTypes.GetById(transportType.Id);
@@ -123,17 +142,20 @@ namespace TouragencyWebApi.BLL.Services
             TrType.Description = transportType.Description;
             Database.TransportTypes.Update(TrType);
             await Database.Save();
+            return transportType;
         }
 
-        public async Task Delete(int id)
+        public async Task<TransportTypeDTO> Delete(int id)
         {
             var TrType = await Database.TransportTypes.GetById(id);
             if (TrType == null)
             {
                 throw new ValidationException("Такий transportTypeId не знайдено!", "");
             }
+            var dto = await GetById(id);
             await Database.TransportTypes.Delete(id);
             await Database.Save();
+            return dto;
         }
     }
 }

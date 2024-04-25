@@ -75,7 +75,7 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(Review_ReviewDTOMapConfig);
             return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByCreationDateDiapazone(start, end));
         }
-        public async Task Create(ReviewDTO reviewDTO)
+        public async Task<ReviewDTO> Create(ReviewDTO reviewDTO)
         {
             var IsBusyReviewId = await Database.Reviews.GetById(reviewDTO.Id);
             if (IsBusyReviewId != null)
@@ -109,8 +109,10 @@ namespace TouragencyWebApi.BLL.Services
             };
             await Database.Reviews.Create(review);
             await Database.Save();
+            reviewDTO.Id = review.Id;
+            return reviewDTO;
         }
-        public async Task Update(ReviewDTO reviewDTO)
+        public async Task<ReviewDTO> Update(ReviewDTO reviewDTO)
         {
             var review = await Database.Reviews.GetById(reviewDTO.Id);
             if (review == null)
@@ -140,16 +142,19 @@ namespace TouragencyWebApi.BLL.Services
             review.Likes = reviewDTO.Likes;
             Database.Reviews.Update(review);
             await Database.Save();
+            return reviewDTO;
         }
-        public async Task Delete(long id) 
+        public async Task<ReviewDTO> Delete(long id) 
         {
             var review = await Database.Reviews.GetById(id);
             if (review == null)
             {
                 throw new ValidationException("Такого відгуку з вказаним reviewId не знайдено!", "");
             }
+            var dto = await GetById(id);
             await Database.Reviews.Delete(review.Id);
             await Database.Save();
+            return dto;
         }
 
         public async Task<IEnumerable<ReviewDTO>> Get200Last()

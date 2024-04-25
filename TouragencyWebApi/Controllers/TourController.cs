@@ -30,6 +30,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (tourQuery.Id is null)
@@ -128,10 +133,75 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByTransportTypeId(tourQuery.transportTypeId.Value);
                         }
                         break;
+                    case "GetByTouristNickname":
+                        {
+                            if (tourQuery.TouristNickname is null)
+                            {
+                                throw new ValidationException("Не вказано TouristNickname для пошуку!", nameof(tourQuery.TouristNickname));
+                            }
+                            collection = await _serv.GetByTouristNickname(tourQuery.TouristNickname);
+                        }
+                        break;
+                    case "GetByClientFirstname":
+                        {
+                            if (tourQuery.ClientFirstname is null)
+                            {
+                                throw new ValidationException("Не вказано ClientFirstname для пошуку!", nameof(tourQuery.ClientFirstname));
+                            }
+                            collection = await _serv.GetByClientFirstname(tourQuery.ClientFirstname);
+                        }
+                        break;
+                    case "GetByClientLastname":
+                        {
+                            if (tourQuery.ClientLastname is null)
+                            {
+                                throw new ValidationException("Не вказано ClientLastname для пошуку!", nameof(tourQuery.ClientLastname));
+                            }
+                            collection = await _serv.GetByClientLastname(tourQuery.ClientLastname);
+                        }
+                        break;
+                    case "GetByClientMiddlename":
+                        {
+                            if (tourQuery.ClientMiddlename is null)
+                            {
+                                throw new ValidationException("Не вказано ClientMiddlename для пошуку!", nameof(tourQuery.ClientMiddlename));
+                            }
+                            collection = await _serv.GetByClientMiddlename(tourQuery.ClientMiddlename);
+                        }
+                        break;
+                    case "GetByCountryName":
+                        {
+                            if (tourQuery.CountryName is null)
+                            {
+                                throw new ValidationException("Не вказано CountryName для пошуку!", nameof(tourQuery.CountryName));
+                            }
+                            collection = await _serv.GetByCountryName(tourQuery.CountryName);
+                        }
+                        break;
+                    case "GetBySettlementName":
+                        {
+                            if (tourQuery.SettlementName is null)
+                            {
+                                throw new ValidationException("Не вказано SettlementName для пошуку!", nameof(tourQuery.SettlementName));
+                            }
+                            collection = await _serv.GetBySettlementName(tourQuery.SettlementName);
+                        }
+                        break;
+                    case "GetByHotelName":
+                        {
+                            if (tourQuery.HotelName is null)
+                            {
+                                throw new ValidationException("Не вказано HotelName для пошуку!", nameof(tourQuery.HotelName));
+                            }
+                            collection = await _serv.GetByHotelName(tourQuery.HotelName);
+                        }
+                        break;
                     case "GetByCompositeSearch":
                         {
+
                             collection = await _serv.GetByCompositeSearch(tourQuery.TourNameId, tourQuery.countryId, tourQuery.settlementId, tourQuery.hotelId,
-                                                               tourQuery.ArrivalDate, tourQuery.DepartureDate, tourQuery.durationDays, tourQuery.hotelServicesIds, tourQuery.transportTypeId, tourQuery.TourStateId);
+                                                               tourQuery.ArrivalDate, tourQuery.DepartureDate, tourQuery.durationDays, tourQuery.hotelServicesIds, tourQuery.transportTypeId, tourQuery.TourStateId,
+                                                                                              tourQuery.TouristNickname, tourQuery.ClientFirstname, tourQuery.ClientLastname, tourQuery.ClientMiddlename, tourQuery.CountryName, tourQuery.SettlementName, tourQuery.HotelName);
                         }
                         break;
                     default:
@@ -161,8 +231,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(tour);
-                return Ok();
+                var dto = await _serv.Create(tour);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -179,8 +249,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(tour);
-                return Ok();
+                var dto = await _serv.Update(tour);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -197,8 +267,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -213,7 +283,14 @@ namespace TouragencyWebApi.Controllers
 
     public class TourQuery
     {
-        public string SearchParameter { get; set; }
+        public string SearchParameter { get; set; } = "";
+        public string? TouristNickname { get; set; }
+        public string? ClientFirstname { get; set; }
+        public string? ClientLastname { get; set; }
+        public string? ClientMiddlename { get; set; }
+        public string? CountryName { get; set; }
+        public string? SettlementName { get; set; }
+        public string? HotelName { get; set; }
         public long? Id { get; set; }
         public int? TourNameId { get; set; }
         public DateTime? ArrivalDate { get; set; }

@@ -24,6 +24,10 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Tours.ToListAsync();
         }
+        public async Task<IEnumerable<Tour>> Get200Last()
+        {
+            return await _context.Tours.OrderByDescending(t => t.Id).Take(200).ToListAsync();
+        }
         public async Task<Tour?> GetById(long id)
         {
             return await _context.Tours.FirstOrDefaultAsync(t => t.Id == id);
@@ -103,8 +107,26 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Tours.Where(t => t.TourState.Id == tourStateId).ToListAsync();
         }
+        public async Task<IEnumerable<Tour>> GetByTouristNickname(string touristNickname)
+        {
+            return await _context.Tours.Where(t => t.Clients.Any(tourist => tourist.TouristNickname.Contains(touristNickname))).ToListAsync();
+        }
+        public async Task<IEnumerable<Tour>> GetByClientFirstname(string clientFirstname)
+        {
+            return await _context.Tours.Where(t => t.Clients.Any(client => client.Person.Firstname.Contains(clientFirstname))).ToListAsync();
+        }
+        public async Task<IEnumerable<Tour>> GetByClientLastname(string clientLastname)
+        {
+            return await _context.Tours.Where(t => t.Clients.Any(client => client.Person.Lastname.Contains(clientLastname))).ToListAsync();
+        }
+        public async Task<IEnumerable<Tour>> GetByClientMiddlename(string clientMiddlename)
+        {
+            return await _context.Tours.Where(t => t.Clients.Any(client => client.Person.Middlename.Contains(clientMiddlename))).ToListAsync();
+        }
+
         public async Task<IEnumerable<Tour>> GetByCompositeSearch(int? tourNameId, int? countryId, int? settlementId, int? hotelId,
-                       DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId,int? tourStateId)
+                       DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId,int? tourStateId, 
+                       string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName)
         {
             var tourCollections = new List<IEnumerable<Tour>>();
 
@@ -153,7 +175,41 @@ namespace TouragencyWebApi.DAL.Repositories
                 var hotelsByTourStateId = await GetByTourStateId(tourStateId.Value);
                 tourCollections.Add(hotelsByTourStateId);
             }
-
+            if (touristNickname != null)
+            {
+                var hotelsByTouristNickname = await GetByTouristNickname(touristNickname);
+                tourCollections.Add(hotelsByTouristNickname);
+            }
+            if (clientFirstname != null)
+            {
+                var hotelsByClientFirstname = await GetByClientFirstname(clientFirstname);
+                tourCollections.Add(hotelsByClientFirstname);
+            }
+            if (clientLastname != null)
+            {
+                var hotelsByClientLastname = await GetByClientLastname(clientLastname);
+                tourCollections.Add(hotelsByClientLastname);
+            }
+            if (clientMiddlename != null)
+            {
+                var hotelsByClientMiddlename = await GetByClientMiddlename(clientMiddlename);
+                tourCollections.Add(hotelsByClientMiddlename);
+            }
+            if (countryName != null)
+            {
+                var hotelsByCountryName = await GetByCountryName(countryName);
+                tourCollections.Add(hotelsByCountryName);
+            }
+            if (settlementName != null)
+            {
+                var hotelsBySettlementName = await GetBySettlementName(settlementName);
+                tourCollections.Add(hotelsBySettlementName);
+            }
+            if (hotelName != null)
+            {
+                var hotelsByHotelName = await GetByHotelName(hotelName);
+                tourCollections.Add(hotelsByHotelName);
+            }
             if (!tourCollections.Any())
             {
                 return new List<Tour>();

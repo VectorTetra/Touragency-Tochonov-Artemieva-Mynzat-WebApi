@@ -71,6 +71,20 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByTourId((long)transportTypeQuery.TourId);
                         }
                         break;
+                    case "GetByTourName":
+                        {
+                            if (transportTypeQuery.TourName is null)
+                            {
+                                throw new ValidationException("Не вказано TourName для пошуку!", nameof(transportTypeQuery.TourName));
+                            }
+                            collection = await _serv.GetByTourName(transportTypeQuery.TourName);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(transportTypeQuery.Name, transportTypeQuery.Description, transportTypeQuery.TourId, transportTypeQuery.TourName);
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Невідомий параметр пошуку!", nameof(transportTypeQuery.SearchParameter));
@@ -97,8 +111,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(transportType);
-                return Ok(transportType);
+                var dto = await _serv.Create(transportType);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -114,8 +128,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(transportType);
-                return Ok(transportType);
+                var dto = await _serv.Update(transportType);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -132,8 +146,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -151,6 +165,7 @@ namespace TouragencyWebApi.Controllers
         public string SearchParameter { get; set; } = "";
         public int? Id { get; set; }
         public string? Name { get; set; }
+        public string? TourName { get; set; }
         public string? Description { get; set; }
         public long? TourId { get; set; }
     }
