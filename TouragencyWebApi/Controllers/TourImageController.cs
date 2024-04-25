@@ -29,6 +29,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (tourImageQuery.Id is null)
@@ -60,6 +65,47 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByTourNameId((int)tourImageQuery.TourNameId);
                         }
                         break;
+                    case "GetByTourName":
+                        {
+                            if (tourImageQuery.TourName is null)
+                            {
+                                throw new ValidationException("Не вказано TourName для пошуку!", nameof(tourImageQuery.TourName));
+                            }
+                            collection = await _serv.GetByTourName(tourImageQuery.TourName);
+                        }
+                        break;
+                    case "GetByCountryName":
+                        {
+                            if (tourImageQuery.CountryName is null)
+                            {
+                                throw new ValidationException("Не вказано CountryName для пошуку!", nameof(tourImageQuery.CountryName));
+                            }
+                            collection = await _serv.GetByCountryName(tourImageQuery.CountryName);
+                        }
+                        break;
+                    case "GetBySettlementName":
+                        {
+                            if (tourImageQuery.SettlementName is null)
+                            {
+                                throw new ValidationException("Не вказано SettlementName для пошуку!", nameof(tourImageQuery.SettlementName));
+                            }
+                            collection = await _serv.GetBySettlementName(tourImageQuery.SettlementName);
+                        }
+                        break;
+                    case "GetByHotelName":
+                        {
+                            if (tourImageQuery.HotelName is null)
+                            {
+                                throw new ValidationException("Не вказано HotelName для пошуку!", nameof(tourImageQuery.HotelName));
+                            }
+                            collection = await _serv.GetByHotelName(tourImageQuery.HotelName);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(tourImageQuery.TourName, tourImageQuery.ImageUrl, tourImageQuery.CountryName, tourImageQuery.SettlementName, tourImageQuery.HotelName, tourImageQuery.TourId, tourImageQuery.TourNameId);
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Невідомий параметр пошуку!", nameof(tourImageQuery.SearchParameter));
@@ -86,8 +132,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(tourImageDTO);
-                return Ok(tourImageDTO);
+                var dto = await _serv.Create(tourImageDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -104,8 +150,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(tourImageDTO);
-                return Ok(tourImageDTO);
+                var dto = await _serv.Update(tourImageDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -122,8 +168,8 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
@@ -140,7 +186,12 @@ namespace TouragencyWebApi.Controllers
     {
         public string SearchParameter { get; set; }
         public long? Id { get; set; }
+        public long? TourId { get; set; }
         public string? ImageUrl { get; set; }
         public int? TourNameId { get; set; }
+        public string? TourName { get; set; }
+        public string? CountryName { get; set; }
+        public string? SettlementName { get; set; }
+        public string? HotelName { get; set; }
     }
 }

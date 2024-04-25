@@ -29,6 +29,12 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
             return mapper.Map<IEnumerable<TourImage>, List<TourImageDTO>>(await Database.TourImages.GetAll());
         }
+
+        public async Task<IEnumerable<TourImageDTO>> Get200Last()
+        {
+            var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
+            return mapper.Map<IEnumerable<TourImage>, List<TourImageDTO>>(await Database.TourImages.Get200Last());
+        }
         public async Task<TourImageDTO?> GetById(long id)
         {
             var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
@@ -44,12 +50,42 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
             return mapper.Map<IEnumerable<TourImage>, List<TourImageDTO>>(await Database.TourImages.GetByTourNameId(tourNameId));
         }
+
+        public async Task<IEnumerable<TourImageDTO>> GetByTourName(string tourName)
+        {
+            var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
+            return mapper.Map<IEnumerable<TourImage>, List<TourImageDTO>>(await Database.TourImages.GetByTourName(tourName));
+        }
         public async Task<IEnumerable<TourImageDTO>> GetByImageUrlSubstring(string imageUrlSubstring)
         {
             var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
             return mapper.Map<IEnumerable<TourImage>, List<TourImageDTO>>(await Database.TourImages.GetByImageUrlSubstring(imageUrlSubstring));
         }
-        public async Task Create(TourImageDTO tourImage)
+        public async Task<IEnumerable<TourImageDTO>> GetByCountryName(string countryNameSubstring)
+        {
+            var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
+            return mapper.Map<IEnumerable<TourImage>, List<TourImageDTO>>(await Database.TourImages.GetByCountryName(countryNameSubstring));
+        }
+        public async Task<IEnumerable<TourImageDTO>> GetBySettlementName(string settlementNameSubstring)
+        {
+            var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
+            return mapper.Map<IEnumerable<TourImage>, List<TourImageDTO>>(await Database.TourImages.GetBySettlementName(settlementNameSubstring));
+        }
+        public async Task<IEnumerable<TourImageDTO>> GetByHotelName(string hotelNameSubstring)
+        {
+            var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
+            return mapper.Map<IEnumerable<TourImage>, List<TourImageDTO>>(await Database.TourImages.GetByHotelName(hotelNameSubstring));
+        }
+
+
+
+        public async Task<IEnumerable<TourImageDTO>> GetByCompositeSearch(string? tourName, string? imageUrlSubstring, string? countryNameSubstring,
+                       string? settlementNameSubstring, string? hotelNameSubstring, long? tourId, int? tourNameId)
+        {
+            var mapper = new Mapper(TourImage_TourImageDTOMapConfig);
+            return mapper.Map<IEnumerable<TourImage>, List<TourImageDTO>>(await Database.TourImages.GetByCompositeSearch(tourName,imageUrlSubstring, countryNameSubstring, settlementNameSubstring, hotelNameSubstring, tourId, tourNameId));
+        }
+        public async Task<TourImageDTO> Create(TourImageDTO tourImage)
         {
             var Existed = await Database.TourImages.GetByImageUrlSubstring(tourImage.ImageUrl);
             if (Existed.Any(em => em.ImageUrl == tourImage.ImageUrl))
@@ -73,8 +109,10 @@ namespace TouragencyWebApi.BLL.Services
             };
             await Database.TourImages.Create(newTourImage);
             await Database.Save();
+            tourImage.Id = newTourImage.Id;
+            return tourImage;
         }
-        public async Task Update(TourImageDTO tourImage) 
+        public async Task<TourImageDTO> Update(TourImageDTO tourImage) 
         {
             var Existed = await Database.TourImages.GetById(tourImage.Id);
             if (Existed == null)
@@ -91,16 +129,19 @@ namespace TouragencyWebApi.BLL.Services
             Existed.TourName = tourName;
             Database.TourImages.Update(Existed);
             await Database.Save();
+            return tourImage;
         }
-        public async Task Delete(long id)
+        public async Task<TourImageDTO> Delete(long id)
         {
             var BusyTourImage = await Database.HotelImages.GetById(id);
             if (BusyTourImage == null)
             {
                 throw new ValidationException($"Зображення туру з таким id {id} не знайдено", "");
             }
+            var dto = await GetById(id);
             await Database.TourImages.Delete(id);
             await Database.Save();
+            return dto;
         }
     }
 }
