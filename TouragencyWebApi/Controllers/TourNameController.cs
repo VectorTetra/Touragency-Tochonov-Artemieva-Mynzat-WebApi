@@ -201,7 +201,7 @@ namespace TouragencyWebApi.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<TourNameDTO>> DeleteTourName(int id)
         {
             try

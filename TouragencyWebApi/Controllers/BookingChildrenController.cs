@@ -124,7 +124,7 @@ namespace TouragencyWebApi.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<BookingChildrenDTO>> DeleteBookingChildren(long id)
         {
             try

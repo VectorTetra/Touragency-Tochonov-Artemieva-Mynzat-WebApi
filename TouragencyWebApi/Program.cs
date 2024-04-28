@@ -14,7 +14,7 @@ string? connection = builder.Configuration.GetConnectionString("DefaultConnectio
 // добавляем контекст ApplicationContext в качестве сервиса в приложение
 builder.Services.AddControllers();
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
 builder.Services.AddTouragencyContext(connection);
 builder.Services.AddUnitOfWorkService();
 builder.Services.AddScoped<IBedConfigurationService, BedConfigurationService>();
@@ -48,17 +48,17 @@ builder.Services.AddScoped<ITouragencyAccountService, TouragencyAccountService>(
 
 var app = builder.Build();
 // настраиваем CORS
-app.UseCors(builder => builder.AllowAnyOrigin());
+app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 //app.UseCors(builder => builder.WithOrigins("https://localhost:7110")
 //                            .AllowAnyHeader()
 //                            .AllowAnyMethod());
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

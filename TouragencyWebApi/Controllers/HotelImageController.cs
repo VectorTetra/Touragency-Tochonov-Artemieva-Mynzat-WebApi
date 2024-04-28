@@ -117,7 +117,7 @@ namespace TouragencyWebApi.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<HotelImageDTO>> DeleteHotelImage(long id)
         {
             try

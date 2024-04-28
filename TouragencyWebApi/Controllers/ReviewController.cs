@@ -221,7 +221,7 @@ namespace TouragencyWebApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<ReviewDTO>> DeleteReview(long id)
         {
             try

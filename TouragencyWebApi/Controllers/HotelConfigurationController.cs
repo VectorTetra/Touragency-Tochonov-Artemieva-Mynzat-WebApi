@@ -155,7 +155,7 @@ namespace TouragencyWebApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<HotelConfigurationDTO>> DeleteHotelConfiguration(int id)
         {
             try

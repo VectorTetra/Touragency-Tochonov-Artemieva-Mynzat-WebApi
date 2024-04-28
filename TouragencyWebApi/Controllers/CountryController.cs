@@ -50,11 +50,12 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetByName":
                         {
-                            if (countryQuery.CountryName == null)
+                            if (countryQuery.Name == null)
                             {
-                                throw new ValidationException("Не вказано CountryQuery для пошуку!", nameof(countryQuery.CountryName));
+                                throw new ValidationException("Не вказано CountryQuery для пошуку!", nameof(countryQuery.Name));
                             }
-                            collection = await _serv.GetByName(countryQuery.CountryName);
+                            collection = await _serv.GetByName(countryQuery.Name);
+                        
                         }
                         break;
                     default:
@@ -114,7 +115,7 @@ namespace TouragencyWebApi.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCountry(int id)
         {
             try
@@ -131,15 +132,13 @@ namespace TouragencyWebApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
-
     }
 
     public class CountryQuery
     {
         public string SearchParameter { get; set; } = "GetAll";
         public int? Id { get; set; }
-        public string? CountryName { get; set; }
+        public string? Name { get; set; }
 
     }
 }

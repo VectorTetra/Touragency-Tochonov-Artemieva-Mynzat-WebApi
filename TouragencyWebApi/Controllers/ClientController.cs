@@ -170,7 +170,7 @@ namespace TouragencyWebApi.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<ClientDTO>> DeleteClient(int id)
         {
             try

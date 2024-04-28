@@ -219,7 +219,7 @@ namespace TouragencyWebApi.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<HotelDTO>> DeleteHotel(int id)
         {
             try
