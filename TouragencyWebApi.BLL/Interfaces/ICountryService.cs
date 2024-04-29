@@ -14,6 +14,9 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<CountryDTO>> Get200Last();
         Task<CountryDTO?> GetById(int id);
         Task<IEnumerable<CountryDTO>> GetByName(string countryName);
+        Task<IEnumerable<CountryDTO>> GetByContinentName(string continentName);
+        Task<IEnumerable<CountryDTO>> GetByContinentId(int continentId);
+        Task<IEnumerable<CountryDTO>> GetByCompositeSearch(string? name, string? continentName, int? continentId);
         Task<CountryDTO> Add(CountryDTO countryDTO);
         Task<CountryDTO> Update(CountryDTO countryDTO);
         Task<CountryDTO> Delete(int id);

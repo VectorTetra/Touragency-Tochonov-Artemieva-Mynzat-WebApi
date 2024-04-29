@@ -5,16 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TouragencyWebApi.DAL.Entities;
 
-
 namespace TouragencyWebApi.BLL.DTO
 {
-    public class CountryDTO
+    public class ContinentDTO
     {
         public int Id { get; set; }
-        public int ContinentId { get; set; }
         public string Name { get; set; }
-        public string ContinentName { get; set; }
-        public string FlagUrl { get; set; }
-        public ICollection<int>? SettlementIds { get; set; }
+        public ICollection<int> CountryIds { get; set; }
     }
 }

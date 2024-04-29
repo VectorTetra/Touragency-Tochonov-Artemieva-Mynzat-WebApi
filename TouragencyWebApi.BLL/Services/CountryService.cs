@@ -23,6 +23,8 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForMember("FlagUrl", opt => opt.MapFrom(c => c.FlagUrl))
         .ForPath(d => d.SettlementIds, opt => opt.MapFrom(c => c.Settlements.Select(b => b.Id)))
+        .ForPath(d => d.ContinentId, opt => opt.MapFrom(c => c.Continent.Id))
+        .ForPath(d => d.ContinentName, opt => opt.MapFrom(c => c.Continent.Name))
         );
         public CountryService(IUnitOfWork uow)
         {
@@ -50,6 +52,12 @@ namespace TouragencyWebApi.BLL.Services
                 }
                 newCountry.Settlements.Add(settlement);
             }
+            var continent = await Database.Continents.GetById(countryDTO.ContinentId);
+            if (continent == null)
+            {
+                throw new ValidationException($"Континент із вказаним id не знайдено! (continentId : {countryDTO.ContinentId})", "");
+            }
+            newCountry.Continent = continent;
             await Database.Countries.Create(newCountry);
             await Database.Save();
 
@@ -66,6 +74,12 @@ namespace TouragencyWebApi.BLL.Services
             }
             country.Name = countryDTO.Name;
             country.FlagUrl = countryDTO.FlagUrl;
+            var continent = await Database.Continents.GetById(countryDTO.ContinentId);
+            if (continent == null)
+            {
+                throw new ValidationException($"Континент із вказаним id не знайдено! (continentId : {countryDTO.ContinentId})", "");
+            }
+            country.Continent = continent;
             country.Settlements.Clear();
             foreach (var id in countryDTO.SettlementIds)
             {
@@ -116,6 +130,24 @@ namespace TouragencyWebApi.BLL.Services
         {
             var mapper = new Mapper(Country_CountryDTOMapConfig);
             return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByName(countryName));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByContinentName(string continentName)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByContinentName(continentName));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByContinentId(int continentId)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByContinentId(continentId));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByCompositeSearch(string? name, string? continentName, int? continentId)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByCompositeSearch(name, continentName, continentId));
         }
     }
 }

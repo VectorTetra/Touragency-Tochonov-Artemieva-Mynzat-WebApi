@@ -13,6 +13,7 @@ namespace TouragencyWebApi.DAL.EF
         public DbSet<BookingData> BookingDatas { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<ContactType> ContactTypes { get; set; }
+        public DbSet<Continent> Continents { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Email> Emails { get; set; }
         public DbSet<HotelConfiguration> HotelConfigurations { get; set; }
