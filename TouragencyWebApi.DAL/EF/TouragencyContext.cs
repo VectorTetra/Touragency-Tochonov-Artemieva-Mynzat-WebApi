@@ -21,6 +21,7 @@ namespace TouragencyWebApi.DAL.EF
         public DbSet<HotelServiceType> HotelServiceTypes { get; set; }
         public DbSet<HotelImage> HotelImages { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<News> News{ get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Phone> Phones { get; set; }
         public DbSet<Position> Positions { get; set; }

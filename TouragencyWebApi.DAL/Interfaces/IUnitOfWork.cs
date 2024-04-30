@@ -38,6 +38,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         ITouragencyAccountRoleRepository TouragencyAccountRoles { get; }
         ITouragencyEmployeeRepository TouragencyEmployees { get; }
         IContinentRepository Continents { get; }
+        INewsRepository News { get; }
         //IBookingRepository Bookings { get; }
         //IHotelRepository Hotels { get; }
         //IRoomRepository Rooms { get; }

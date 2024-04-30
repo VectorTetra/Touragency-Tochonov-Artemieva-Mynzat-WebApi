@@ -35,11 +35,22 @@ namespace TouragencyWebApi.DAL.UnitOfWork
         private ITouragencyAccountRoleRepository _role;
         private ITouragencyEmployeeRepository _employee;
         private IContinentRepository _continents;
+        private INewsRepository _news;
 
 
         public UnitOfWork(TouragencyContext context)
         {
             _context = context;
+        }
+
+        public INewsRepository News
+        {
+            get
+            {
+                if (_news == null)
+                    _news = new NewsRepository(_context);
+                return _news;
+            }
         }
 
         public IContinentRepository Continents

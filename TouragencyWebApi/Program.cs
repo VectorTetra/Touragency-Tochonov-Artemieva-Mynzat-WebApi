@@ -29,6 +29,7 @@ builder.Services.AddScoped<IHotelConfigurationService, HotelConfigurationService
 builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IHotelImageService, HotelImageService>();
 builder.Services.AddScoped<IHotelServiceService, HotelServiceService>();
+builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<IHotelServiceTypeService, HotelServiceTypeService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IPhoneService, PhoneService>();

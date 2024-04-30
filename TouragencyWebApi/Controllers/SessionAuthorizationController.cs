@@ -69,16 +69,21 @@ namespace TouragencyWebApi.Controllers
                         }
                     case "GetAll":
                         {
-                            var firstKey = HttpContext.Session.Keys.FirstOrDefault();
-                            if (firstKey != null)
+                            var ClientId = HttpContext.Session.GetInt32("ClientId");
+                            var TouragencyEmployeeId = HttpContext.Session.GetInt32("TouragencyEmployeeId");
+                            var TouragencyAccountRoleId = HttpContext.Session.GetInt32("TouragencyAccountRoleId");
+                            var TouragencyEmployeeLogin = HttpContext.Session.GetString("TouragencyEmployeeLogin");
+                            var ClientTouristNickname = HttpContext.Session.GetString("ClientTouristNickname");
+                            var IsClient = HttpContext.Session.GetInt32("IsClient");
+
+                            if (ClientId == null && TouragencyEmployeeId == null && TouragencyAccountRoleId == null &&
+                                TouragencyEmployeeLogin == null && ClientTouristNickname == null && IsClient == null)
                             {
-                                // Сесія містить як мінімум одну змінну
-                                var ClientId = HttpContext.Session.GetInt32("ClientId");
-                                var TouragencyEmployeeId = HttpContext.Session.GetInt32("TouragencyEmployeeId");
-                                var TouragencyAccountRoleId = HttpContext.Session.GetInt32("TouragencyAccountRoleId");
-                                var TouragencyEmployeeLogin = HttpContext.Session.GetString("TouragencyEmployeeLogin");
-                                var ClientTouristNickname = HttpContext.Session.GetString("ClientTouristNickname");
-                                var IsClient = HttpContext.Session.GetInt32("IsClient");
+                                // Всі змінні сесії є null
+                                return NoContent();
+                            }
+                            else
+                            {
                                 return Ok(new SessionAuthorizationQuery
                                 {
                                     ClientId = ClientId,
@@ -89,12 +94,8 @@ namespace TouragencyWebApi.Controllers
                                     IsClient = IsClient
                                 });
                             }
-                            else
-                            {
-                                // Сесія не містить жодної змінної
-                                return NoContent();
-                            }
                         }
+
                     default:
                         {
                             throw new Exception("Неправильно вказаний параметр пошуку!");
@@ -139,7 +140,12 @@ namespace TouragencyWebApi.Controllers
         [HttpDelete]
         public void Delete()
         {
-            HttpContext.Session.Clear();
+            HttpContext.Session.Remove("ClientId");
+            HttpContext.Session.Remove("TouragencyEmployeeId");
+            HttpContext.Session.Remove("TouragencyAccountRoleId");
+            HttpContext.Session.Remove("TouragencyEmployeeLogin");
+            HttpContext.Session.Remove("ClientTouristNickname");
+            HttpContext.Session.Remove("IsClient");
         }
     }
 
