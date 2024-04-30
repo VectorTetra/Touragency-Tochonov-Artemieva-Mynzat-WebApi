@@ -44,7 +44,11 @@ builder.Services.AddScoped<ITransportTypeService, TransportTypeService>();
 builder.Services.AddScoped<ITouragencyAccountRoleService, TouragencyAccountRoleService>();
 builder.Services.AddScoped<ITouragencyEmployeeService, TouragencyEmployeeService>();
 builder.Services.AddScoped<ITouragencyAccountService, TouragencyAccountService>();
-
+builder.Services.AddSession(opt =>
+{
+    opt.IdleTimeout = TimeSpan.FromMinutes(30);
+    opt.Cookie.Name = "Session";
+});
 
 
 var app = builder.Build();
@@ -60,6 +64,9 @@ app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(
 //    app.UseSwagger();
 //    app.UseSwaggerUI();
 //}
+app.UseSession();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
