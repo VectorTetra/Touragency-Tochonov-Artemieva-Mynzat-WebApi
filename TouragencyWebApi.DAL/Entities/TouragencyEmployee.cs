@@ -11,5 +11,20 @@ namespace TouragencyWebApi.DAL.Entities
 		public int PositionId { get; set; }
 		public virtual Person Person { get; set; }
 		public virtual Position Position { get; set; }
-	}
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var otheBC = (TouragencyEmployee)obj;
+            return Id == otheBC.Id;
+        }
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+    }
 }

@@ -23,6 +23,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForMember("FlagUrl", opt => opt.MapFrom(c => c.FlagUrl))
         .ForPath(d => d.SettlementIds, opt => opt.MapFrom(c => c.Settlements.Select(b => b.Id)))
+        .ForPath(d => d.TourNameIds, opt => opt.MapFrom(c => c.TourNames.Select(b => b.Id)))
         .ForPath(d => d.ContinentId, opt => opt.MapFrom(c => c.Continent.Id))
         .ForPath(d => d.ContinentName, opt => opt.MapFrom(c => c.Continent.Name))
         );
@@ -40,7 +41,9 @@ namespace TouragencyWebApi.BLL.Services
             var newCountry = new Country
             {
                 Name = countryDTO.Name,
-                FlagUrl= countryDTO.FlagUrl
+                FlagUrl= countryDTO.FlagUrl,
+                Settlements = new List<Settlement>(),
+                TourNames = new List<TourName>()
             };
 
             foreach (var id in countryDTO.SettlementIds)
@@ -52,6 +55,16 @@ namespace TouragencyWebApi.BLL.Services
                 }
                 newCountry.Settlements.Add(settlement);
             }
+            foreach (var id in countryDTO.TourNameIds)
+            {
+                var tourName = await Database.TourNames.GetById(id);
+                if (tourName == null)
+                {
+                    throw new ValidationException($"Назви туру із вказаним id не знайдено! (tourNameId : {id})", "");
+                }
+                newCountry.TourNames.Add(tourName);
+            }
+
             var continent = await Database.Continents.GetById(countryDTO.ContinentId);
             if (continent == null)
             {
@@ -89,6 +102,16 @@ namespace TouragencyWebApi.BLL.Services
                     throw new ValidationException($"Населений пункт із вказаним id не знайдено! (settlementId : {id})", "");
                 }
                 country.Settlements.Add(settlement);
+            }
+            country.TourNames.Clear();
+            foreach (var id in countryDTO.TourNameIds)
+            {
+                var TourName = await Database.TourNames.GetById(id);
+                if (TourName == null)
+                {
+                    throw new ValidationException($"Населений пункт із вказаним id не знайдено! (TourNameId : {id})", "");
+                }
+                country.TourNames.Add(TourName);
             }
             Database.Countries.Update(country);
             await Database.Save();
@@ -144,10 +167,22 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByContinentId(continentId));
         }
 
-        public async Task<IEnumerable<CountryDTO>> GetByCompositeSearch(string? name, string? continentName, int? continentId)
+        public async Task<IEnumerable<CountryDTO>> GetByTourNameId(int tourNameId)
         {
             var mapper = new Mapper(Country_CountryDTOMapConfig);
-            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByCompositeSearch(name, continentName, continentId));
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByTourNameId(tourNameId));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByTourName(string tourName)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByTourName(tourName));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByCompositeSearch(string? name, string? continentName, int? continentId, int? tourNameId, string? tourName)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByCompositeSearch(name, continentName, continentId, tourNameId, tourName));
         }
     }
 }

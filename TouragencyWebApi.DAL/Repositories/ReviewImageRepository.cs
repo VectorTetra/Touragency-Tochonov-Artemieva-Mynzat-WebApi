@@ -112,21 +112,21 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<IEnumerable<ReviewImage>> GetByCountryName(string countryName)
         {
             return await _context.ReviewImages
-                .Where(p => p.Review.Tour.Settlements.Any(sss=> sss.Country.Name.Contains(countryName)))
+                .Where(p => p.Review.Tour.Name.Settlements.Any(sss=> sss.Country.Name.Contains(countryName)))
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<ReviewImage>> GetBySettlementName(string settlementName)
         {
             return await _context.ReviewImages
-                .Where(p => p.Review.Tour.Settlements.Any(sss => sss.Name.Contains(settlementName)))
+                .Where(p => p.Review.Tour.Name.Settlements.Any(sss => sss.Name.Contains(settlementName)))
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<ReviewImage>> GetByHotelName(string hotelName)
         {
             return await _context.ReviewImages
-                .Where(p => p.Review.Tour.Hotels.Any(h => h.Name.Contains(hotelName)))
+                .Where(p => p.Review.Tour.Name.Hotels.Any(h => h.Name.Contains(hotelName)))
                 .ToListAsync();
         }
 

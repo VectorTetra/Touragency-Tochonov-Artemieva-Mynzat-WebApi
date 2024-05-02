@@ -40,17 +40,17 @@ namespace TouragencyWebApi.DAL.Repositories
 
         public async Task<IEnumerable<TourName>> GetByCountryName(string countryNameSubstring)
         {
-            return await _context.TourNames.Where(t => t.Tours.Any(tt => tt.Settlements.Any(sss=>sss.Country.Name.Contains(countryNameSubstring)))).ToListAsync();
+            return await _context.TourNames.Where(tt => tt.Settlements.Any(sss=>sss.Country.Name.Contains(countryNameSubstring))).ToListAsync();
         }
 
         public async Task<IEnumerable<TourName>> GetBySettlementName(string settlementNameSubstring)
         {
-            return await _context.TourNames.Where(t => t.Tours.Any(tt => tt.Settlements.Any(sss => sss.Name.Contains(settlementNameSubstring)))).ToListAsync();
+            return await _context.TourNames.Where(tt => tt.Settlements.Any(sss => sss.Name.Contains(settlementNameSubstring))).ToListAsync();
         }
 
         public async Task<IEnumerable<TourName>> GetByHotelName(string hotelNameSubstring)
         {
-            return await _context.TourNames.Where(t => t.Tours.Any(tt => tt.Hotels.Any((h => h.Name.Contains(hotelNameSubstring))))).ToListAsync();
+            return await _context.TourNames.Where(tt => tt.Hotels.Any((h => h.Name.Contains(hotelNameSubstring)))).ToListAsync();
         }
 
         public async Task<IEnumerable<TourName>> GetByPageJSONStructureUrlSubstring(string pageJSONStructureUrlSubstring)

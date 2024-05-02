@@ -14,10 +14,10 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<TransportTypeDTO?> GetById(int id);
         Task<IEnumerable<TransportTypeDTO>> GetByNameSubstring(string nameSubstring);
         Task<IEnumerable<TransportTypeDTO>> GetByDescriptionSubstring(string descriptionSubstring);
-        Task<IEnumerable<TransportTypeDTO>> GetByTourId(long tourId);
-        Task<IEnumerable<TransportTypeDTO>> GetByTourName(string tourname);
+        Task<IEnumerable<TransportTypeDTO>> GetByTourNameId(int tourNameId);
+        Task<IEnumerable<TransportTypeDTO>> GetByTourName(string tourName);
         Task<IEnumerable<TransportTypeDTO>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring,
-            long? tourId, string? tourname);
+           int? tourNameId, string? tourname);
         Task<TransportTypeDTO> Create(TransportTypeDTO transportType);
         Task<TransportTypeDTO> Update(TransportTypeDTO transportType);
         Task<TransportTypeDTO> Delete(int id);

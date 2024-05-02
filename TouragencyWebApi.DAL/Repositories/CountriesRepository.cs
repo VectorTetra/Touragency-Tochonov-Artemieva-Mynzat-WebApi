@@ -53,12 +53,26 @@ namespace TouragencyWebApi.DAL.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Country>> GetByCompositeSearch(string? countryName, string? continentName, int? continentId)
+        public async Task<IEnumerable<Country>> GetByTourNameId(int tourNameId)
+        {
+            return await _context.Countries
+                .Where(p => p.TourNames.Any(t => t.Id == tourNameId))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Country>> GetByTourName(string tourName)
+        {
+            return await _context.Countries
+                .Where(p => p.TourNames.Any(t => t.Name.Contains(tourName)))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Country>> GetByCompositeSearch(string? name, string? continentName, int? continentId, int? tourNameId, string? tourName)
         {
             var collections = new List<IEnumerable<Country>>();
-            if (countryName != null)
+            if (name != null)
             {
-                collections.Add(await GetByName(countryName));
+                collections.Add(await GetByName(name));
             }
             if (continentName != null)
             {
@@ -67,6 +81,14 @@ namespace TouragencyWebApi.DAL.Repositories
             if (continentId != null)
             {
                 collections.Add(await GetByContinentId(continentId.Value));
+            }
+            if (tourNameId != null)
+            {
+                collections.Add(await GetByTourNameId(tourNameId.Value));
+            }
+            if (tourName != null)
+            {
+                collections.Add(await GetByTourName(tourName));
             }
             if(!collections.Any())
             {

@@ -49,16 +49,26 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Settlements.Where(p => p.Country.Id == countryId).ToListAsync();
         }
-        public async Task<IEnumerable<Settlement>> GetByTourId(long tourId) 
+        
+        public async Task<IEnumerable<Settlement>> GetByTourNameId(int tourNameId)
         {
-            return await _context.Settlements.Where(p => p.Tours.Any(t => t.Id == tourId)).ToListAsync();
+            return await _context.Settlements
+                .Where(p => p.TourNames.Any(t => t.Id == tourNameId))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Settlement>> GetByTourName(string tourName)
+        {
+            return await _context.Settlements
+                .Where(p => p.TourNames.Any(t => t.Name.Contains(tourName)))
+                .ToListAsync();
         }
         public async Task<Settlement?> GetByHotelId(int hotelId) 
         {
             return await _context.Settlements.FirstOrDefaultAsync(p => p.Hotels.Any(h => h.Id == hotelId));
         }
 
-        public async Task<IEnumerable<Settlement>> GetByCompositeSearch(string? name, string? countryName, int? countryId, long? tourId)
+        public async Task<IEnumerable<Settlement>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName)
         {
             var settlementsCollections = new List<IEnumerable<Settlement>>();
 
@@ -79,12 +89,18 @@ namespace TouragencyWebApi.DAL.Repositories
                 var settlementsByCountryId = await GetByCountryId((int)countryId);
                 settlementsCollections.Add(settlementsByCountryId);
             }
-
-            if (tourId != null)
+            if (tourNameId != null)
             {
-                var settlementsByTourId = await GetByTourId((long)tourId);
-                settlementsCollections.Add(settlementsByTourId);
+                var settlementsByTourNameId = await GetByTourNameId((int)tourNameId);
+                settlementsCollections.Add(settlementsByTourNameId);
             }
+
+            if (tourName != null)
+            {
+                var settlementsByTourName = await GetByTourName(tourName);
+                settlementsCollections.Add(settlementsByTourName);
+            }
+
 
             if (!settlementsCollections.Any())
             {

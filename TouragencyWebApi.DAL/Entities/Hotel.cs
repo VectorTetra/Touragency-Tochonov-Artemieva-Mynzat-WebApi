@@ -15,7 +15,7 @@ namespace TouragencyWebApi.DAL.Entities
 		public virtual ICollection<BedConfiguration> BedConfigurations { get; set; }
 		public virtual Settlement Settlement { get; set; }
 		// Many-to-many relationship between Hotel and Tour
-		public virtual ICollection<Tour> Tours { get; set; }
+		public virtual ICollection<TourName> TourNames { get; set; }
 		// One-to-many relationship between Hotel and Booking
 		public virtual ICollection<Booking> Bookings { get; set; }
 		// В цьому полі можуть зберігатися дані про послуги готелю (наприклад, Wi-Fi, сніданок, басейн, парковка, трансфер)

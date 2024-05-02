@@ -62,13 +62,13 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByDescriptionSubstring(transportTypeQuery.Description);
                         }
                         break;
-                    case "GetByTourId":
+                    case "GetByTourNameId":
                         {
-                            if (transportTypeQuery.TourId is null)
+                            if (transportTypeQuery.TourNameId is null)
                             {
-                                throw new ValidationException("Не вказано TourId для пошуку!", nameof(transportTypeQuery.TourId));
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(transportTypeQuery.TourNameId));
                             }
-                            collection = await _serv.GetByTourId((long)transportTypeQuery.TourId);
+                            collection = await _serv.GetByTourNameId((int)transportTypeQuery.TourNameId);
                         }
                         break;
                     case "GetByTourName":
@@ -82,7 +82,7 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(transportTypeQuery.Name, transportTypeQuery.Description, transportTypeQuery.TourId, transportTypeQuery.TourName);
+                            collection = await _serv.GetByCompositeSearch(transportTypeQuery.Name, transportTypeQuery.Description, transportTypeQuery.TourNameId, transportTypeQuery.TourName);
                         }
                         break;
                     default:
@@ -167,6 +167,6 @@ namespace TouragencyWebApi.Controllers
         public string? Name { get; set; }
         public string? TourName { get; set; }
         public string? Description { get; set; }
-        public long? TourId { get; set; }
+        public int? TourNameId { get; set; }
     }
 }

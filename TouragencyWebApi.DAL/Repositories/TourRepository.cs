@@ -47,37 +47,37 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<IEnumerable<Tour>> GetByCountry(Country country)
         {
             //return await _context.Tours.Where(t => t.Settlements.Where(c => c.Country.Id == country.Id)).ToListAsync();
-            return await _context.Tours.Where(t => t.Settlements.Any(c => c.Country.Id == country.Id)).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Countries.Any(c => c.Id == country.Id)).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByCountryId(int countryId)
         {
-            return await _context.Tours.Where(t => t.Settlements.Any(c => c.Country.Id == countryId)).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Countries.Any(c => c.Id == countryId)).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByCountryName(string countryNameSubstring)
         {
-            return await _context.Tours.Where(t => t.Settlements.Any(c => c.Country.Name.Contains(countryNameSubstring))).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Countries.Any(c => c.Name.Contains(countryNameSubstring))).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetBySettlement(Settlement settlement)
         {
-            return await _context.Tours.Where(t => t.Settlements.Any(s => s.Id == settlement.Id)).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Settlements.Any(s => s.Id == settlement.Id)).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetBySettlementId(int settlementId)
         {
-            return await _context.Tours.Where(t => t.Settlements.Any(c => c.Id == settlementId)).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Settlements.Any(c => c.Id == settlementId)).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetBySettlementName(string settlementNameSubstring){
-            return await _context.Tours.Where(t => t.Settlements.Any(c => c.Name.Contains(settlementNameSubstring))).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Settlements.Any(c => c.Name.Contains(settlementNameSubstring))).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByHotel(Hotel hotel)
         {
-            return await _context.Tours.Where(t => t.Hotels.Any(h => h.Id == hotel.Id)).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Hotels.Any(h => h.Id == hotel.Id)).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByHotelName(string hotelNameSubstring){
-            return await _context.Tours.Where(t => t.Hotels.Any(c => c.Name.Contains(hotelNameSubstring))).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Hotels.Any(c => c.Name.Contains(hotelNameSubstring))).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByHotelId(int hotelId)
         {
-            return await _context.Tours.Where(t => t.Hotels.Any(h => h.Id == hotelId)).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Hotels.Any(h => h.Id == hotelId)).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByDateRange(DateTime startDate, DateTime endDate)
         {
@@ -89,19 +89,19 @@ namespace TouragencyWebApi.DAL.Repositories
         }
         public async Task<IEnumerable<Tour>> GetByHotelServicesIds(int[] hotelServicesIds)
         {
-            return await _context.Tours.Where(t => t.Hotels.Any(h => h.HotelServices.Any(s => hotelServicesIds.Contains(s.Id)))).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.Hotels.Any(h => h.HotelServices.Any(s => hotelServicesIds.Contains(s.Id)))).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByTransportType(TransportType transportType)
         {
-            return await _context.Tours.Where(t => t.TransportTypes.Any(tt => tt.Id == transportType.Id)).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.TransportTypes.Any(tt => tt.Id == transportType.Id)).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByTransportTypeId(int id){
             
-            return await _context.Tours.Where(t => t.TransportTypes.Any(tt => tt.Id == id)).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.TransportTypes.Any(tt => tt.Id == id)).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByTransportTypeName(string transportTypeNameSubstring)
         {
-            return await _context.Tours.Where(t => t.TransportTypes.Any(tt => tt.Name.Contains(transportTypeNameSubstring))).ToListAsync();
+            return await _context.Tours.Where(t => t.Name.TransportTypes.Any(tt => tt.Name.Contains(transportTypeNameSubstring))).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByTourStateId(int tourStateId)
         {

@@ -20,7 +20,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForMember("CountryId", opt => opt.MapFrom(c => c.Country.Id))
-        .ForPath(d => d.ToursIds, opt => opt.MapFrom(c => c.Tours.Select(b => b.Id)))
+        .ForPath(d => d.TourNameIds, opt => opt.MapFrom(c => c.TourNames.Select(b => b.Id)))
         .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Hotels.Select(b => b.Id)))
         );
         MapperConfiguration Country_CountryDTOMapConfig = new MapperConfiguration(cfg => cfg.CreateMap<Country, CountryDTO>()
@@ -51,16 +51,16 @@ namespace TouragencyWebApi.BLL.Services
                 throw new ValidationException($"Країни із вказаним countryId не знайдено! (countryId : {settlementDTO.CountryId})", "");
             }
             newSettlement.Country = coun;
-            newSettlement.Tours = new List<Tour>();
+            newSettlement.TourNames = new List<TourName>();
             newSettlement.Hotels = new List<Hotel>();
-            foreach(var id in settlementDTO.ToursIds)
+            foreach(var id in settlementDTO.TourNameIds)
             {
-                var tour = await Database.Tours.GetById(id);
-                if (tour == null)
+                var tourName = await Database.TourNames.GetById(id);
+                if (tourName == null)
                 {
-                    throw new ValidationException($"Туру із вказаним id не знайдено! (tourId : {id})", "");
+                    throw new ValidationException($"Назви туру із вказаним id не знайдено! (tourNameId : {id})", "");
                 }
-                newSettlement.Tours.Add(tour);
+                newSettlement.TourNames.Add(tourName);
             }
             foreach(var id in settlementDTO.HotelIds)
             {
@@ -92,16 +92,16 @@ namespace TouragencyWebApi.BLL.Services
                 throw new ValidationException($"Країни із вказаним countryId не знайдено! (countryId : {settlementDTO.CountryId})", "");
             }
             settlement.Country = coun;
-            settlement.Tours.Clear();
+            settlement.TourNames.Clear();
             settlement.Hotels.Clear();
-            foreach (var id in settlementDTO.ToursIds)
+            foreach (var id in settlementDTO.TourNameIds)
             {
-                var tour = await Database.Tours.GetById(id);
-                if (tour == null)
+                var tourName = await Database.TourNames.GetById(id);
+                if (tourName == null)
                 {
-                    throw new ValidationException($"Туру із вказаним id не знайдено! (tourId : {id})", "");
+                    throw new ValidationException($"Назви туру із вказаним id не знайдено! (tourNameId : {id})", "");
                 }
-                settlement.Tours.Add(tour);
+                settlement.TourNames.Add(tourName);
             }
             foreach (var id in settlementDTO.HotelIds)
             {
@@ -164,21 +164,28 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCountryId(countryId));
         }
         
-        public async Task<IEnumerable<SettlementDTO>> GetByTourId(long tourId) 
+        public async Task<IEnumerable<SettlementDTO>> GetByTourNameId(int tourNameId)
         {
             var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
-            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByTourId(tourId));
+            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByTourNameId(tourNameId));
         }
+
+        public async Task<IEnumerable<SettlementDTO>> GetByTourName(string tourName)
+        {
+            var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
+            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByTourName(tourName));
+        }
+
         public async Task<SettlementDTO?> GetByHotelId(int hotelId)
         {
             var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
             return mapper.Map<Settlement, SettlementDTO>(await Database.Settlements.GetByHotelId(hotelId));
         }
 
-        public async Task<IEnumerable<SettlementDTO>> GetByCompositeSearch(string? name, string? countryName, int? countryId, long? tourId)
+        public async Task<IEnumerable<SettlementDTO>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName)
         {
             var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
-            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCompositeSearch(name, countryName, countryId, tourId));
+            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCompositeSearch(name, countryName, countryId, tourNameId, tourName));
         }
     }
 }

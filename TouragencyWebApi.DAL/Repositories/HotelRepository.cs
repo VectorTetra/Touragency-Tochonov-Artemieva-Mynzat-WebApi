@@ -62,9 +62,14 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.Hotels.Where(h => h.Settlement.Id == settlementId).ToListAsync();
         }
 
-        public async Task<IEnumerable<Hotel>> GetByTourId(long tourId)
+        public async Task<IEnumerable<Hotel>> GetByTourNameId(int tourNameId)
         {
-            return await _context.Hotels.Where(h => h.Tours.Any(t => t.Id == tourId)).ToListAsync();
+            return await _context.Hotels.Where(h => h.TourNames.Any(tn => tn.Id == tourNameId)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Hotel>> GetByTourName(string tourName)
+        {
+            return await _context.Hotels.Where(h => h.TourNames.Any(tn => tn.Name.Contains(tourName))).ToListAsync();
         }
 
         public async Task<IEnumerable<Hotel>> GetByBookingId(long bookingId)
@@ -92,7 +97,7 @@ namespace TouragencyWebApi.DAL.Repositories
         }
 
         public async Task<IEnumerable<Hotel>> GetByCompositeSearch(string? nameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? descriptionSubstring,
-            int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, long? tourId,
+            int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, int? tourNameId, string? tourName,
             long? bookingId, int? hotelServiceId, long? hotelImageId)
         {
             var hotelCollections = new List<IEnumerable<Hotel>>();
@@ -139,10 +144,15 @@ namespace TouragencyWebApi.DAL.Repositories
                 var hotelsBySettlementId = await GetBySettlementId(settlementId.Value);
                 hotelCollections.Add(hotelsBySettlementId);
             }
-            if (tourId != null)
+            if (tourNameId != null)
             {
-                var hotelsByTourId = await GetByTourId(tourId.Value);
-                hotelCollections.Add(hotelsByTourId);
+                var hotelsByTourNameId = await GetByTourNameId(tourNameId.Value);
+                hotelCollections.Add(hotelsByTourNameId);
+            }
+            if (tourName != null)
+            {
+                var hotelsByTourName = await GetByTourName(tourName);
+                hotelCollections.Add(hotelsByTourName);
             }
             if (bookingId != null)
             {

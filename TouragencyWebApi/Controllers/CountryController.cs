@@ -76,9 +76,27 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByContinentId((int)countryQuery.ContinentId);
                         }
                         break;
+                    case "GetByTourNameId":
+                        {
+                            if (countryQuery.TourNameId == null)
+                            {
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(countryQuery.TourNameId));
+                            }
+                            collection = await _serv.GetByTourNameId((int)countryQuery.TourNameId);
+                        }
+                        break;
+                    case "GetByTourName":
+                        {
+                            if (countryQuery.TourName == null)
+                            {
+                                throw new ValidationException("Не вказано TourName для пошуку!", nameof(countryQuery.TourName));
+                            }
+                            collection = await _serv.GetByTourName(countryQuery.TourName);
+                        }
+                        break;
                     case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(countryQuery.Name, countryQuery.ContinentName, countryQuery.ContinentId);
+                            collection = await _serv.GetByCompositeSearch(countryQuery.Name, countryQuery.ContinentName, countryQuery.ContinentId, countryQuery.TourNameId, countryQuery.TourName);
                         }
                         break;
                     default:
@@ -164,6 +182,8 @@ namespace TouragencyWebApi.Controllers
         public int? ContinentId { get; set; }
         public string? Name { get; set; }
         public string? ContinentName { get; set; }
+        public int? TourNameId { get; set; }
+        public string? TourName { get; set; }
 
     }
 }

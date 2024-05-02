@@ -35,7 +35,7 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<IEnumerable<Review>> GetByCountryId(int countryId)
         {
             return await _context.Reviews
-                .Where(r => r.Tour.Settlements.Any(st => st.Country.Id == countryId))
+                .Where(r => r.Tour.Name.Settlements.Any(st => st.Country.Id == countryId))
                 .ToListAsync();
         }
         public async Task<IEnumerable<Review>> GetByReviewImageId(long reviewImageId)
@@ -147,7 +147,7 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<IEnumerable<Review>> GetByCountryNameSubstring(string countryNameSubstring)
         {
             return await _context.Reviews
-                .Where(r => r.Tour.Settlements.Any(st => st.Country.Name.Contains(countryNameSubstring)))
+                .Where(r => r.Tour.Name.Settlements.Any(st => st.Country.Name.Contains(countryNameSubstring)))
                 .ToListAsync();
         }
         public async Task<IEnumerable<Review>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring,

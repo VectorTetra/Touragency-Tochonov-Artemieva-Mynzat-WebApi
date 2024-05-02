@@ -23,7 +23,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForMember("Description", opt => opt.MapFrom(c => c.Description))
-        .ForPath(d => d.TourIds, opt => opt.MapFrom(c => c.Tours.Select(t => t.Id)))
+        .ForPath(d => d.TourNameIds, opt => opt.MapFrom(c => c.TourNames.Select(t => t.Id)))
         );
         public async Task<IEnumerable<TransportTypeDTO>> GetAll()
         {
@@ -57,13 +57,16 @@ namespace TouragencyWebApi.BLL.Services
             return transportTypeDTO;
         }
 
-        public async Task<IEnumerable<TransportTypeDTO>> GetByTourId(long tourId)
+        
+        public async Task<IEnumerable<TransportTypeDTO>> GetByTourNameId(int tourNameId)
         {
             var mapper = new Mapper(TransportType_TransportTypeDTOMapConfig);
-            var transportTypeCollection = await Database.TransportTypes.GetByTourId(tourId);
+            var transportTypeCollection = await Database.TransportTypes.GetByTourNameId(tourNameId);
             var transportTypeDTO = mapper.Map<IEnumerable<TransportType>, IEnumerable<TransportTypeDTO>>(transportTypeCollection);
             return transportTypeDTO;
         }
+
+
 
         public async Task<IEnumerable<TransportTypeDTO>> GetByTourName(string tourname)
         {
@@ -73,10 +76,11 @@ namespace TouragencyWebApi.BLL.Services
             return transportTypeDTO;
         }
 
-        public async Task<IEnumerable<TransportTypeDTO>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring, long? tourId, string? tourname)
+        public async Task<IEnumerable<TransportTypeDTO>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring,
+           int? tourNameId, string? tourname)
         {
             var mapper = new Mapper(TransportType_TransportTypeDTOMapConfig);
-            var transportTypeCollection = await Database.TransportTypes.GetByCompositeSearch(nameSubstring, descriptionSubstring, tourId, tourname);
+            var transportTypeCollection = await Database.TransportTypes.GetByCompositeSearch(nameSubstring, descriptionSubstring, tourNameId, tourname);
             var transportTypeDTO = mapper.Map<IEnumerable<TransportType>, IEnumerable<TransportTypeDTO>>(transportTypeCollection);
             return transportTypeDTO;
         }
@@ -91,23 +95,23 @@ namespace TouragencyWebApi.BLL.Services
                 throw new ValidationException("Такий transportTypeId вже зайнято!", "");
             }
             //-----------------------------------------------------------------------------------------------------
-            var TourCollection = new List<Tour>();
+            var TourNameCollection = new List<TourName>();
             //-----------------------------------------------------------------------------------------------------
-            foreach (var tourId in transportType.TourIds)
+            foreach (var tourNameId in transportType.TourNameIds)
             {
-                var tour = await Database.Tours.GetById(tourId);
-                if (tour == null)
+                var tourName = await Database.TourNames.GetById(tourNameId);
+                if (tourName == null)
                 {
-                    throw new ValidationException("Тур з таким tourId не знайдено!", "");
+                    throw new ValidationException("Назву туру з таким tourNameId не знайдено!", "");
                 }
-                TourCollection.Add(tour);
+                TourNameCollection.Add(tourName);
             }
             //-----------------------------------------------------------------------------------------------------
             var newTrType = new TransportType
             {
                 Name = transportType.Name,
                 Description = transportType.Description,
-                Tours = TourCollection
+                TourNames = TourNameCollection
             };
 
             await Database.TransportTypes.Create(newTrType);
@@ -126,16 +130,16 @@ namespace TouragencyWebApi.BLL.Services
                 throw new ValidationException("Такий transportTypeId не знайдено!", "");
             }
             //-----------------------------------------------------------------------------------------------------
-            TrType.Tours.Clear();
+            TrType.TourNames.Clear();
             //-----------------------------------------------------------------------------------------------------
-            foreach (var tourId in transportType.TourIds)
+            foreach (var tourId in transportType.TourNameIds)
             {
-                var tour = await Database.Tours.GetById(tourId);
-                if (tour == null)
+                var tourName = await Database.TourNames.GetById(tourId);
+                if (tourName == null)
                 {
-                    throw new ValidationException("Тур з таким tourId не знайдено!", "");
+                    throw new ValidationException("Назву туру з таким tourNameId не знайдено!", "");
                 }
-                TrType.Tours.Add(tour);
+                TrType.TourNames.Add(tourName);
             }
             //-----------------------------------------------------------------------------------------------------
             TrType.Name = transportType.Name;

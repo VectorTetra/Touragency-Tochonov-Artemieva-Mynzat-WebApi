@@ -73,13 +73,22 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByCountryId((int)settlementQuery.CountryId);
                         }
                         break;
-                    case "GetByTourId":
+                        case "GetByTourNameId":
                         {
-                            if (settlementQuery.TourId == null)
+                            if (settlementQuery.TourNameId == null)
                             {
-                                throw new ValidationException("Не вказано TourId для пошуку!", nameof(settlementQuery.TourId));
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(settlementQuery.TourNameId));
                             }
-                            collection = await _serv.GetByTourId((long)settlementQuery.TourId);
+                            collection = await _serv.GetByTourNameId((int)settlementQuery.TourNameId);
+                        }
+                        break;
+                    case "GetByTourName":
+                        {
+                            if (settlementQuery.TourName == null)
+                            {
+                                throw new ValidationException("Не вказано TourName для пошуку!", nameof(settlementQuery.TourName));
+                            }
+                            collection = await _serv.GetByTourName(settlementQuery.TourName);
                         }
                         break;
                     case "GetByHotelId":
@@ -97,7 +106,7 @@ namespace TouragencyWebApi.Controllers
                         break;
                         case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(settlementQuery.Name, settlementQuery.CountryName, settlementQuery.CountryId, settlementQuery.TourId);
+                            collection = await _serv.GetByCompositeSearch(settlementQuery.Name, settlementQuery.CountryName, settlementQuery.CountryId, settlementQuery.TourNameId, settlementQuery.TourName);
                         }
                         break;
                     default:
@@ -178,7 +187,8 @@ namespace TouragencyWebApi.Controllers
     {
         public string SearchParameter { get; set; } = "";
         public int? Id { get; set; }
-        public long? TourId { get; set; }
+        public int? TourNameId { get; set; }
+        public string? TourName { get; set; }
         public int? HotelId { get; set; }
         public string? Name { get; set; }
         public string? CountryName { get; set; }

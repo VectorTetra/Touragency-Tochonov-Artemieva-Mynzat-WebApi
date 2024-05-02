@@ -54,17 +54,17 @@ namespace TouragencyWebApi.DAL.Repositories
 
         public async Task<IEnumerable<TourImage>> GetByCountryName(string countryNameSubstring)
         {
-            return await _context.TourImages.Where(ti => ti.TourName.Tours.Any(tt => tt.Settlements.Any(sss => sss.Country.Name.Contains(countryNameSubstring)))).ToListAsync();
+            return await _context.TourImages.Where(ti => ti.TourName.Settlements.Any(sss => sss.Country.Name.Contains(countryNameSubstring))).ToListAsync();
         }
 
         public async Task<IEnumerable<TourImage>> GetBySettlementName(string settlementNameSubstring)
         {
-            return await _context.TourImages.Where(ti => ti.TourName.Tours.Any(tt => tt.Settlements.Any(sss => sss.Name.Contains(settlementNameSubstring)))).ToListAsync();
+            return await _context.TourImages.Where(ti => ti.TourName.Settlements.Any(sss => sss.Name.Contains(settlementNameSubstring))).ToListAsync();
         }
 
         public async Task<IEnumerable<TourImage>> GetByHotelName(string hotelNameSubstring)
         {
-            return await _context.TourImages.Where(ti => ti.TourName.Tours.Any(tt => tt.Hotels.Any(h => h.Name.Contains(hotelNameSubstring)))).ToListAsync();
+            return await _context.TourImages.Where(ti => ti.TourName.Hotels.Any(h => h.Name.Contains(hotelNameSubstring))).ToListAsync();
         }
 
         public async Task<IEnumerable<TourImage>> GetByCompositeSearch(string? tourName, string? imageUrlSubstring, string? countryNameSubstring,

@@ -19,15 +19,13 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("ArrivalDate", opt => opt.MapFrom(c => c.ArrivalDate))
         .ForMember("DepartureDate", opt => opt.MapFrom(c => c.DepartureDate))
         .ForPath(d => d.TourNameId, opt => opt.MapFrom(c => c.Name.Id))
-        .ForMember("IsHaveNightRides", opt => opt.MapFrom(c => c.IsHaveNightRides))
-        .ForMember("NightRidesCount", opt => opt.MapFrom(c => c.NightRidesCount))
         .ForMember("FreeSeats", opt => opt.MapFrom(c => c.FreeSeats))
         .ForPath(d => d.TourStateId, opt => opt.MapFrom(c => c.TourState.Id))
-        .ForMember("Route", opt => opt.MapFrom(c => c.Route))
-        .ForPath(d => d.SettlementIds, opt => opt.MapFrom(c => c.Settlements.Select(s => s.Id)))
-        .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Hotels.Select(h => h.Id)))
+        .ForPath(d => d.SettlementIds, opt => opt.MapFrom(c => c.Name.Settlements.Select(s => s.Id)))
+        .ForPath(d => d.CountryIds, opt => opt.MapFrom(c => c.Name.Countries.Select(s => s.Id)))
+        .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Name.Hotels.Select(h => h.Id)))
         .ForPath(d => d.ReviewIds, opt => opt.MapFrom(c => c.Reviews.Select(r => r.Id)))
-        .ForPath(d => d.TransportTypeIds, opt => opt.MapFrom(c => c.TransportTypes.Select(t => t.Id)))
+        .ForPath(d => d.TransportTypeIds, opt => opt.MapFrom(c => c.Name.TransportTypes.Select(t => t.Id)))
         .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
         .ForPath(d => d.ClientIds, opt => opt.MapFrom(c => c.Clients.Select(cl => cl.Id)))
         );
@@ -248,23 +246,10 @@ namespace TouragencyWebApi.BLL.Services
                 throw new ValidationException("Такий tourId вже зайнято!", "");
             }
             //-----------------------------------------------------------------------------------------------------
-            var SettlementCollection = new List<Settlement>();
             var ClientCollection = new List<Client>();
-            var HotelCollection = new List<Hotel>();
             var ReviewCollection = new List<Review>();
-            var TransportTypeCollection = new List<TransportType>();
             var BookingCollection = new List<Booking>();
             //-----------------------------------------------------------------------------------------------------
-
-            foreach(var settlementId in tourDTO.SettlementIds)
-            {
-                var settlement = await Database.Settlements.GetById(settlementId);
-                if (settlement == null)
-                {
-                    throw new ValidationException("Неможливо знайти поселення з таким settlementId!", "");
-                }
-                SettlementCollection.Add(settlement);
-            }
             foreach(var clientId in tourDTO.ClientIds)
             {
                 var client = await Database.Clients.GetById(clientId);
@@ -281,15 +266,9 @@ namespace TouragencyWebApi.BLL.Services
                 ArrivalDate = tourDTO.ArrivalDate,
                 DepartureDate = tourDTO.DepartureDate,
                 Name = await Database.TourNames.GetById(tourDTO.TourNameId),
-                IsHaveNightRides = tourDTO.IsHaveNightRides,
-                NightRidesCount = tourDTO.NightRidesCount,
                 FreeSeats = tourDTO.FreeSeats,
                 TourState = await Database.TourStates.GetById(tourDTO.TourStateId),
-                Route = tourDTO.Route,
-                Settlements = SettlementCollection,
-                Hotels = HotelCollection,
                 Reviews = ReviewCollection,
-                TransportTypes = TransportTypeCollection,
                 Bookings = BookingCollection,
                 Clients = ClientCollection
             };
@@ -306,22 +285,10 @@ namespace TouragencyWebApi.BLL.Services
                 throw new ValidationException("Тур не знайдено!", "");
             }
             //-----------------------------------------------------------------------------------------------------
-            tour.Settlements.Clear();
             tour.Clients.Clear();
-            tour.Hotels.Clear();
             tour.Reviews.Clear();
-            tour.TransportTypes.Clear();
             tour.Bookings.Clear();
             //-----------------------------------------------------------------------------------------------------
-            foreach (var settlementId in tourDTO.SettlementIds)
-            {
-                var settlement = await Database.Settlements.GetById(settlementId);
-                if (settlement == null)
-                {
-                    throw new ValidationException("Неможливо знайти поселення з таким settlementId!", "");
-                }
-                tour.Settlements.Add(settlement);
-            }
             foreach (var clientId in tourDTO.ClientIds)
             {
                 var client = await Database.Clients.GetById(clientId);
@@ -331,15 +298,6 @@ namespace TouragencyWebApi.BLL.Services
                 }
                 tour.Clients.Add(client);
             }
-            foreach(var hotelId in tourDTO.HotelIds)
-            {
-                var hotel = await Database.Hotels.GetById(hotelId);
-                if (hotel == null)
-                {
-                    throw new ValidationException("Неможливо знайти готель з таким hotelId!", "");
-                }
-                tour.Hotels.Add(hotel);
-            }
             foreach(var reviewId in tourDTO.ReviewIds)
             {
                 var review = await Database.Reviews.GetById(reviewId);
@@ -348,15 +306,6 @@ namespace TouragencyWebApi.BLL.Services
                     throw new ValidationException("Неможливо знайти відгук з таким reviewId!", "");
                 }
                 tour.Reviews.Add(review);
-            }
-            foreach(var transportTypeId in tourDTO.TransportTypeIds)
-            {
-                var transportType = await Database.TransportTypes.GetById(transportTypeId);
-                if (transportType == null)
-                {
-                    throw new ValidationException("Неможливо знайти тип транспорту з таким transportTypeId!", "");
-                }
-                tour.TransportTypes.Add(transportType);
             }
             foreach(var bookingId in tourDTO.BookingIds)
             {
@@ -371,11 +320,8 @@ namespace TouragencyWebApi.BLL.Services
             tour.ArrivalDate = tourDTO.ArrivalDate;
             tour.DepartureDate = tourDTO.DepartureDate;
             tour.Name = await Database.TourNames.GetById(tourDTO.TourNameId);
-            tour.IsHaveNightRides = tourDTO.IsHaveNightRides;
-            tour.NightRidesCount = tourDTO.NightRidesCount;
             tour.FreeSeats = tourDTO.FreeSeats;
             tour.TourState = await Database.TourStates.GetById(tourDTO.TourStateId);
-            tour.Route = tourDTO.Route;
             Database.Tours.Update(tour);
             await Database.Save();
             return tourDTO;

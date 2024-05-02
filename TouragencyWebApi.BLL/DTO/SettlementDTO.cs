@@ -11,7 +11,7 @@ namespace TouragencyWebApi.BLL.DTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<int> ToursIds { get; set; }
+        public ICollection<int> TourNameIds { get; set; }
         public ICollection<int> HotelIds { get; set; }
         public int CountryId { get; set; }
     }

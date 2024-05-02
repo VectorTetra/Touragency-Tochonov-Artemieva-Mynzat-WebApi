@@ -10,6 +10,22 @@ namespace TouragencyWebApi.DAL.Entities
 		public string FlagUrl { get; set; }
 		// One-to-many relationship with the Settlement model
 		public virtual ICollection<Settlement> Settlements { get; set; }
+		public virtual ICollection<TourName> TourNames { get; set; }    
 		public virtual Continent Continent { get; set; }
-	}
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var otheBC = (Country)obj;
+            return Id == otheBC.Id;
+        }
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+    }
 }

@@ -38,17 +38,18 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.TransportTypes.Where(t => t.Description.Contains(descriptionSubstring)).ToListAsync();
         }
 
-        public async Task<IEnumerable<TransportType>> GetByTourId(long tourId)
+        public async Task<IEnumerable<TransportType>> GetByTourNameId(int tourNameId)
         {
-            return await _context.TransportTypes.Where(t => t.Tours.Any(t => t.Id == tourId)).ToListAsync();
+            return await _context.TransportTypes.Where(t => t.TourNames.Any(t => t.Id == tourNameId)).ToListAsync();
         }
 
         public async Task<IEnumerable<TransportType>> GetByTourName(string tourname)
         {
-            return await _context.TransportTypes.Where(t => t.Tours.Any(t => t.Name.Name.Contains(tourname))).ToListAsync();
+            return await _context.TransportTypes.Where(t => t.TourNames.Any(t => t.Name.Contains(tourname))).ToListAsync();
         }
 
-        public async Task<IEnumerable<TransportType>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring, long? tourId, string? tourname)
+        public async Task<IEnumerable<TransportType>> GetByCompositeSearch(string? nameSubstring, string? descriptionSubstring,
+           int? tourNameId, string? tourname)
         {
             var typeCollections = new List<IEnumerable<TransportType>>();
             
@@ -60,9 +61,9 @@ namespace TouragencyWebApi.DAL.Repositories
             {
                 typeCollections.Add(await GetByDescriptionSubstring(descriptionSubstring));
             }
-            if (tourId != null)
+            if (tourNameId != null)
             {
-                typeCollections.Add(await GetByTourId(tourId.Value));
+                typeCollections.Add(await GetByTourNameId(tourNameId.Value));
             }
             if (tourname != null)
             {

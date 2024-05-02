@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TouragencyWebApi.DAL.EF;
 
@@ -11,9 +12,11 @@ using TouragencyWebApi.DAL.EF;
 namespace TouragencyWebApi.DAL.Migrations
 {
     [DbContext(typeof(TouragencyContext))]
-    partial class TouragencyContextModelSnapshot : ModelSnapshot
+    [Migration("20240502110317_changedTour_and_TourNameStructure")]
+    partial class changedTour_and_TourNameStructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,21 +53,6 @@ namespace TouragencyWebApi.DAL.Migrations
                     b.HasIndex("ToursId");
 
                     b.ToTable("ClientTour");
-                });
-
-            modelBuilder.Entity("CountryTourName", b =>
-                {
-                    b.Property<int>("CountriesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TourNamesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CountriesId", "TourNamesId");
-
-                    b.HasIndex("TourNamesId");
-
-                    b.ToTable("CountryTourName");
                 });
 
             modelBuilder.Entity("EmailPerson", b =>
@@ -112,19 +100,19 @@ namespace TouragencyWebApi.DAL.Migrations
                     b.ToTable("HotelHotelService");
                 });
 
-            modelBuilder.Entity("HotelTourName", b =>
+            modelBuilder.Entity("HotelTour", b =>
                 {
                     b.Property<int>("HotelsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TourNamesId")
-                        .HasColumnType("int");
+                    b.Property<long>("ToursId")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("HotelsId", "TourNamesId");
+                    b.HasKey("HotelsId", "ToursId");
 
-                    b.HasIndex("TourNamesId");
+                    b.HasIndex("ToursId");
 
-                    b.ToTable("HotelTourName");
+                    b.ToTable("HotelTour");
                 });
 
             modelBuilder.Entity("PersonPhone", b =>
@@ -142,34 +130,34 @@ namespace TouragencyWebApi.DAL.Migrations
                     b.ToTable("PersonPhone");
                 });
 
-            modelBuilder.Entity("SettlementTourName", b =>
+            modelBuilder.Entity("SettlementTour", b =>
                 {
                     b.Property<int>("SettlementsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TourNamesId")
-                        .HasColumnType("int");
+                    b.Property<long>("ToursId")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("SettlementsId", "TourNamesId");
+                    b.HasKey("SettlementsId", "ToursId");
 
-                    b.HasIndex("TourNamesId");
+                    b.HasIndex("ToursId");
 
-                    b.ToTable("SettlementTourName");
+                    b.ToTable("SettlementTour");
                 });
 
-            modelBuilder.Entity("TourNameTransportType", b =>
+            modelBuilder.Entity("TourTransportType", b =>
                 {
-                    b.Property<int>("TourNamesId")
-                        .HasColumnType("int");
+                    b.Property<long>("ToursId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("TransportTypesId")
                         .HasColumnType("int");
 
-                    b.HasKey("TourNamesId", "TransportTypesId");
+                    b.HasKey("ToursId", "TransportTypesId");
 
                     b.HasIndex("TransportTypesId");
 
-                    b.ToTable("TourNameTransportType");
+                    b.ToTable("TourTransportType");
                 });
 
             modelBuilder.Entity("TouragencyWebApi.DAL.Entities.BedConfiguration", b =>
@@ -950,21 +938,6 @@ namespace TouragencyWebApi.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CountryTourName", b =>
-                {
-                    b.HasOne("TouragencyWebApi.DAL.Entities.Country", null)
-                        .WithMany()
-                        .HasForeignKey("CountriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TouragencyWebApi.DAL.Entities.TourName", null)
-                        .WithMany()
-                        .HasForeignKey("TourNamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("EmailPerson", b =>
                 {
                     b.HasOne("TouragencyWebApi.DAL.Entities.Email", null)
@@ -1010,7 +983,7 @@ namespace TouragencyWebApi.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HotelTourName", b =>
+            modelBuilder.Entity("HotelTour", b =>
                 {
                     b.HasOne("TouragencyWebApi.DAL.Entities.Hotel", null)
                         .WithMany()
@@ -1018,9 +991,9 @@ namespace TouragencyWebApi.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TouragencyWebApi.DAL.Entities.TourName", null)
+                    b.HasOne("TouragencyWebApi.DAL.Entities.Tour", null)
                         .WithMany()
-                        .HasForeignKey("TourNamesId")
+                        .HasForeignKey("ToursId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1040,7 +1013,7 @@ namespace TouragencyWebApi.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SettlementTourName", b =>
+            modelBuilder.Entity("SettlementTour", b =>
                 {
                     b.HasOne("TouragencyWebApi.DAL.Entities.Settlement", null)
                         .WithMany()
@@ -1048,18 +1021,18 @@ namespace TouragencyWebApi.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TouragencyWebApi.DAL.Entities.TourName", null)
+                    b.HasOne("TouragencyWebApi.DAL.Entities.Tour", null)
                         .WithMany()
-                        .HasForeignKey("TourNamesId")
+                        .HasForeignKey("ToursId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TourNameTransportType", b =>
+            modelBuilder.Entity("TourTransportType", b =>
                 {
-                    b.HasOne("TouragencyWebApi.DAL.Entities.TourName", null)
+                    b.HasOne("TouragencyWebApi.DAL.Entities.Tour", null)
                         .WithMany()
-                        .HasForeignKey("TourNamesId")
+                        .HasForeignKey("ToursId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -16,5 +16,6 @@ namespace TouragencyWebApi.BLL.DTO
         public string ContinentName { get; set; }
         public string FlagUrl { get; set; }
         public ICollection<int>? SettlementIds { get; set; }
+        public ICollection<int>? TourNameIds { get; set; }
     }
 }
