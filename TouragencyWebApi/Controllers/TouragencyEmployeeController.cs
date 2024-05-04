@@ -36,7 +36,7 @@ namespace TouragencyWebApi.Controllers
                                 throw new ValidationException("Не вказано EmployeeId для пошуку!", nameof(employeeQuery.EmployeeId));
 
                             }
-                            var cntr = await _serv.GetById(employeeQuery.EmployeeId);
+                            var cntr = await _serv.GetById(employeeQuery.EmployeeId.Value);
                             collection = new List<TouragencyEmployeeDTO?> { cntr };
                         }
                         break;
@@ -44,7 +44,7 @@ namespace TouragencyWebApi.Controllers
                         {
                             if (employeeQuery.EmployeeFirstname == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.EmployeeFirstname));
+                                throw new ValidationException("Не вказано employeeQuery.EmployeeFirstname для пошуку!", nameof(employeeQuery.EmployeeFirstname));
                             }
                             collection = await _serv.GetByFirstname(employeeQuery.EmployeeFirstname);
                         }
@@ -53,7 +53,7 @@ namespace TouragencyWebApi.Controllers
                         {
                             if (employeeQuery.EmployeeLastname == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.EmployeeLastname));
+                                throw new ValidationException("Не вказано employeeQuery.EmployeeLastname для пошуку!", nameof(employeeQuery.EmployeeLastname));
                             }
                             collection = await _serv.GetByLastname(employeeQuery.EmployeeLastname);
                         }
@@ -62,7 +62,7 @@ namespace TouragencyWebApi.Controllers
                         {
                             if (employeeQuery.EmployeeMiddlename == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.EmployeeMiddlename));
+                                throw new ValidationException("Не вказано employeeQuery.EmployeeMiddlename для пошуку!", nameof(employeeQuery.EmployeeMiddlename));
                             }
                             collection = await _serv.GetByMiddlename(employeeQuery.EmployeeMiddlename);
                         }
@@ -71,7 +71,7 @@ namespace TouragencyWebApi.Controllers
                         {
                             if (employeeQuery.PositionName == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.PositionName));
+                                throw new ValidationException("Не вказано employeeQuery.PositionName для пошуку!", nameof(employeeQuery.PositionName));
                             }
                             collection = await _serv.GetByPositionName(employeeQuery.PositionName);
                         }
@@ -80,15 +80,32 @@ namespace TouragencyWebApi.Controllers
                         {
                             if (employeeQuery.PositionDescription == null)
                             {
-                                throw new ValidationException("Не вказано employeeQuery для пошуку!", nameof(employeeQuery.PositionDescription));
+                                throw new ValidationException("Не вказано employeeQuery.PositionDescription для пошуку!", nameof(employeeQuery.PositionDescription));
                             }
                             collection = await _serv.GetByPositionDescription(employeeQuery.PositionDescription);
                         }
                         break;
+                        case "GetByAccountLogin":
+                        {
+                            if (employeeQuery.EmployeeAccountLogin == null)
+                            {
+                                throw new ValidationException("Не вказано employeeQuery.EmployeeAccountLogin для пошуку!", nameof(employeeQuery.EmployeeAccountLogin));
+                            }
+                            collection = await _serv.GetByAccountLogin(employeeQuery.EmployeeAccountLogin);
+                        }
+                        break;
+                        case "GetByAccountRoleId":
+                        {
+                            if (employeeQuery.EmployeeAccountRoleId == null)
+                            {
+                                throw new ValidationException("Не вказано employeeQuery.EmployeeAccountRoleId для пошуку!", nameof(employeeQuery.EmployeeAccountRoleId));
+                            }
+                            collection = await _serv.GetByAccountRoleId(employeeQuery.EmployeeAccountRoleId.Value);
+                        }
+                        break;
                     case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(employeeQuery.EmployeeFirstname, employeeQuery.EmployeeLastname,
-                                                               employeeQuery.EmployeeMiddlename, employeeQuery.PositionName, employeeQuery.PositionDescription);
+                            collection = await _serv.GetByCompositeSearch(employeeQuery.EmployeeFirstname, employeeQuery.EmployeeLastname, employeeQuery.EmployeeMiddlename, employeeQuery.PositionName, employeeQuery.PositionDescription, employeeQuery.EmployeeAccountLogin, employeeQuery.EmployeeAccountRoleId);
                         }
                         break;
                     default:
@@ -171,7 +188,9 @@ namespace TouragencyWebApi.Controllers
     public class EmployeeQuery
     {
         public string SearchParameter { get; set; } = "";
-        public int EmployeeId { get; set; }
+        public int? EmployeeId { get; set; }
+        public int? EmployeeAccountRoleId { get; set; }
+        public string? EmployeeAccountLogin { get; set; }
         public string? EmployeeFirstname { get; set; }
         public string? EmployeeLastname { get; set; }
         public string? EmployeeMiddlename { get; set; }

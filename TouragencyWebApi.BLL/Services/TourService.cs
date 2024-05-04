@@ -93,6 +93,29 @@ namespace TouragencyWebApi.BLL.Services
             var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
             return tourDTO;
         }
+
+        public async Task<IEnumerable<TourDTO>> GetByStars(int[] stars)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByStars(stars);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
+        public async Task<IEnumerable<TourDTO>> GetByContinentId(int continentId)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByContinentId(continentId);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
+
+        public async Task<IEnumerable<TourDTO>> GetByContinentName(string continentName)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByContinentName(continentName);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
         public async Task<IEnumerable<TourDTO>> GetBySettlement(Settlement settlement)
         {
             var mapper = new Mapper(Tour_TourDTOMapConfig);
@@ -212,14 +235,17 @@ namespace TouragencyWebApi.BLL.Services
             var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
             return tourDTO;
         }
+
+
         public async Task<IEnumerable<TourDTO>> GetByCompositeSearch(int? tourNameId, int? countryid, int? settlementId, int? hotelId,
             DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId,
-            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName)
+            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName, int? continentId, string? continentName, int[]? stars)
         {
+            
             var mapper = new Mapper(Tour_TourDTOMapConfig);
-            var tourCollection = await Database.Tours.GetByCompositeSearch(tourNameId, countryid, settlementId, hotelId, startDate, 
-                endDate, durationDays, hotelServicesIds, transportTypeId, tourStateId, touristNickname, clientFirstname, 
-                clientLastname, clientMiddlename,countryName,settlementName,hotelName);
+            var tourCollection = await Database.Tours.GetByCompositeSearch(tourNameId, countryid, settlementId, hotelId,
+                               startDate, endDate, durationDays, hotelServicesIds, transportTypeId, tourStateId,
+                                              touristNickname, clientFirstname, clientLastname, clientMiddlename, countryName, settlementName, hotelName, continentId, continentName, stars);
             var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
             return tourDTO;
         }

@@ -14,12 +14,13 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<TourName?> GetById(int id);
         Task<IEnumerable<TourName>> GetByName(string tourNameSubstring);
         Task<IEnumerable<TourName>> GetByCountryName(string countryNameSubstring);
+        Task<IEnumerable<TourName>> GetByContinentName(string continentNameSubstring);
         Task<IEnumerable<TourName>> GetBySettlementName(string settlementNameSubstring);
         Task<IEnumerable<TourName>> GetByHotelName(string hotelNameSubstring);
         Task<IEnumerable<TourName>> GetByPageJSONStructureUrlSubstring(string pageJSONStructureUrlSubstring);
         Task<IEnumerable<TourName>> GetByTourId(long tourId);
         Task<IEnumerable<TourName>> GetByTourImageId(long tourImageId);
-        Task<IEnumerable<TourName>> GetByCompositeSearch(string? tourNameSubstring, string? countryNameSubstring,
+        Task<IEnumerable<TourName>> GetByCompositeSearch(string? tourNameSubstring, string? continentNameSubstring,string? countryNameSubstring,
             string? settlementNameSubstring, string? hotelNameSubstring, string? pageJSONStructureUrlSubstring, long? tourId, long? tourImageId);
 
         Task Create(TourName tourName);

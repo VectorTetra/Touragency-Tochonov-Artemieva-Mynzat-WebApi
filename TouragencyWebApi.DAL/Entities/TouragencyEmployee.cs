@@ -11,6 +11,7 @@ namespace TouragencyWebApi.DAL.Entities
 		public int PositionId { get; set; }
 		public virtual Person Person { get; set; }
 		public virtual Position Position { get; set; }
+		public virtual TouragencyEmployeeAccount? Account { get; set; }
 
         public override bool Equals(object obj)
         {

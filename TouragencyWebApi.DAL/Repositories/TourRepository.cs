@@ -53,10 +53,26 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Tours.Where(t => t.Name.Countries.Any(c => c.Id == countryId)).ToListAsync();
         }
+
+        public async Task<IEnumerable<Tour>> GetByContinentId(int continentId)
+        {
+            return await _context.Tours.Where(t => t.Name.Countries.Any(c => c.Continent.Id == continentId)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Tour>> GetByContinentName(string continentName)
+        {
+            return await _context.Tours.Where(t => t.Name.Countries.Any(c => c.Continent.Name.Contains(continentName))).ToListAsync();
+        }
         public async Task<IEnumerable<Tour>> GetByCountryName(string countryNameSubstring)
         {
             return await _context.Tours.Where(t => t.Name.Countries.Any(c => c.Name.Contains(countryNameSubstring))).ToListAsync();
         }
+
+        public async Task<IEnumerable<Tour>> GetByStars(int[] stars)
+        {
+            return await _context.Tours.Where(t => t.Name.Hotels.Any(hotel => stars.Any(star => star == hotel.Stars))).ToListAsync();
+        }
+
         public async Task<IEnumerable<Tour>> GetBySettlement(Settlement settlement)
         {
             return await _context.Tours.Where(t => t.Name.Settlements.Any(s => s.Id == settlement.Id)).ToListAsync();
@@ -125,8 +141,8 @@ namespace TouragencyWebApi.DAL.Repositories
         }
 
         public async Task<IEnumerable<Tour>> GetByCompositeSearch(int? tourNameId, int? countryId, int? settlementId, int? hotelId,
-                       DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId,int? tourStateId, 
-                       string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName)
+            DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId,
+            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName, int? continentId, string? continentName, int[]? stars)
         {
             var tourCollections = new List<IEnumerable<Tour>>();
 
@@ -209,6 +225,21 @@ namespace TouragencyWebApi.DAL.Repositories
             {
                 var hotelsByHotelName = await GetByHotelName(hotelName);
                 tourCollections.Add(hotelsByHotelName);
+            }
+            if (continentId != null)
+            {
+                var hotelsByContinentId = await GetByContinentId(continentId.Value);
+                tourCollections.Add(hotelsByContinentId);
+            }
+            if (continentName != null)
+            {
+                var hotelsByContinentName = await GetByContinentName(continentName);
+                tourCollections.Add(hotelsByContinentName);
+            }
+            if (stars != null)
+            {
+                var hotelsByStars = await GetByStars(stars);
+                tourCollections.Add(hotelsByStars);
             }
             if (!tourCollections.Any())
             {

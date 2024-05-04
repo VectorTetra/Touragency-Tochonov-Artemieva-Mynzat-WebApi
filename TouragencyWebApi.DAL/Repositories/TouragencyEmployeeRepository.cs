@@ -36,6 +36,11 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.TouragencyEmployees.FindAsync(id);
         }
 
+        public async Task<TouragencyEmployee?> GetByAccountId(int accountId)
+        {
+            return await _context.TouragencyEmployees
+                .FirstOrDefaultAsync(p => p.Account.Id == accountId);
+        }
         public async Task<IEnumerable<TouragencyEmployee>> GetByFirstname(string firstname)
         {
             return await _context.TouragencyEmployees
@@ -68,8 +73,30 @@ namespace TouragencyWebApi.DAL.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<TouragencyEmployee>> GetByAccountLogin(string touragencyAccountLogin)
+        {
+            return await _context.TouragencyEmployees
+                .Where(p => p.Account.Login.Contains(touragencyAccountLogin))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<TouragencyEmployee>> GetByAccountRoleId(int touragencyAccountRoleId)
+        {
+            return await _context.TouragencyEmployees
+                .Where(p => p.Account.TouragencyAccountRole.Id == touragencyAccountRoleId)
+                .ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<TouragencyEmployee>> GetByEmailAddress(string emailAddress) { }
+        public async Task<IEnumerable<TouragencyEmployee>> GetByPhoneNumber(string phoneNumber) { }
+
+
+
+
         public async Task<IEnumerable<TouragencyEmployee>> GetByCompositeSearch(string? firstname, string? lastname,
-                       string? middlename, string? positionName, string? positionDescription)
+            string? middlename, string? positionName, string? positionDescription, string? touragencyAccountLogin, int? touragencyAccountRoleId,
+            string? emailAddress, string? phoneNumber)
         {
             var collec = new List<IEnumerable<TouragencyEmployee>>();
 
@@ -92,6 +119,18 @@ namespace TouragencyWebApi.DAL.Repositories
             if (positionDescription != null)
             {
                 collec.Add(await GetByPositionDescription(positionDescription));
+            }
+            if (touragencyAccountLogin != null)
+            {
+                collec.Add(await GetByAccountLogin(touragencyAccountLogin));
+            }
+            if (touragencyAccountRoleId != null)
+            {
+                collec.Add(await GetByAccountRoleId(touragencyAccountRoleId.Value));
+            }
+            if (emailAddress != null)
+            {
+                collec.Add(await GetByEmailAddress(emailAddress));
             }
             if(!collec.Any())
             {

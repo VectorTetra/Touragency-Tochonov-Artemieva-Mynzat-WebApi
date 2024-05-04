@@ -51,6 +51,12 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
             return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByName(tourNameSubstring));
         }
+
+        public async Task<IEnumerable<TourNameDTO>> GetByContinentName(string continentNameSubstring)
+        {
+            var mapper = new Mapper(TourName_TourNameDTOMapConfig);
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByContinentName(continentNameSubstring));
+        }
         public async Task<IEnumerable<TourNameDTO>> GetByCountryName(string countryNameSubstring)
         {
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
@@ -81,10 +87,10 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
             return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByTourImageId(tourImageId));
         }
-        public async Task<IEnumerable<TourNameDTO>> GetByCompositeSearch(string? tourNameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? hotelNameSubstring, string? pageJSONStructureUrlSubstring, long? tourId, long? tourImageId)
+        public async Task<IEnumerable<TourNameDTO>> GetByCompositeSearch(string? tourNameSubstring, string continentNameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? hotelNameSubstring, string? pageJSONStructureUrlSubstring, long? tourId, long? tourImageId)
         {
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
-            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByCompositeSearch(tourNameSubstring, countryNameSubstring, settlementNameSubstring, hotelNameSubstring, pageJSONStructureUrlSubstring, tourId, tourImageId));
+            return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByCompositeSearch(tourNameSubstring, continentNameSubstring, countryNameSubstring, settlementNameSubstring, hotelNameSubstring, pageJSONStructureUrlSubstring, tourId, tourImageId));
         }
         public async Task<TourNameDTO> Create(TourNameDTO tourNameDTO)
         {

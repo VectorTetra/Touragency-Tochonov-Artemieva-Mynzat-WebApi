@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TouragencyWebApi.DAL.EF;
 
@@ -11,9 +12,11 @@ using TouragencyWebApi.DAL.EF;
 namespace TouragencyWebApi.DAL.Migrations
 {
     [DbContext(typeof(TouragencyContext))]
-    partial class TouragencyContextModelSnapshot : ModelSnapshot
+    [Migration("20240504112054_changedTouragencyAccount_and_TouragentTableLinks")]
+    partial class changedTouragencyAccount_and_TouragentTableLinks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -37,10 +37,14 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.TourNames.Where(t => t.Name.Contains(tourNameSubstring)).ToListAsync();
         }
+        public async Task<IEnumerable<TourName>> GetByContinentName(string continentNameSubstring) 
+        {
+            return await _context.TourNames.Where(tt => tt.Countries.Any(rr => rr.Continent.Name.Contains(continentNameSubstring))).ToListAsync();
+        }
 
         public async Task<IEnumerable<TourName>> GetByCountryName(string countryNameSubstring)
         {
-            return await _context.TourNames.Where(tt => tt.Settlements.Any(sss=>sss.Country.Name.Contains(countryNameSubstring))).ToListAsync();
+            return await _context.TourNames.Where(tt => tt.Countries.Any(rr=>rr.Name.Contains(countryNameSubstring))).ToListAsync();
         }
 
         public async Task<IEnumerable<TourName>> GetBySettlementName(string settlementNameSubstring)
@@ -69,12 +73,16 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.TourNames.Where(t => t.TourImages.Any(ti=> ti.Id == tourImageId)).ToListAsync();
         }
 
-        public async Task<IEnumerable<TourName>> GetByCompositeSearch(string? tourNameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? hotelNameSubstring, string? pageJSONStructureUrlSubstring, long? tourId, long? tourImageId)
+        public async Task<IEnumerable<TourName>> GetByCompositeSearch(string? tourNameSubstring, string? continentNameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? hotelNameSubstring, string? pageJSONStructureUrlSubstring, long? tourId, long? tourImageId)
         {
             var collections = new List<IEnumerable<TourName>>();
             if (tourNameSubstring != null)
             {
                 collections.Add(await GetByName(tourNameSubstring));
+            }
+            if (continentNameSubstring != null)
+            {
+                collections.Add(await GetByContinentName(continentNameSubstring));
             }
             if (countryNameSubstring != null)
             {

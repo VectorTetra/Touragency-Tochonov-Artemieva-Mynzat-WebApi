@@ -17,7 +17,10 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Tour>> GetByTourNameStringName(string tourNameSubstring);
         Task<IEnumerable<Tour>> GetByCountry(Country country);
         Task<IEnumerable<Tour>> GetByCountryId(int countryid);
+        Task<IEnumerable<Tour>> GetByContinentId(int continentId);
+        Task<IEnumerable<Tour>> GetByContinentName(string continentName);
         Task<IEnumerable<Tour>> GetByCountryName(string countryNameSubstring);
+        Task<IEnumerable<Tour>> GetByStars(int[] stars);
         Task<IEnumerable<Tour>> GetBySettlement(Settlement settlement);
         Task<IEnumerable<Tour>> GetBySettlementId(int settlementId);
         Task<IEnumerable<Tour>> GetBySettlementName(string settlementNameSubstring);
@@ -37,7 +40,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Tour>> GetByTourStateId(int tourStateId);
         Task<IEnumerable<Tour>> GetByCompositeSearch(int? tourNameId, int? countryid, int? settlementId, int? hotelId,
             DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId,
-            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName);
+            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName, int? continentId, string? continentName, int[]? stars);
         Task Create(Tour tour);
         void Update(Tour tour);
         Task Delete(long id);

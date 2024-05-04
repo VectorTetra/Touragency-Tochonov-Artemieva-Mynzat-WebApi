@@ -35,7 +35,6 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.Get200Last();
                         }
                         break;
-
                     case "GetById":
                         {
                             if (clientQuery.Id is null)

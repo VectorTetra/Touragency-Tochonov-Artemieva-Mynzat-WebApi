@@ -137,9 +137,21 @@ namespace TouragencyWebApi.Controllers
                             }
                         }
                         break;
+                        case "GetByContinentName":
+                        {
+                            if (tourNameQuery.ContinentName == null)
+                            {
+                                throw new ValidationException("Не вказано TourName.ContinentName для пошуку!", nameof(TourNameQuery.ContinentName));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByContinentName(tourNameQuery.ContinentName);
+                            }
+                        }
+                        break;
                     case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(tourNameQuery.Name, tourNameQuery.CountryName, tourNameQuery.SettlementName, tourNameQuery.HotelName, tourNameQuery.PageJSONStructureUrl, tourNameQuery.TourId, tourNameQuery.TourImageId);
+                            collection = await _serv.GetByCompositeSearch(tourNameQuery.Name, tourNameQuery.ContinentName, tourNameQuery.CountryName, tourNameQuery.SettlementName, tourNameQuery.HotelName, tourNameQuery.PageJSONStructureUrl, tourNameQuery.TourId, tourNameQuery.TourImageId);
                         }
                         break;
                     default:
@@ -225,6 +237,7 @@ namespace TouragencyWebApi.Controllers
         public string SearchParameter { get; set; } = "";
         public int? Id { get; set; }
         public string? Name { get; set; }
+        public string? ContinentName { get; set; }
         public string? CountryName { get; set; }
         public string? SettlementName { get; set; }
         public string? HotelName { get; set; }

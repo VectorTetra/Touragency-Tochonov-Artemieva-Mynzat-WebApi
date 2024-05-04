@@ -20,6 +20,15 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
         .ForMember("PositionId", opt => opt.MapFrom(c => c.PositionId))
         .ForMember("PersonId", opt => opt.MapFrom(c => c.PersonId))
+        .ForPath(p => p.AccountId, opt => opt.MapFrom(c => c.Account.Id))
+        .ForPath(p => p.Firstname, opt => opt.MapFrom(c => c.Person.Firstname))
+        .ForPath(p => p.Lastname, opt => opt.MapFrom(c => c.Person.Lastname))
+        .ForPath(p => p.Middlename, opt => opt.MapFrom(c => c.Person.Middlename))
+        .ForPath(p => p.Email, opt => opt.MapFrom(c => c.Person.Emails.ElementAt(0).EmailAddress))
+        .ForPath(p => p.Phone, opt => opt.MapFrom(c => c.Person.Phones.ElementAt(0).PhoneNumber))
+        .ForPath(p => p.PositionName, opt => opt.MapFrom(c => c.Position.Name))
+        .ForPath(p => p.PositionDescription, opt => opt.MapFrom(c => c.Position.Description))
+        .ForPath(p => p.AccountLogin, opt => opt.MapFrom(c => c.Account.Login))
         );
 
         public TouragencyEmployeeService(IUnitOfWork uow)
@@ -44,10 +53,21 @@ namespace TouragencyWebApi.BLL.Services
             {
                 throw new ValidationException($"Такої персони не існує (employeeDTO.PersonId : {employeeDTO.PersonId})", "");
             }
+            TouragencyEmployeeAccount? account = null;
+            if (employeeDTO.AccountId != null)
+            {
+                account = await Database.TouragencyAccounts.GetById(employeeDTO.AccountId.Value);
+                if (account == null)
+                {
+                    throw new ValidationException($"Такого акаунта турагента не існує (employeeDTO.AccountId : {employeeDTO.AccountId})", "");
+                }
+
+            }
             var newEmployee = new TouragencyEmployee
             {
                 PositionId = employeeDTO.PositionId,
-                PersonId = employeeDTO.PersonId
+                PersonId = employeeDTO.PersonId,
+                Account = account
             };
 
             await Database.TouragencyEmployees.Create(newEmployee);
@@ -63,8 +83,29 @@ namespace TouragencyWebApi.BLL.Services
             {
                 throw new ValidationException($"Такого співробітника турагенства не існує (employeeDTO.Id : {employeeDTO.Id})", "");
             }
+            var position = await Database.Positions.GetById(employeeDTO.PositionId);
+            if (position == null)
+            {
+                throw new ValidationException($"Такої посади не існує (employeeDTO.PositionId : {employeeDTO.PositionId})", "");
+            }
+            var person = await Database.Persons.GetById(employeeDTO.PersonId);
+            if (person == null)
+            {
+                throw new ValidationException($"Такої персони не існує (employeeDTO.PersonId : {employeeDTO.PersonId})", "");
+            }
+            TouragencyEmployeeAccount? account = null;
+            if (employeeDTO.AccountId != null)
+            {
+                account = await Database.TouragencyAccounts.GetById(employeeDTO.AccountId.Value);
+                if (account == null)
+                {
+                    throw new ValidationException($"Такого акаунта турагента не існує (employeeDTO.AccountId : {employeeDTO.AccountId})", "");
+                }
+
+            }
             employee.PositionId = employeeDTO.PositionId;
             employee.PersonId = employeeDTO.PersonId;
+            employee.Account = account;
 
             Database.TouragencyEmployees.Update(employee);
             await Database.Save();
@@ -102,6 +143,12 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<TouragencyEmployee, TouragencyEmployeeDTO>(await Database.TouragencyEmployees.GetById(id));
         }
 
+        public async Task<TouragencyEmployeeDTO?> GetByAccountId(int accountId)
+        {
+            var mapper = new Mapper(Employee_EmployeeDTOMapConfig);
+            return mapper.Map<TouragencyEmployee, TouragencyEmployeeDTO>(await Database.TouragencyEmployees.GetByAccountId(accountId));
+        }
+
         public async Task<IEnumerable<TouragencyEmployeeDTO>> GetByFirstname(string firstname)
         {
             var mapper = new Mapper(Employee_EmployeeDTOMapConfig);
@@ -132,11 +179,23 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<TouragencyEmployee>, IEnumerable<TouragencyEmployeeDTO>>(await Database.TouragencyEmployees.GetByPositionDescription(positionDescription));
         }
 
-        public async Task<IEnumerable<TouragencyEmployeeDTO>> GetByCompositeSearch(string? firstname, string? lastname,
-                       string? middlename, string? positionName, string? positionDescription)
+        public async Task<IEnumerable<TouragencyEmployeeDTO>> GetByAccountLogin(string touragencyAccountLogin)
         {
             var mapper = new Mapper(Employee_EmployeeDTOMapConfig);
-            return mapper.Map<IEnumerable<TouragencyEmployee>, IEnumerable<TouragencyEmployeeDTO>>(await Database.TouragencyEmployees.GetByCompositeSearch(firstname, lastname, middlename, positionName, positionDescription));
+            return mapper.Map<IEnumerable<TouragencyEmployee>, IEnumerable<TouragencyEmployeeDTO>>(await Database.TouragencyEmployees.GetByAccountLogin(touragencyAccountLogin));
+        }
+
+        public async Task<IEnumerable<TouragencyEmployeeDTO>> GetByAccountRoleId(int touragencyAccountRoleId)
+        {
+            var mapper = new Mapper(Employee_EmployeeDTOMapConfig);
+            return mapper.Map<IEnumerable<TouragencyEmployee>, IEnumerable<TouragencyEmployeeDTO>>(await Database.TouragencyEmployees.GetByAccountRoleId(touragencyAccountRoleId));
+        }
+
+        public async Task<IEnumerable<TouragencyEmployeeDTO>> GetByCompositeSearch(string? firstname, string? lastname,
+            string? middlename, string? positionName, string? positionDescription, string? touragencyAccountLogin, int? touragencyAccountRoleId)
+        {
+            var mapper = new Mapper(Employee_EmployeeDTOMapConfig);
+            return mapper.Map<IEnumerable<TouragencyEmployee>, IEnumerable<TouragencyEmployeeDTO>>(await Database.TouragencyEmployees.GetByCompositeSearch(firstname, lastname, middlename, positionName, positionDescription, touragencyAccountLogin, touragencyAccountRoleId));
         }
 
     }

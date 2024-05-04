@@ -14,6 +14,9 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<TourDTO>> GetByCountry(Country country);
         Task<IEnumerable<TourDTO>> GetByCountryId(int countryid);
         Task<IEnumerable<TourDTO>> GetByCountryName(string countryNameSubstring);
+        Task<IEnumerable<TourDTO>> GetByContinentId(int continentId);
+        Task<IEnumerable<TourDTO>> GetByContinentName(string continentName);
+        Task<IEnumerable<TourDTO>> GetByStars(int[] stars);
         Task<IEnumerable<TourDTO>> GetBySettlement(Settlement settlement);
         Task<IEnumerable<TourDTO>> GetBySettlementId(int settlementId);
         Task<IEnumerable<TourDTO>> GetBySettlementName(string settlementNameSubstring);
@@ -33,7 +36,7 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<TourDTO>> GetByClientMiddlename(string clientMiddlename);
         Task<IEnumerable<TourDTO>> GetByCompositeSearch(int? tourNameId, int? countryid, int? settlementId, int? hotelId,
             DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId,
-            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName);
+            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName, int? continentId, string? continentName, int[]? stars);
         Task<TourDTO> Create(TourDTO tour);
         Task<TourDTO> Update(TourDTO tour);
         Task<TourDTO> Delete(long id);
