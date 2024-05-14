@@ -14,5 +14,7 @@ namespace TouragencyWebApi.BLL.DTO
         public ICollection<int> TourNameIds { get; set; }
         public ICollection<int> HotelIds { get; set; }
         public int CountryId { get; set; }
+        public string? CountryName { get; set; }
+        public string? CountryFlagUrl { get; set; }
     }
 }

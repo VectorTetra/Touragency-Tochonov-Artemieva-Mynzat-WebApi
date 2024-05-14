@@ -93,15 +93,19 @@ namespace TouragencyWebApi.BLL.Services
             {
                 throw new ValidationException($"Такої персони не існує (employeeDTO.PersonId : {employeeDTO.PersonId})", "");
             }
+            var phones = person.Phones.ToList();
+            phones[0].PhoneNumber = employeeDTO.Phone;
+            var emails = person.Emails.ToList();
+            emails[0].EmailAddress = employeeDTO.Email;
             TouragencyEmployeeAccount? account = null;
-            if (employeeDTO.AccountId != null)
+            if (employeeDTO.AccountLogin != null)
             {
                 account = await Database.TouragencyAccounts.GetById(employeeDTO.AccountId.Value);
                 if (account == null)
                 {
                     throw new ValidationException($"Такого акаунта турагента не існує (employeeDTO.AccountId : {employeeDTO.AccountId})", "");
                 }
-
+                account.Login = employeeDTO.AccountLogin;
             }
             employee.PositionId = employeeDTO.PositionId;
             employee.PersonId = employeeDTO.PersonId;

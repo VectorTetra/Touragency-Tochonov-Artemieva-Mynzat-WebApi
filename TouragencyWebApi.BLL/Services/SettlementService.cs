@@ -22,6 +22,8 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("CountryId", opt => opt.MapFrom(c => c.Country.Id))
         .ForPath(d => d.TourNameIds, opt => opt.MapFrom(c => c.TourNames.Select(b => b.Id)))
         .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Hotels.Select(b => b.Id)))
+        .ForPath(d => d.CountryName, opt => opt.MapFrom(c => c.Country.Name))
+        .ForPath(d => d.CountryFlagUrl, opt => opt.MapFrom(c => c.Country.FlagUrl))
         );
         MapperConfiguration Country_CountryDTOMapConfig = new MapperConfiguration(cfg => cfg.CreateMap<Country, CountryDTO>()
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))

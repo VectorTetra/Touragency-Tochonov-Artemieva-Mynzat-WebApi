@@ -16,12 +16,12 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ClientDTO>> RegisterUser(TouragencyAccountLoginDTO accountLogin)
+        public async Task<ActionResult<TouragencyEmployeeAccountDTO>> RegisterUser(TouragencyAccountLoginDTO accountLogin)
         {
             try
             {
-                await _serv.TryToLogin(accountLogin);
-                return Ok(accountLogin);
+                var dto = await _serv.TryToLogin(accountLogin);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {

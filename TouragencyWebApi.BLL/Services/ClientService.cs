@@ -239,75 +239,81 @@ namespace TouragencyWebApi.BLL.Services
         }
         public async Task<ClientDTO?> GetById(int clientId)
         {
-            Client? MeaningUser = await Database.Clients.GetById(clientId);
-            if (MeaningUser == null)
-            {
-                return null;
-            }
-            return new ClientDTO
-            {
-                Id = MeaningUser.Id,
-                TouristNickname = MeaningUser.TouristNickname,
-                Person = new PersonDTO
-                {
-                    Id = MeaningUser.Person.Id,
-                    Lastname = MeaningUser.Person.Lastname,
-                    Firstname = MeaningUser.Person.Firstname,
-                    Middlename = MeaningUser.Person.Middlename,
-                    PhoneIds = MeaningUser.Person.Phones.Select(ph => ph.Id).ToList(),
-                    EmailIds = MeaningUser.Person.Emails.Select(em => em.Id).ToList()
-                },
-                BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
-                AvatarImagePath = MeaningUser.AvatarImagePath
-            };
+            //Client? MeaningUser = await Database.Clients.GetById(clientId);
+            //if (MeaningUser == null)
+            //{
+            //    return null;
+            //}
+            //return new ClientDTO
+            //{
+            //    Id = MeaningUser.Id,
+            //    TouristNickname = MeaningUser.TouristNickname,
+            //    Person = new PersonDTO
+            //    {
+            //        Id = MeaningUser.Person.Id,
+            //        Lastname = MeaningUser.Person.Lastname,
+            //        Firstname = MeaningUser.Person.Firstname,
+            //        Middlename = MeaningUser.Person.Middlename,
+            //        PhoneIds = MeaningUser.Person.Phones.Select(ph => ph.Id).ToList(),
+            //        EmailIds = MeaningUser.Person.Emails.Select(em => em.Id).ToList()
+            //    },
+            //    BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
+            //    AvatarImagePath = MeaningUser.AvatarImagePath
+            //};
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<Client, ClientDTO>(await Database.Clients.GetById(clientId));
         }
         public async Task<ClientDTO?> GetByPersonId(int personId)
         {
-            Client? MeaningUser = await Database.Clients.GetByPersonId(personId);
-            if (MeaningUser == null)
-            {
-                return null;
-            }
-            return new ClientDTO
-            {
-                Id = MeaningUser.Id,
-                TouristNickname = MeaningUser.TouristNickname,
-                Person = new PersonDTO
-                {
-                    Id = MeaningUser.Person.Id,
-                    Lastname = MeaningUser.Person.Lastname,
-                    Firstname = MeaningUser.Person.Firstname,
-                    Middlename = MeaningUser.Person.Middlename,
-                    PhoneIds = MeaningUser.Person.Phones.Select(ph => ph.Id).ToList(),
-                    EmailIds = MeaningUser.Person.Emails.Select(em => em.Id).ToList()
-                },
-                BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
-                AvatarImagePath = MeaningUser.AvatarImagePath
-            };
+            //Client? MeaningUser = await Database.Clients.GetByPersonId(personId);
+            //if (MeaningUser == null)
+            //{
+            //    return null;
+            //}
+            //return new ClientDTO
+            //{
+            //    Id = MeaningUser.Id,
+            //    TouristNickname = MeaningUser.TouristNickname,
+            //    Person = new PersonDTO
+            //    {
+            //        Id = MeaningUser.Person.Id,
+            //        Lastname = MeaningUser.Person.Lastname,
+            //        Firstname = MeaningUser.Person.Firstname,
+            //        Middlename = MeaningUser.Person.Middlename,
+            //        PhoneIds = MeaningUser.Person.Phones.Select(ph => ph.Id).ToList(),
+            //        EmailIds = MeaningUser.Person.Emails.Select(em => em.Id).ToList()
+            //    },
+            //    BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
+            //    AvatarImagePath = MeaningUser.AvatarImagePath
+            //};
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<Client, ClientDTO>(await Database.Clients.GetByPersonId(personId));
         }
         public async Task<ClientDTO?> GetByBookingId(long bookingId)
         {
-            Client? MeaningUser = await Database.Clients.GetByBookingId(bookingId);
-            if (MeaningUser == null)
-            {
-                return null;
-            }
-            return new ClientDTO
-            {
-                Id = MeaningUser.Id,
-                TouristNickname = MeaningUser.TouristNickname,
-                Person = new PersonDTO
-                {
-                    Id = MeaningUser.Person.Id,
-                    Lastname = MeaningUser.Person.Lastname,
-                    Firstname = MeaningUser.Person.Firstname,
-                    Middlename = MeaningUser.Person.Middlename,
-                    PhoneIds = MeaningUser.Person.Phones.Select(ph => ph.Id).ToList(),
-                    EmailIds = MeaningUser.Person.Emails.Select(em => em.Id).ToList()
-                },
-                BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
-                AvatarImagePath = MeaningUser.AvatarImagePath
-            };
+            //Client? MeaningUser = await Database.Clients.GetByBookingId(bookingId);
+            //if (MeaningUser == null)
+            //{
+            //    return null;
+            //}
+            //return new ClientDTO
+            //{
+            //    Id = MeaningUser.Id,
+            //    TouristNickname = MeaningUser.TouristNickname,
+            //    Person = new PersonDTO
+            //    {
+            //        Id = MeaningUser.Person.Id,
+            //        Lastname = MeaningUser.Person.Lastname,
+            //        Firstname = MeaningUser.Person.Firstname,
+            //        Middlename = MeaningUser.Person.Middlename,
+            //        PhoneIds = MeaningUser.Person.Phones.Select(ph => ph.Id).ToList(),
+            //        EmailIds = MeaningUser.Person.Emails.Select(em => em.Id).ToList()
+            //    },
+            //    BookingIds = MeaningUser.Bookings.Select(b => b.Id).ToList(),
+            //    AvatarImagePath = MeaningUser.AvatarImagePath
+            //};
+            var mapper = new Mapper(Client_ClientDTOMapConfig);
+            return mapper.Map<Client, ClientDTO>(await Database.Clients.GetByBookingId(bookingId));
         }
         public async Task<IEnumerable<ClientDTO>> GetByTouristNickname(string touristNickname)
         {
