@@ -86,6 +86,7 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
+                // Додавання даних про зображення в БД
                 var dto = await _serv.Create(hotelImageDTO);
                 return Ok(dto);
             }

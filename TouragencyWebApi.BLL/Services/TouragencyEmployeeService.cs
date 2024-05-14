@@ -192,10 +192,11 @@ namespace TouragencyWebApi.BLL.Services
         }
 
         public async Task<IEnumerable<TouragencyEmployeeDTO>> GetByCompositeSearch(string? firstname, string? lastname,
-            string? middlename, string? positionName, string? positionDescription, string? touragencyAccountLogin, int? touragencyAccountRoleId)
+            string? middlename, string? positionName, string? positionDescription, string? touragencyAccountLogin, int? touragencyAccountRoleId,
+            string? emailAddress, string? phoneNumber)
         {
             var mapper = new Mapper(Employee_EmployeeDTOMapConfig);
-            return mapper.Map<IEnumerable<TouragencyEmployee>, IEnumerable<TouragencyEmployeeDTO>>(await Database.TouragencyEmployees.GetByCompositeSearch(firstname, lastname, middlename, positionName, positionDescription, touragencyAccountLogin, touragencyAccountRoleId));
+            return mapper.Map<IEnumerable<TouragencyEmployee>, IEnumerable<TouragencyEmployeeDTO>>(await Database.TouragencyEmployees.GetByCompositeSearch(firstname, lastname, middlename, positionName, positionDescription, touragencyAccountLogin, touragencyAccountRoleId, emailAddress, phoneNumber));
         }
 
     }

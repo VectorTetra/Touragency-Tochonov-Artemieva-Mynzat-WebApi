@@ -88,8 +88,18 @@ namespace TouragencyWebApi.DAL.Repositories
         }
 
 
-        public async Task<IEnumerable<TouragencyEmployee>> GetByEmailAddress(string emailAddress) { }
-        public async Task<IEnumerable<TouragencyEmployee>> GetByPhoneNumber(string phoneNumber) { }
+        public async Task<IEnumerable<TouragencyEmployee>> GetByEmailAddress(string emailAddress) 
+        {
+            return await _context.TouragencyEmployees
+                .Where(p => p.Person.Emails.Any(em => em.EmailAddress.Contains(emailAddress)))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<TouragencyEmployee>> GetByPhoneNumber(string phoneNumber) 
+        {
+            return await _context.TouragencyEmployees
+                .Where(p => p.Person.Phones.Any(ph => ph.PhoneNumber.Contains(phoneNumber)))
+                .ToListAsync();
+        }
 
 
 

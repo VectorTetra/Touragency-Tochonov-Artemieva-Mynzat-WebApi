@@ -24,5 +24,6 @@ namespace TouragencyWebApi.BLL.DTO
         // Many-to-many зв'язок з таблицею Hotels
         public ICollection<int>? HotelIds { get; set; }
         public ICollection<int>? TransportTypeIds { get; set; }
+        public ICollection<HotelDTO>? Hotels { get; set; }
     }
 }

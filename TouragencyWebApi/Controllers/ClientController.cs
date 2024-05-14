@@ -12,9 +12,11 @@ namespace TouragencyWebApi.Controllers
     public class ClientController : ControllerBase
     {
         private readonly IClientService _serv;
-        public ClientController(IClientService serv)
+        IWebHostEnvironment _appEnvironment;
+        public ClientController(IClientService serv, IWebHostEnvironment appEnvironment)
         {
             _serv = serv;
+            _appEnvironment = appEnvironment;
         }
 
         [HttpGet]
@@ -158,6 +160,60 @@ namespace TouragencyWebApi.Controllers
             {
                 var dto = await _serv.Update(clientDTO);
                 return Ok(dto);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpPut]
+        [Route("UploadAvatarImage")]
+        public async Task<ActionResult<string>> UploadAvatarImage([FromForm] int clientId, [FromForm] IFormFile FormFile)
+        {
+            try
+            {
+                if (FormFile is null)
+                {
+                    throw new ValidationException("Файл не було завантажено!", nameof(FormFile));
+                }
+                var clientData = await _serv.GetById(clientId);
+                if (clientData is null)
+                {
+                    throw new ValidationException("Клієнт не знайдений!", nameof(clientId));
+                }
+                if (clientData.AvatarImagePath != null)
+                {
+                    // Видаляємо старий файл аватарки
+                    var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, clientData.AvatarImagePath.TrimStart('/'));
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+                // получаем имя файла
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(FormFile.FileName);
+
+                // генерируем новый GUID
+                string guid = Guid.NewGuid().ToString();
+
+                // добавляем GUID к имени файла
+                string newFileName = $"{fileName}_{guid}{Path.GetExtension(FormFile.FileName)}";
+
+                // Путь к папке Files
+                string path = "/ClientAvatarImages/" + newFileName; // новое имя файла
+
+                // Сохраняем файл в папку Files в каталоге wwwroot
+                // Для получения полного пути к каталогу wwwroot
+                // применяется свойство WebRootPath объекта IWebHostEnvironment
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    await FormFile.CopyToAsync(fileStream); // копируем файл в поток
+                }
+                return new ObjectResult(_appEnvironment.WebRootPath + path);
             }
             catch (ValidationException ex)
             {

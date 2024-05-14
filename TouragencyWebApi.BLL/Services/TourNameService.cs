@@ -24,7 +24,17 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.SettlementIds, opt => opt.MapFrom(c => c.Settlements.Select(b => b.Id)))
         .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Hotels.Select(b => b.Id)))
         .ForPath(d => d.TransportTypeIds, opt => opt.MapFrom(c => c.TransportTypes.Select(b => b.Id)))
-        );
+        .ForPath(d => d.Hotels, opt => opt.MapFrom(c => c.Hotels.Select(b => new HotelDTO
+        {
+            Id = b.Id,
+            Name = b.Name,
+            Description = b.Description,
+            SettlementName = b.Settlement.Name,
+            CountryName = b.Settlement.Country.Name,
+            FoodServices = b.HotelServices.Where(hs => hs.HotelServiceType.Id == 1).Select(hs => hs.Description).ToList(),
+            OtherServices = b.HotelServices.Where(hs => hs.HotelServiceType.Id == 2).Select(hs => hs.Description).ToList(),
+            HotelImageUrls = b.HotelImages.Select(hi => hi.ImageUrl).ToList()
+        }))));
         public TourNameService(IUnitOfWork uow)
         {
             Database = uow;

@@ -105,7 +105,7 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(employeeQuery.EmployeeFirstname, employeeQuery.EmployeeLastname, employeeQuery.EmployeeMiddlename, employeeQuery.PositionName, employeeQuery.PositionDescription, employeeQuery.EmployeeAccountLogin, employeeQuery.EmployeeAccountRoleId);
+                            collection = await _serv.GetByCompositeSearch(employeeQuery.EmployeeFirstname, employeeQuery.EmployeeLastname, employeeQuery.EmployeeMiddlename, employeeQuery.PositionName, employeeQuery.PositionDescription, employeeQuery.EmployeeAccountLogin, employeeQuery.EmployeeAccountRoleId, employeeQuery.EmployeeEmail, employeeQuery.EmployeePhone);
                         }
                         break;
                     default:
@@ -196,5 +196,7 @@ namespace TouragencyWebApi.Controllers
         public string? EmployeeMiddlename { get; set; }
         public string? PositionName { get; set; }
         public string? PositionDescription { get; set; }
+        public string? EmployeePhone { get; set;}
+        public string? EmployeeEmail { get; set; }
     }
 }

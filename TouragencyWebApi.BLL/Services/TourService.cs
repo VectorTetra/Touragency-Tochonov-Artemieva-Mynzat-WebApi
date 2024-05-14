@@ -21,6 +21,8 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.TourNameId, opt => opt.MapFrom(c => c.Name.Id))
         .ForMember("FreeSeats", opt => opt.MapFrom(c => c.FreeSeats))
         .ForPath(d => d.TourStateId, opt => opt.MapFrom(c => c.TourState.Id))
+        .ForPath(d => d.TourName, opt => opt.MapFrom(c => c.Name.Name))
+        .ForPath(d => d.Route, opt => opt.MapFrom(c => c.Name.Route))
         .ForPath(d => d.SettlementIds, opt => opt.MapFrom(c => c.Name.Settlements.Select(s => s.Id)))
         .ForPath(d => d.CountryIds, opt => opt.MapFrom(c => c.Name.Countries.Select(s => s.Id)))
         .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Name.Hotels.Select(h => h.Id)))

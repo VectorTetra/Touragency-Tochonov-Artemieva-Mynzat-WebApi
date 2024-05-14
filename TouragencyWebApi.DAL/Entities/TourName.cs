@@ -16,8 +16,8 @@ namespace TouragencyWebApi.DAL.Entities
 		// Покажчик, скільки днів триває тур
 		public int Duration { get; set; }
         public string PageJSONStructureUrl { get; set; }
-		// One-to-Many relationship with Tour
-		public virtual ICollection<Tour> Tours { get; set; }
+        // One-to-Many relationship with Tour
+        public virtual ICollection<Tour> Tours { get; set; }
 		public virtual ICollection<TourImage> TourImages { get; set; }
         public virtual ICollection<Country> Countries { get; set; }
         // Many-to-many зв'язок з таблицею Settlements

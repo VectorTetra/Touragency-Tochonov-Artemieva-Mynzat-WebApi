@@ -27,6 +27,9 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.Person.Middlename, opt => opt.MapFrom(c => c.Person.Middlename))
         .ForPath(d => d.Person.PhoneIds, opt => opt.MapFrom(c => c.Person.Phones.Select(ph => ph.Id)))
         .ForPath(d => d.Person.EmailIds, opt => opt.MapFrom(c => c.Person.Emails.Select(em => em.Id)))
+        .ForPath(d => d.Person.Phones, opt => opt.MapFrom(c => c.Person.Phones.Select(ph => ph.PhoneNumber)))
+        .ForPath(d => d.Person.Emails, opt => opt.MapFrom(c => c.Person.Emails.Select(em => em.EmailAddress)))
+        .ForPath(d => d.Person.Id, opt => opt.MapFrom(c => c.Person.Id))
         .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
         .ForPath(d => d.TourIds, opt => opt.MapFrom(c => c.Tours.Select(b => b.Id)))
         .ForPath(d => d.ReviewIds, opt => opt.MapFrom(c => c.Reviews.Select(b => b.Id)))
@@ -350,7 +353,6 @@ namespace TouragencyWebApi.BLL.Services
             {
                 throw new ValidationException("Такого користувача не існує!", "");
             }
-
             else
             {
                 client.Person.Phones.Clear();
@@ -361,6 +363,8 @@ namespace TouragencyWebApi.BLL.Services
                     {
                         throw new ValidationException("Такого телефону не існує!", "");
                     }
+                    var newPhone = clientDTO.Person.Phones.ToList().ElementAt(0);
+                    phone.PhoneNumber = newPhone;
                     client.Person.Phones.Add(phone);
                 }
                 client.Person.Emails.Clear();
@@ -371,6 +375,8 @@ namespace TouragencyWebApi.BLL.Services
                     {
                         throw new ValidationException("Такого email не існує!", "");
                     }
+                    var newEmail = clientDTO.Person.Emails.ToList().ElementAt(0);
+                    email.EmailAddress = newEmail;
                     client.Person.Emails.Add(email);
                 }
                 client.AvatarImagePath = clientDTO.AvatarImagePath;

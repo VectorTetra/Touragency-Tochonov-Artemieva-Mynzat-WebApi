@@ -12,6 +12,11 @@ builder.Services.AddCors(); // добавляем сервисы CORS
 string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // добавляем контекст ApplicationContext в качестве сервиса в приложение
+//builder.Services.AddSession(opt =>
+//{
+//    opt.IdleTimeout = TimeSpan.FromMinutes(30);
+//    opt.Cookie.Name = "Session";
+//});
 builder.Services.AddControllers();
 builder.Services.AddDistributedMemoryCache();
 //builder.Services.AddSwaggerGen();
@@ -45,15 +50,12 @@ builder.Services.AddScoped<ITransportTypeService, TransportTypeService>();
 builder.Services.AddScoped<ITouragencyAccountRoleService, TouragencyAccountRoleService>();
 builder.Services.AddScoped<ITouragencyEmployeeService, TouragencyEmployeeService>();
 builder.Services.AddScoped<ITouragencyAccountService, TouragencyAccountService>();
-builder.Services.AddSession(opt =>
-{
-    opt.IdleTimeout = TimeSpan.FromMinutes(30);
-    opt.Cookie.Name = "Session";
-});
+
 
 
 var app = builder.Build();
 // настраиваем CORS
+//app.UseSession();
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 //app.UseCors(builder => builder.WithOrigins("https://localhost:7110")
 //                            .AllowAnyHeader()
@@ -65,7 +67,6 @@ app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(
 //    app.UseSwagger();
 //    app.UseSwaggerUI();
 //}
-app.UseSession();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseHttpsRedirection();

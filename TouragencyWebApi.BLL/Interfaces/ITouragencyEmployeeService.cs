@@ -28,6 +28,7 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<TouragencyEmployeeDTO>> GetByAccountLogin(string touragencyAccountLogin);
         Task<IEnumerable<TouragencyEmployeeDTO>> GetByAccountRoleId(int touragencyAccountRoleId);
         Task<IEnumerable<TouragencyEmployeeDTO>> GetByCompositeSearch(string? firstname, string? lastname,
-            string? middlename, string? positionName, string? positionDescription, string? touragencyAccountLogin, int? touragencyAccountRoleId);
+            string? middlename, string? positionName, string? positionDescription, string? touragencyAccountLogin, int? touragencyAccountRoleId,
+            string? emailAddress, string? phoneNumber);
     }
 }

@@ -25,5 +25,13 @@ namespace TouragencyWebApi.BLL.DTO
         // А також дані про модель харчування (наприклад, BB, HB, FB, AI)
         public ICollection<int> HotelServiceIds { get; set; }
         public ICollection<long> HotelImageIds { get; set; }
+
+        public ICollection<string>? HotelImageUrls { get; set; }
+
+        public ICollection<string>? FoodServices { get; set; }
+        public ICollection<string>? OtherServices { get; set; }
+
+        public string? SettlementName { get; set; }
+        public string? CountryName { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace TouragencyWebApi.Controllers
     public class SessionTourListController : ControllerBase
     {
         [HttpGet]
-        public ActionResult<ObjectResult> Get([FromQuery] SessionTourListQuery query)
+        public async Task<ActionResult<SessionTourListQuery>> Get([FromQuery] SessionTourListQuery query)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace TouragencyWebApi.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] SessionTourListQuery query)
+        public void Post(SessionTourListQuery query)
         {
             if (query.CountryName != null)
             {
