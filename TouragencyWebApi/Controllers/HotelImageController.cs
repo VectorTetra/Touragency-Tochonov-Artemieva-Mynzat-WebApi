@@ -12,9 +12,13 @@ namespace TouragencyWebApi.Controllers
     public class HotelImageController : ControllerBase
     {
         private readonly IHotelImageService _serv;
-        public HotelImageController(IHotelImageService serv)
+        private readonly IHotelService _hotelServ;
+        IWebHostEnvironment _appEnvironment;
+        public HotelImageController(IHotelImageService serv, IHotelService HotelServ, IWebHostEnvironment appEnvironment)
         {
             _serv = serv;
+            _hotelServ = HotelServ;
+            _appEnvironment = appEnvironment;
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HotelImageDTO>>> GetHotelImages([FromQuery] HotelImageQuery hotelImageQuery)
@@ -99,7 +103,62 @@ namespace TouragencyWebApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPost]
+        [Route("UploadImage")]
+        public async Task<ActionResult<string>> UploadImage([FromForm] int hotelId, [FromForm] IFormFile file)
+        {
+            try
+            {
+                if (file is null)
+                {
+                    throw new ValidationException("Файл не було завантажено!", nameof(file));
+                }
+                var hotelData = await _hotelServ.GetById(hotelId);
+                if (hotelData is null)
+                {
+                    throw new ValidationException("Готель не знайдений!", nameof(hotelId));
+                }
+                //if (hotelData.AvatarImagePath != null)
+                //{
+                //    var oldFileUri = new Uri(hotelData.AvatarImagePath);
+                //    var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, oldFileUri.AbsolutePath.TrimStart('/'));
 
+                //    if (System.IO.File.Exists(oldFilePath))
+                //    {
+                //        System.IO.File.Delete(oldFilePath);
+                //    }
+                //}
+                // получаем имя файла
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(file.FileName);
+
+                // генерируем новый GUID
+                string guid = Guid.NewGuid().ToString();
+
+                // добавляем GUID к имени файла
+                string newFileName = $"{fileName}_{guid}{Path.GetExtension(file.FileName)}";
+
+                // Путь к папке Files
+                string path = "/HotelImages/" + newFileName; // новое имя файла
+
+                // Сохраняем файл в папку Files в каталоге wwwroot
+                // Для получения полного пути к каталогу wwwroot
+                // применяется свойство WebRootPath объекта IWebHostEnvironment
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream); // копируем файл в поток
+                }
+                //return new ObjectResult(_appEnvironment.WebRootPath + path);
+                return new ObjectResult(path);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
         [HttpPut]
         public async Task<ActionResult<HotelImageDTO>> UpdateHotelImage(HotelImageDTO hotelImageDTO)
         {
@@ -107,6 +166,54 @@ namespace TouragencyWebApi.Controllers
             {
                 var dto = await _serv.Update(hotelImageDTO);
                 return Ok(dto);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpPut]
+        [Route("UploadImage")]
+        public async Task<ActionResult<HotelImageDTO>> PutImage([FromForm] int hotelId, [FromForm] IFormFile file)
+        {
+            try
+            {
+                if (file is null)
+                {
+                    throw new ValidationException("Файл не було завантажено!", nameof(file));
+                }
+                var hotelData = await _hotelServ.GetById(hotelId);
+                if (hotelData is null)
+                {
+                    throw new ValidationException("Готель не знайдений!", nameof(hotelId));
+                }
+                var imgDto = new HotelImageDTO { HotelId = hotelId, ImageUrl = "", Id = 0 };
+                if (!hotelData.HotelImages.IsNullOrEmpty())
+                {
+                    var imgList = hotelData.HotelImages.ToList();
+                    var img = imgList[0];
+                    imgDto.Id = img.Id;
+                    var oldFileUri = new Uri(img.ImageUrl);
+                    var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, oldFileUri.AbsolutePath.TrimStart('/'));
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(file.FileName);
+                string guid = Guid.NewGuid().ToString();
+                string newFileName = $"{fileName}_{guid}{Path.GetExtension(file.FileName)}";
+                string path = "/HotelImages/" + newFileName;
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+                imgDto.ImageUrl = path;
+                return imgDto;
             }
             catch (ValidationException ex)
             {

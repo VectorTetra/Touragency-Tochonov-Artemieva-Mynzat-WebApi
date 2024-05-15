@@ -24,14 +24,18 @@ namespace TouragencyWebApi.BLL.DTO
         // В цьому полі можуть зберігатися дані про послуги готелю (наприклад, Wi-Fi, сніданок, басейн, парковка, трансфер)
         // А також дані про модель харчування (наприклад, BB, HB, FB, AI)
         public ICollection<int> HotelServiceIds { get; set; }
-        public ICollection<long> HotelImageIds { get; set; }
+        //public ICollection<long> HotelImageIds { get; set; }
 
-        public ICollection<string>? HotelImageUrls { get; set; }
+        //public ICollection<string>? HotelImageUrls { get; set; }
+        public ICollection<HotelImageDTO>? HotelImages { get; set; }
 
+        public ICollection<int>? FoodServicesIds { get; set; }
         public ICollection<string>? FoodServices { get; set; }
+        public ICollection<int>? OtherServicesIds { get; set; }
         public ICollection<string>? OtherServices { get; set; }
 
         public string? SettlementName { get; set; }
         public string? CountryName { get; set; }
+        public string? CountryId { get; set; }
     }
 }

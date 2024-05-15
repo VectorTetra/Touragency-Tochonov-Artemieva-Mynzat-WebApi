@@ -31,7 +31,14 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.TourNameIds, opt => opt.MapFrom(c => c.TourNames.Select(b => b.Id)))
         .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
         .ForPath(d => d.HotelServiceIds, opt => opt.MapFrom(c => c.HotelServices.Select(b => b.Id)))
-        .ForPath(d => d.HotelImageIds, opt => opt.MapFrom(c => c.HotelImages.Select(b => b.Id)))
+        .ForPath(d => d.FoodServices, opt => opt.MapFrom(c => c.HotelServices.Where(b => b.HotelServiceType.Id == 1).Select(b => b.Name)))
+        .ForPath(d => d.OtherServices, opt => opt.MapFrom(c => c.HotelServices.Where(b => b.HotelServiceType.Id == 2).Select(b => b.Name)))
+        .ForPath(d => d.FoodServicesIds, opt => opt.MapFrom(c => c.HotelServices.Where(b => b.HotelServiceType.Id == 1).Select(b => b.Id)))
+        .ForPath(d => d.OtherServicesIds, opt => opt.MapFrom(c => c.HotelServices.Where(b => b.HotelServiceType.Id == 2).Select(b => b.Id)))
+        .ForPath(d => d.SettlementName, opt => opt.MapFrom(c => c.Settlement.Name))
+        .ForPath(d => d.CountryName, opt => opt.MapFrom(c => c.Settlement.Country.Name))
+        .ForPath(d => d.CountryId, opt => opt.MapFrom(c => c.Settlement.Country.Id))
+        .ForPath(d => d.HotelImages, opt => opt.MapFrom(c => c.HotelImages.Select(b => new HotelImageDTO { Id = b.Id, ImageUrl = b.ImageUrl, HotelId = b.Hotel.Id })))
         );
         public async Task<IEnumerable<HotelDTO>> GetAll()
         {
@@ -301,6 +308,7 @@ namespace TouragencyWebApi.BLL.Services
             hotelEntity.Name = hotelDTO.Name;
             hotelEntity.Stars = hotelDTO.Stars;
             hotelEntity.Settlement = Settlement;
+            hotelEntity.Description = hotelDTO.Description;
 
             Database.Hotels.Update(hotelEntity);
             await Database.Save();

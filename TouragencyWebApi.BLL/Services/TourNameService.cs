@@ -33,7 +33,18 @@ namespace TouragencyWebApi.BLL.Services
             CountryName = b.Settlement.Country.Name,
             FoodServices = b.HotelServices.Where(hs => hs.HotelServiceType.Id == 1).Select(hs => hs.Description).ToList(),
             OtherServices = b.HotelServices.Where(hs => hs.HotelServiceType.Id == 2).Select(hs => hs.Description).ToList(),
-            HotelImageUrls = b.HotelImages.Select(hi => hi.ImageUrl).ToList()
+            Stars = b.Stars,
+            HotelConfigurationIds = b.HotelConfigurations.Select(hc => hc.Id).ToList(),
+            BedConfigurationIds = b.BedConfigurations.Select(bc => bc.Id).ToList(),
+            HotelServiceIds = b.HotelServices.Select(hs => hs.Id).ToList(),
+            FoodServicesIds = b.HotelServices.Where(hs => hs.HotelServiceType.Id == 1).Select(hs => hs.Id).ToList(),
+            OtherServicesIds = b.HotelServices.Where(hs => hs.HotelServiceType.Id == 2).Select(hs => hs.Id).ToList(),
+            HotelImages = b.HotelImages.Select(hi => new HotelImageDTO
+            {
+                Id = hi.Id,
+                ImageUrl = hi.ImageUrl,
+                HotelId = hi.Hotel.Id
+            }).ToList()
         }))));
         public TourNameService(IUnitOfWork uow)
         {

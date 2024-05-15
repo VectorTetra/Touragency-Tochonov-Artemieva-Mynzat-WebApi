@@ -47,7 +47,7 @@ namespace TouragencyWebApi.DAL.Repositories
 
         public async Task<IEnumerable<Settlement>> GetByCountryId(int countryId) 
         {
-            return await _context.Settlements.Where(p => p.Country.Id == countryId).ToListAsync();
+            return await _context.Settlements.OrderBy(b=>b.Name).Where(p => p.Country.Id == countryId).ToListAsync();
         }
         
         public async Task<IEnumerable<Settlement>> GetByTourNameId(int tourNameId)

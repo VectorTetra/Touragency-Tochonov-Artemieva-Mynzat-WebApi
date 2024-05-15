@@ -24,7 +24,7 @@ namespace TouragencyWebApi.DAL.Repositories
         }
         public async Task<IEnumerable<BedConfiguration>> GetAll()
         {
-            return await _context.BedConfigurations.ToListAsync();
+            return await _context.BedConfigurations.OrderBy(b => b.Capacity).ToListAsync();
         }
 
         public async Task<IEnumerable<BedConfiguration>> Get200Last()

@@ -187,8 +187,9 @@ namespace TouragencyWebApi.Controllers
                 }
                 if (clientData.AvatarImagePath != null)
                 {
-                    // Видаляємо старий файл аватарки
-                    var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, clientData.AvatarImagePath.TrimStart('/'));
+                    var oldFileUri = new Uri(clientData.AvatarImagePath);
+                    var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, oldFileUri.AbsolutePath.TrimStart('/'));
+                    Console.WriteLine(oldFilePath);
                     if (System.IO.File.Exists(oldFilePath))
                     {
                         System.IO.File.Delete(oldFilePath);
@@ -213,7 +214,8 @@ namespace TouragencyWebApi.Controllers
                 {
                     await FormFile.CopyToAsync(fileStream); // копируем файл в поток
                 }
-                return new ObjectResult(_appEnvironment.WebRootPath + path);
+                //return new ObjectResult(_appEnvironment.WebRootPath + path);
+                return new ObjectResult(path);
             }
             catch (ValidationException ex)
             {

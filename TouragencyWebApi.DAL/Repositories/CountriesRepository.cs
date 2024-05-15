@@ -21,7 +21,7 @@ namespace TouragencyWebApi.DAL.Repositories
 
         public async Task<IEnumerable<Country>> GetAll()
         {
-            return await _context.Countries.ToListAsync();
+            return await _context.Countries.OrderBy(p=>p.Name).ToListAsync();
         }
         public async Task<IEnumerable<Country>> Get200Last()
         {
