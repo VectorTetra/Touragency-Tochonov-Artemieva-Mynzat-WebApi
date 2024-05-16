@@ -57,6 +57,18 @@ namespace TouragencyWebApi.DAL.Repositories
 
         public async Task<IEnumerable<News>> GetByDateDiapazon(DateTime start, DateTime end)
         {
+            if(start > end)
+            {
+                return await _context.News
+                .Where(p => p.PublishDateTime >= end && p.PublishDateTime <= start)
+                .ToListAsync();
+            }
+            if(start == end)
+            {
+                return await _context.News
+                .Where(p => p.PublishDateTime == start)
+                .ToListAsync();
+            }
             return await _context.News
                 .Where(p => p.PublishDateTime >= start && p.PublishDateTime <= end)
                 .ToListAsync();

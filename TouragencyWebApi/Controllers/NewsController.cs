@@ -11,9 +11,11 @@ namespace TouragencyWebApi.Controllers
     public class NewsController : ControllerBase
     {
         private readonly INewsService _serv;
-        public NewsController(INewsService Service)
+        IWebHostEnvironment _appEnvironment;
+        public NewsController(INewsService Service, IWebHostEnvironment appEnvironment)
         {
             _serv = Service;
+            _appEnvironment = appEnvironment;
         }
 
         [HttpGet]
@@ -98,6 +100,15 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByCompositeSearch(newsQuery.Caption, newsQuery.Text, newsQuery.PublishDateTimeDiapazonStart, newsQuery.PublishDateTimeDiapazonEnd, newsQuery.IsVisible, newsQuery.IsImportant);
                         }
                         break;
+                    case "GetLastActiveToQuantinyPrioritizeIncludeImportant":
+                        {
+                            if (newsQuery.DesiredQuantity is null)
+                            {
+                                throw new ValidationException("Не вказано DesiredQuantity для пошуку!", nameof(newsQuery.DesiredQuantity));
+                            }
+                            collection = await _serv.GetLastActiveToQuantinyPrioritizeIncludeImportant(newsQuery.DesiredQuantity.Value);
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Невідомий параметр пошуку!", nameof(newsQuery.SearchParameter));
@@ -137,6 +148,48 @@ namespace TouragencyWebApi.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("UploadNewsImage")]
+        public async Task<ActionResult<string>> PostNewsImage([FromForm] IFormFile FormFile)
+        {
+            try
+            {
+                if (FormFile is null)
+                {
+                    throw new ValidationException("Файл не було завантажено!", nameof(FormFile));
+                }
+                // получаем имя файла
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(FormFile.FileName);
+
+                // генерируем новый GUID
+                string guid = Guid.NewGuid().ToString();
+
+                // добавляем GUID к имени файла
+                string newFileName = $"{fileName}_{guid}{Path.GetExtension(FormFile.FileName)}";
+
+                // Путь к папке Files
+                string path = "/NewsImages/" + newFileName; // новое имя файла
+
+                // Сохраняем файл в папку Files в каталоге wwwroot
+                // Для получения полного пути к каталогу wwwroot
+                // применяется свойство WebRootPath объекта IWebHostEnvironment
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    await FormFile.CopyToAsync(fileStream); // копируем файл в поток
+                }
+                //return new ObjectResult(_appEnvironment.WebRootPath + path);
+                return new ObjectResult(path);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPut]
         public async Task<ActionResult<NewsDTO>> UpdateNews(NewsDTO news)
         {
@@ -154,6 +207,64 @@ namespace TouragencyWebApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPut]
+        [Route("UploadNewsImage")]
+        public async Task<ActionResult<string>> PutNewsImage([FromForm] long newsId, [FromForm] IFormFile FormFile)
+        {
+            try
+            {
+                if (FormFile is null)
+                {
+                    throw new ValidationException("Файл не було завантажено!", nameof(FormFile));
+                }
+                var newsData = await _serv.GetById(newsId);
+                if (newsData is null)
+                {
+                    throw new ValidationException("Новину не знайдено!", nameof(newsId));
+                }
+                if (newsData.PhotoUrl != null)
+                {
+                    var oldFileUri = new Uri(newsData.PhotoUrl);
+                    var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, oldFileUri.AbsolutePath.TrimStart('/'));
+                    Console.WriteLine(oldFilePath);
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+                // получаем имя файла
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(FormFile.FileName);
+
+                // генерируем новый GUID
+                string guid = Guid.NewGuid().ToString();
+
+                // добавляем GUID к имени файла
+                string newFileName = $"{fileName}_{guid}{Path.GetExtension(FormFile.FileName)}";
+
+                // Путь к папке Files
+                string path = "/NewsImages/" + newFileName; // новое имя файла
+
+                // Сохраняем файл в папку Files в каталоге wwwroot
+                // Для получения полного пути к каталогу wwwroot
+                // применяется свойство WebRootPath объекта IWebHostEnvironment
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    await FormFile.CopyToAsync(fileStream); // копируем файл в поток
+                }
+                //return new ObjectResult(_appEnvironment.WebRootPath + path);
+                return new ObjectResult(path);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<NewsDTO>> DeleteNews(long id)
@@ -173,18 +284,18 @@ namespace TouragencyWebApi.Controllers
             }
         }
     }
-
-
-
-    public class NewsQuery
-    {
-        public string SearchParameter { get; set; } = "Get200Last";
-        public long? Id { get; set; }
-        public string? Caption { get; set; }
-        public string? Text { get; set; }
-        public DateTime? PublishDateTimeDiapazonStart { get; set; }
-        public DateTime? PublishDateTimeDiapazonEnd { get; set; }
-        public bool? IsVisible { get; set; }
-        public bool? IsImportant { get; set; }
-    }
 }
+
+public class NewsQuery
+{
+    public string SearchParameter { get; set; } = "Get200Last";
+    public long? Id { get; set; }
+    public string? Caption { get; set; }
+    public string? Text { get; set; }
+    public DateTime? PublishDateTimeDiapazonStart { get; set; }
+    public DateTime? PublishDateTimeDiapazonEnd { get; set; }
+    public bool? IsVisible { get; set; }
+    public bool? IsImportant { get; set; }
+    public int? DesiredQuantity { get; set; }
+}
+
