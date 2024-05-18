@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.IO;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.BLL.Interfaces;
+using TouragencyWebApi.DAL.Entities;
 
 namespace TouragencyWebApi.Controllers
 {
@@ -11,10 +13,12 @@ namespace TouragencyWebApi.Controllers
     public class ReviewImageController : ControllerBase
     {
         private readonly IReviewImageService _serv;
+        IWebHostEnvironment _appEnvironment;
 
-        public ReviewImageController(IReviewImageService reviewImageService)
+        public ReviewImageController(IReviewImageService reviewImageService, IWebHostEnvironment appEnvironment)
         {
             _serv = reviewImageService;
+            _appEnvironment = appEnvironment;
         }
 
         [HttpGet]
@@ -194,6 +198,55 @@ namespace TouragencyWebApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPost]
+        [Route("UploadReviewImage")]
+        public async Task<ActionResult<ICollection<string>>> PostReviewImage([FromForm] long ReviewId, [FromForm] IFormFileCollection FormFiles)
+        {
+            try
+            {
+                if (FormFiles is null || FormFiles.Count == 0)
+                {
+                    throw new ValidationException("Файли не було завантажено!", nameof(FormFiles));
+                }
+                List<string> paths = new List<string>();
+                foreach (var FormFile in FormFiles)
+                {
+                    // получаем имя файла
+                    string fileName = System.IO.Path.GetFileNameWithoutExtension(FormFile.FileName);
+                    fileName = fileName.Replace(" ", "_");
+
+                    // генерируем новый GUID
+                    string guid = Guid.NewGuid().ToString();
+
+                    // добавляем GUID к имени файла
+                    string newFileName = $"{fileName}_{guid}{Path.GetExtension(FormFile.FileName)}";
+
+                    // Путь к папке Files
+                    string path = "/ReviewImages/" + newFileName; // новое имя файла
+
+                    // Сохраняем файл в папку Files в каталоге wwwroot
+                    // Для получения полного пути к каталогу wwwroot
+                    // применяется свойство WebRootPath объекта IWebHostEnvironment
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await FormFile.CopyToAsync(fileStream); // копируем файл в поток
+                    }
+                    //return new ObjectResult(_appEnvironment.WebRootPath + path);
+                    path = "https://26.162.95.213:7099" + path;
+                    await _serv.Create(new ReviewImageDTO { Id=0,ReviewId = ReviewId, ImagePath = path });
+                    paths.Add(path);
+                }
+                return new ObjectResult(paths);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
         [HttpPut]
         public async Task<ActionResult<ReviewImageDTO>> Update(ReviewImageDTO reviewImageDTO)
         {
@@ -201,6 +254,70 @@ namespace TouragencyWebApi.Controllers
             {
                 var dto = await _serv.Update(reviewImageDTO);
                 return Ok(dto);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpPut]
+        [Route("UploadReviewImage")]
+        public async Task<ActionResult<ICollection<string>>> PutReviewImage([FromForm] long ReviewId, [FromForm] IFormFileCollection FormFiles)
+        {
+            try
+            {
+                if (FormFiles is null || FormFiles.Count == 0)
+                {
+                    throw new ValidationException("Файли не було завантажено!", nameof(FormFiles));
+                }
+                List<string> paths = new List<string>();
+                var oldImages = await _serv.GetByReviewId(ReviewId);
+                var oldImagesIds = oldImages.Select(x => x.Id).ToList();
+                foreach (var oldImage in oldImages)
+                {
+                    if (oldImage.ImagePath != null)
+                    {
+                        var oldFileUri = new Uri(oldImage.ImagePath);
+                        var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, oldFileUri.AbsolutePath.TrimStart('/'));
+                        Console.WriteLine(oldFilePath);
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
+                    }
+                    await _serv.Delete(oldImage.Id);
+                }
+                foreach (var FormFile in FormFiles)
+                {
+                    // получаем имя файла
+                    string fileName = System.IO.Path.GetFileNameWithoutExtension(FormFile.FileName);
+                    fileName = fileName.Replace(" ", "_");
+                    // генерируем новый GUID
+                    string guid = Guid.NewGuid().ToString();
+
+                    // добавляем GUID к имени файла
+                    string newFileName = $"{fileName}_{guid}{Path.GetExtension(FormFile.FileName)}";
+
+                    // Путь к папке Files
+                    string path = "/ReviewImages/" + newFileName; // новое имя файла
+
+                    // Сохраняем файл в папку Files в каталоге wwwroot
+                    // Для получения полного пути к каталогу wwwroot
+                    // применяется свойство WebRootPath объекта IWebHostEnvironment
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await FormFile.CopyToAsync(fileStream); // копируем файл в поток
+                    }
+                    //return new ObjectResult(_appEnvironment.WebRootPath + path);
+                    path = "https://26.162.95.213:7099" + path;
+                    var dto = await _serv.Create(new ReviewImageDTO { Id = 0, ReviewId = ReviewId, ImagePath = path });
+                    paths.Add(path);
+                }
+                return new ObjectResult(paths);
             }
             catch (ValidationException ex)
             {
@@ -228,7 +345,29 @@ namespace TouragencyWebApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
+        [HttpDelete]
+        [Route("DeleteReviewImage/{id}")]
+        public async Task<ActionResult<ICollection<ReviewImageDTO>>> DeleteReviewImage(long id)
+        {
+            var deletedImagesDTO = new List<ReviewImageDTO>();
+            var oldImages = await _serv.GetByReviewId(id);
+            var oldImagesIds = oldImages.Select(x => x.Id).ToList();
+            foreach (var oldImage in oldImages)
+            {
+                if (oldImage.ImagePath != null)
+                {
+                    var oldFileUri = new Uri(oldImage.ImagePath);
+                    var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, oldFileUri.AbsolutePath.TrimStart('/'));
+                    Console.WriteLine(oldFilePath);
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+                deletedImagesDTO.Add(await _serv.Delete(oldImage.Id));
+            }
+            return new ObjectResult(deletedImagesDTO);
+        }
     }
 
     public class ReviewImageQuery

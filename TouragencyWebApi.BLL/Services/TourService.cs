@@ -238,16 +238,25 @@ namespace TouragencyWebApi.BLL.Services
             return tourDTO;
         }
 
+        public async Task<IEnumerable<TourDTO>> GetByClientId(int clientId)
+        {
+            var mapper = new Mapper(Tour_TourDTOMapConfig);
+            var tourCollection = await Database.Tours.GetByClientId(clientId);
+            var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
+            return tourDTO;
+        }
+
 
         public async Task<IEnumerable<TourDTO>> GetByCompositeSearch(int? tourNameId, int? countryid, int? settlementId, int? hotelId,
             DateTime? startDate, DateTime? endDate, int[]? durationDays, int[]? hotelServicesIds, int? transportTypeId, int? tourStateId,
-            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName, string? settlementName, string? hotelName, int? continentId, string? continentName, int[]? stars)
+            string? touristNickname, string? clientFirstname, string? clientLastname, string? clientMiddlename, string? countryName,
+            string? settlementName, string? hotelName, int? continentId, string? continentName, int[]? stars, int? clientId)
         {
-            
+
             var mapper = new Mapper(Tour_TourDTOMapConfig);
             var tourCollection = await Database.Tours.GetByCompositeSearch(tourNameId, countryid, settlementId, hotelId,
                                startDate, endDate, durationDays, hotelServicesIds, transportTypeId, tourStateId,
-                                              touristNickname, clientFirstname, clientLastname, clientMiddlename, countryName, settlementName, hotelName, continentId, continentName, stars);
+                                              touristNickname, clientFirstname, clientLastname, clientMiddlename, countryName, settlementName, hotelName, continentId, continentName, stars, clientId);
             var tourDTO = mapper.Map<IEnumerable<Tour>, IEnumerable<TourDTO>>(tourCollection);
             return tourDTO;
         }
@@ -263,7 +272,7 @@ namespace TouragencyWebApi.BLL.Services
         // ---- Settlement,
         // ---- TourState,
         // ---- TourName
-        
+
         public async Task<TourDTO> Create(TourDTO tourDTO)
         {
             //Намагаємось визначити, чи ще не існує тур з таким tourId
@@ -278,7 +287,7 @@ namespace TouragencyWebApi.BLL.Services
             var ReviewCollection = new List<Review>();
             var BookingCollection = new List<Booking>();
             //-----------------------------------------------------------------------------------------------------
-            foreach(var clientId in tourDTO.ClientIds)
+            foreach (var clientId in tourDTO.ClientIds)
             {
                 var client = await Database.Clients.GetById(clientId);
                 if (client == null)
@@ -305,8 +314,8 @@ namespace TouragencyWebApi.BLL.Services
             tourDTO.Id = tour.Id;
             return tourDTO;
         }
-        public async Task<TourDTO> Update(TourDTO tourDTO) 
-        { 
+        public async Task<TourDTO> Update(TourDTO tourDTO)
+        {
             var tour = await Database.Tours.GetById(tourDTO.Id);
             if (tour == null)
             {
@@ -326,7 +335,7 @@ namespace TouragencyWebApi.BLL.Services
                 }
                 tour.Clients.Add(client);
             }
-            foreach(var reviewId in tourDTO.ReviewIds)
+            foreach (var reviewId in tourDTO.ReviewIds)
             {
                 var review = await Database.Reviews.GetById(reviewId);
                 if (review == null)
@@ -335,7 +344,7 @@ namespace TouragencyWebApi.BLL.Services
                 }
                 tour.Reviews.Add(review);
             }
-            foreach(var bookingId in tourDTO.BookingIds)
+            foreach (var bookingId in tourDTO.BookingIds)
             {
                 var booking = await Database.Bookings.GetById(bookingId);
                 if (booking == null)
@@ -354,7 +363,7 @@ namespace TouragencyWebApi.BLL.Services
             await Database.Save();
             return tourDTO;
         }
-        public async Task<TourDTO> Delete(long id) 
+        public async Task<TourDTO> Delete(long id)
         {
             Tour tour = await Database.Tours.GetById(id);
             if (tour == null)

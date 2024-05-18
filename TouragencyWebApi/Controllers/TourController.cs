@@ -223,12 +223,21 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByStars(tourQuery.stars);
                         }
                         break;
+                    case "GetByClientId":
+                        {
+                            if (tourQuery.ClientId is null)
+                            {
+                                throw new ValidationException("Не вказано ClientId для пошуку!", nameof(tourQuery.ClientId));
+                            }
+                            collection = await _serv.GetByClientId(tourQuery.ClientId.Value);
+                        }
+                        break;
                     case "GetByCompositeSearch":
                         {
 
                             collection = await _serv.GetByCompositeSearch(tourQuery.TourNameId, tourQuery.countryId, tourQuery.settlementId, tourQuery.hotelId,
                                 tourQuery.ArrivalDate, tourQuery.DepartureDate, tourQuery.durationDays, tourQuery.hotelServicesIds, tourQuery.transportTypeId, tourQuery.TourStateId,
-                                tourQuery.TouristNickname, tourQuery.ClientFirstname, tourQuery.ClientLastname, tourQuery.ClientMiddlename, tourQuery.CountryName, tourQuery.SettlementName, tourQuery.HotelName, tourQuery.continentId, tourQuery.ContinentName, tourQuery.stars);
+                                tourQuery.TouristNickname, tourQuery.ClientFirstname, tourQuery.ClientLastname, tourQuery.ClientMiddlename, tourQuery.CountryName, tourQuery.SettlementName, tourQuery.HotelName, tourQuery.continentId, tourQuery.ContinentName, tourQuery.stars, tourQuery.ClientId);
                         }
                         break;
                     default:
@@ -315,6 +324,7 @@ namespace TouragencyWebApi.Controllers
         public string? ClientFirstname { get; set; }
         public string? ClientLastname { get; set; }
         public string? ClientMiddlename { get; set; }
+        public int? ClientId { get; set; }
         public string? CountryName { get; set; }
         public string? ContinentName { get; set; }
         public string? SettlementName { get; set; }

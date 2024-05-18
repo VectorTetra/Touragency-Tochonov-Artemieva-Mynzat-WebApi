@@ -23,7 +23,13 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("ReviewText", opt => opt.MapFrom(c => c.ReviewText))
         .ForMember("CreationDate", opt => opt.MapFrom(c => c.CreationDate))
         .ForMember("Likes", opt => opt.MapFrom(c => c.Likes))
+        .ForMember("ClientTouristNickname", opt => opt.MapFrom(c => c.Client.TouristNickname))
         .ForPath(d => d.ReviewImageIds, opt => opt.MapFrom(c => c.ReviewImages.Select(ri => ri.Id)))
+        .ForPath(d => d.ReviewImageUrls, opt => opt.MapFrom(c => c.ReviewImages.Select(ri => ri.ImagePath)))
+        .ForPath(d => d.ArrivalDate, opt => opt.MapFrom(c => c.Tour.ArrivalDate))
+        .ForPath(d => d.DepartureDate, opt => opt.MapFrom(c => c.Tour.DepartureDate))
+        .ForPath(d => d.TourName, opt => opt.MapFrom(c => c.Tour.Name.Name))
+        .ForMember(d => d.ReviewImages, opt => opt.MapFrom(c => c.ReviewImages.Select(ri => new ReviewImageDTO { Id = ri.Id, ReviewId = ri.ReviewId, ImagePath = ri.ImagePath })))
         );
         public async Task<IEnumerable<ReviewDTO>> GetAll()
         {
@@ -85,14 +91,17 @@ namespace TouragencyWebApi.BLL.Services
             //-----------------------------------------------------------------------------------------------------
             var reviewImages = new List<ReviewImage>();
             //-----------------------------------------------------------------------------------------------------
-            foreach (var reviewImageId in reviewDTO.ReviewImageIds)
+            if (reviewDTO.ReviewImageIds != null)
             {
-                var reviewImage = await Database.ReviewImages.GetById(reviewImageId);
-                if (reviewImage == null)
+                foreach (var reviewImageId in reviewDTO.ReviewImageIds)
                 {
-                    throw new ValidationException("ReviewImageId не знайдено!", nameof(reviewImageId));
+                    var reviewImage = await Database.ReviewImages.GetById(reviewImageId);
+                    if (reviewImage == null)
+                    {
+                        throw new ValidationException("ReviewImageId не знайдено!", nameof(reviewImageId));
+                    }
+                    reviewImages.Add(reviewImage);
                 }
-                reviewImages.Add(reviewImage);
             }
             //-----------------------------------------------------------------------------------------------------
             var review = new Review
@@ -122,14 +131,17 @@ namespace TouragencyWebApi.BLL.Services
             //-----------------------------------------------------------------------------------------------------
             review.ReviewImages.Clear();
             //-----------------------------------------------------------------------------------------------------
-            foreach (var reviewImageId in reviewDTO.ReviewImageIds)
+            if (reviewDTO.ReviewImageIds != null)
             {
-                var reviewImage = await Database.ReviewImages.GetById(reviewImageId);
-                if (reviewImage == null)
+                foreach (var reviewImageId in reviewDTO.ReviewImageIds)
                 {
-                    throw new ValidationException("ReviewImageId не знайдено!", nameof(reviewImageId));
+                    var reviewImage = await Database.ReviewImages.GetById(reviewImageId);
+                    if (reviewImage == null)
+                    {
+                        throw new ValidationException("ReviewImageId не знайдено!", nameof(reviewImageId));
+                    }
+                    review.ReviewImages.Add(reviewImage);
                 }
-                review.ReviewImages.Add(reviewImage);
             }
             //-----------------------------------------------------------------------------------------------------
 
@@ -144,7 +156,7 @@ namespace TouragencyWebApi.BLL.Services
             await Database.Save();
             return reviewDTO;
         }
-        public async Task<ReviewDTO> Delete(long id) 
+        public async Task<ReviewDTO> Delete(long id)
         {
             var review = await Database.Reviews.GetById(id);
             if (review == null)

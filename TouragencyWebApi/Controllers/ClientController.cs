@@ -197,7 +197,7 @@ namespace TouragencyWebApi.Controllers
                 }
                 // получаем имя файла
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(FormFile.FileName);
-
+                fileName = fileName.Replace(" ", "_");
                 // генерируем новый GUID
                 string guid = Guid.NewGuid().ToString();
 
