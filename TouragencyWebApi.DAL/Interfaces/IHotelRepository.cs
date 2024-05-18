@@ -20,6 +20,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Hotel>> GetByHotelConfigurationId(int hotelConfigurationId);
         Task<IEnumerable<Hotel>> GetByBedConfigurationId(int bedConfigurationId);
         Task<IEnumerable<Hotel>> GetBySettlementId(int settlementId);
+        Task<IEnumerable<Hotel>> GetBySettlementIds(int[] settlementIds);
         Task<IEnumerable<Hotel>> GetByTourNameId(int tourNameId);
         Task<IEnumerable<Hotel>> GetByTourName(string tourName);
         Task<IEnumerable<Hotel>> GetByBookingId(long bookingId);
@@ -27,7 +28,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Hotel>> GetByHotelImageId(long hotelImageId);
         Task<IEnumerable<Hotel>> GetByCompositeSearch(string? nameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? descriptionSubstring,
             int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, int? tourNameId, string? tourName,
-            long? bookingId, int? hotelServiceId, long? hotelImageId);
+            long? bookingId, int? hotelServiceId, long? hotelImageId, int[]? settlementIds);
         Task Create(Hotel hotel);
         void Update(Hotel hotel);
         Task Delete(int id);

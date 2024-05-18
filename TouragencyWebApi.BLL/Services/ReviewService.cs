@@ -29,6 +29,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.ArrivalDate, opt => opt.MapFrom(c => c.Tour.ArrivalDate))
         .ForPath(d => d.DepartureDate, opt => opt.MapFrom(c => c.Tour.DepartureDate))
         .ForPath(d => d.TourName, opt => opt.MapFrom(c => c.Tour.Name.Name))
+        .ForPath(d => d.TourNameId, opt => opt.MapFrom(c => c.Tour.Name.Id))
         .ForMember(d => d.ReviewImages, opt => opt.MapFrom(c => c.ReviewImages.Select(ri => new ReviewImageDTO { Id = ri.Id, ReviewId = ri.ReviewId, ImagePath = ri.ImagePath })))
         );
         public async Task<IEnumerable<ReviewDTO>> GetAll()

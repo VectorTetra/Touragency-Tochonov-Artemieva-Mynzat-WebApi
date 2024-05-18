@@ -73,7 +73,17 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByCountryId((int)settlementQuery.CountryId);
                         }
                         break;
-                        case "GetByTourNameId":
+                    case "GetByCountryIds":
+                        {
+                            if (settlementQuery.CountryIds == null)
+                            {
+                                throw new ValidationException("Не вказано CountryId для пошуку!", nameof(settlementQuery.CountryId));
+                            }
+                            collection = await _serv.GetByCountryIds(((IEnumerable<int>)settlementQuery.CountryIds).ToArray());
+                        }
+                        break;
+
+                    case "GetByTourNameId":
                         {
                             if (settlementQuery.TourNameId == null)
                             {
@@ -104,9 +114,9 @@ namespace TouragencyWebApi.Controllers
                             }
                         }
                         break;
-                        case "GetByCompositeSearch":
+                    case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(settlementQuery.Name, settlementQuery.CountryName, settlementQuery.CountryId, settlementQuery.TourNameId, settlementQuery.TourName);
+                            collection = await _serv.GetByCompositeSearch(settlementQuery.Name, settlementQuery.CountryName, settlementQuery.CountryId, settlementQuery.TourNameId, settlementQuery.TourName, settlementQuery.CountryIds.ToArray());
                         }
                         break;
                     default:
@@ -193,6 +203,7 @@ namespace TouragencyWebApi.Controllers
         public string? Name { get; set; }
         public string? CountryName { get; set; }
         public int? CountryId { get; set; }
+        public IEnumerable<int>? CountryIds { get; set; }
 
     }
 }

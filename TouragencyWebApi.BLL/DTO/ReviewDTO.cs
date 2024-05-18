@@ -10,6 +10,7 @@
         public string ReviewText { get; set; }
         public string? ClientTouristNickname { get; set; }
         public string? TourName { get; set; }
+        public int? TourNameId { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime? ArrivalDate { get; set; }
         public DateTime? DepartureDate { get; set; }

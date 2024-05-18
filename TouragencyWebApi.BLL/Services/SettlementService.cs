@@ -165,6 +165,12 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
             return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCountryId(countryId));
         }
+
+        public async Task<IEnumerable<SettlementDTO>> GetByCountryIds(int[] countryIds)
+        {
+            var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
+            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCountryIds(countryIds));
+        }
         
         public async Task<IEnumerable<SettlementDTO>> GetByTourNameId(int tourNameId)
         {
@@ -184,10 +190,10 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<Settlement, SettlementDTO>(await Database.Settlements.GetByHotelId(hotelId));
         }
 
-        public async Task<IEnumerable<SettlementDTO>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName)
+        public async Task<IEnumerable<SettlementDTO>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName, int[]? countryIds)
         {
             var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
-            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCompositeSearch(name, countryName, countryId, tourNameId, tourName));
+            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCompositeSearch(name, countryName, countryId, tourNameId, tourName,countryIds));
         }
     }
 }

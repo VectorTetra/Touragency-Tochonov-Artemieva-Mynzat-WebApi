@@ -45,11 +45,34 @@ namespace TouragencyWebApi.DAL.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Settlement>> GetByCountryId(int countryId) 
+        public async Task<IEnumerable<Settlement>> GetByCountryId(int countryId)
         {
-            return await _context.Settlements.OrderBy(b=>b.Name).Where(p => p.Country.Id == countryId).ToListAsync();
+            return await _context.Settlements.Where(p => p.Country.Id == countryId).OrderBy(b => b.Name).ToListAsync();
         }
-        
+
+        public async Task<IEnumerable<Settlement>> GetByCountryIds(int[] countryIds)
+        {
+            //return await _context.Settlements
+            //    .Where(s => countryIds.Any(p => p == s.Country.Id))
+            //    .OrderBy(s => s.Country.Name)
+            //    .ThenBy(s => s.Name)
+            //    .ToListAsync();
+
+            //List<IEnumerable<Settlement>> listing = new();
+            //foreach (var id in countryIds)
+            //{
+            //   var addon = await GetByCountryId(id);
+            //    listing.Add(addon);
+            //}
+            //return listing.Aggregate((previousList, nextList) => previousList.Concat(nextList).ToList());
+
+            return await _context.Settlements
+                .Where(s => countryIds.Contains(s.Country.Id))
+                .OrderBy(s => s.Country.Name)
+                .ThenBy(s => s.Name)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Settlement>> GetByTourNameId(int tourNameId)
         {
             return await _context.Settlements
@@ -63,12 +86,12 @@ namespace TouragencyWebApi.DAL.Repositories
                 .Where(p => p.TourNames.Any(t => t.Name.Contains(tourName)))
                 .ToListAsync();
         }
-        public async Task<Settlement?> GetByHotelId(int hotelId) 
+        public async Task<Settlement?> GetByHotelId(int hotelId)
         {
             return await _context.Settlements.FirstOrDefaultAsync(p => p.Hotels.Any(h => h.Id == hotelId));
         }
 
-        public async Task<IEnumerable<Settlement>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName)
+        public async Task<IEnumerable<Settlement>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName, int[]? countryIds)
         {
             var settlementsCollections = new List<IEnumerable<Settlement>>();
 
@@ -99,6 +122,12 @@ namespace TouragencyWebApi.DAL.Repositories
             {
                 var settlementsByTourName = await GetByTourName(tourName);
                 settlementsCollections.Add(settlementsByTourName);
+            }
+
+            if (countryIds != null)
+            {
+                var settlementsByCountryIds = await GetByCountryIds(countryIds);
+                settlementsCollections.Add(settlementsByCountryIds);
             }
 
 

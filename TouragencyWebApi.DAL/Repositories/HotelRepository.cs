@@ -62,6 +62,20 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.Hotels.Where(h => h.Settlement.Id == settlementId).ToListAsync();
         }
 
+        public async Task<IEnumerable<Hotel>> GetBySettlementIds(int[] settlementIds)
+        {
+            //return await _context.Hotels
+            //    .Where(h => settlementIds.Any(id => id == h.Settlement.Id))
+            //    .OrderBy(h => h.Settlement.Country.Name)
+            //    .ThenBy(h => h.Settlement.Name)
+            //    .ThenBy(h => h.Name).ToListAsync();
+            return await _context.Hotels
+                .Where(s => settlementIds.Contains(s.Settlement.Id))
+                .OrderBy(s => s.Settlement.Country.Name)
+                .ThenBy(s => s.Name)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Hotel>> GetByTourNameId(int tourNameId)
         {
             return await _context.Hotels.Where(h => h.TourNames.Any(tn => tn.Id == tourNameId)).ToListAsync();
@@ -98,7 +112,7 @@ namespace TouragencyWebApi.DAL.Repositories
 
         public async Task<IEnumerable<Hotel>> GetByCompositeSearch(string? nameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? descriptionSubstring,
             int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, int? tourNameId, string? tourName,
-            long? bookingId, int? hotelServiceId, long? hotelImageId)
+            long? bookingId, int? hotelServiceId, long? hotelImageId, int[]? settlementIds)
         {
             var hotelCollections = new List<IEnumerable<Hotel>>();
 
@@ -168,6 +182,11 @@ namespace TouragencyWebApi.DAL.Repositories
             {
                 var hotelsByHotelImageId = await GetByHotelImageId(hotelImageId.Value);
                 hotelCollections.Add(hotelsByHotelImageId);
+            }
+            if (settlementIds != null)
+            {
+                var hotelsBySettlementIds = await GetBySettlementIds(settlementIds);
+                hotelCollections.Add(hotelsBySettlementIds);
             }
             if (!hotelCollections.Any())
             {

@@ -120,7 +120,16 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetBySettlementId((int)hotelQuery.SettlementId);
                         }
                         break;
-                        case "GetByTourNameId":
+                    case "GetBySettlementIds":
+                        {
+                            if (hotelQuery.SettlementIds is null)
+                            {
+                                throw new ValidationException("Не вказано SettlementIds для пошуку!", nameof(hotelQuery.SettlementIds));
+                            }
+                            collection = await _serv.GetBySettlementIds((int[])hotelQuery.SettlementIds);
+                        }
+                        break;
+                    case "GetByTourNameId":
                         {
                             if (hotelQuery.TourNameId is null)
                             {
@@ -129,7 +138,7 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByTourNameId((int)hotelQuery.TourNameId);
                         }
                         break;
-                        case "GetByTourName":
+                    case "GetByTourName":
                         {
                             if (hotelQuery.TourName is null)
                             {
@@ -169,7 +178,7 @@ namespace TouragencyWebApi.Controllers
                         {
                             collection = await _serv.GetByCompositeSearch(hotelQuery.Name, hotelQuery.CountryName, hotelQuery.SettlementName, hotelQuery.Description,
                                                                hotelQuery.Stars, hotelQuery.HotelConfigurationId, hotelQuery.BedConfigurationId, hotelQuery.SettlementId, hotelQuery.TourNameId, hotelQuery.TourName,
-                                                                                              hotelQuery.BookingId, hotelQuery.HotelServiceId, hotelQuery.HotelImageId);
+                                                                                              hotelQuery.BookingId, hotelQuery.HotelServiceId, hotelQuery.HotelImageId, hotelQuery.SettlementIds);
                         }
                         break;
                     default:
@@ -261,6 +270,7 @@ namespace TouragencyWebApi.Controllers
         public int? HotelConfigurationId { get; set; }
         public int? BedConfigurationId { get; set; }
         public int? SettlementId { get; set; }
+        public int[]? SettlementIds { get; set; }
         // Many-to-many relationship between Hotel and Tour
         public int? TourNameId { get; set; }
         public string? TourName { get; set; }

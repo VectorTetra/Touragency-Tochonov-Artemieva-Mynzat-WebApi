@@ -93,6 +93,12 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetBySettlementId(settlementId));
         }
 
+        public async Task<IEnumerable<HotelDTO>> GetBySettlementIds(int[] settlementIds)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetBySettlementIds(settlementIds));
+        }
+
         public async Task<IEnumerable<HotelDTO>> GetByTourNameId(int tourNameId)
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
@@ -137,12 +143,12 @@ namespace TouragencyWebApi.BLL.Services
 
         public async Task<IEnumerable<HotelDTO>> GetByCompositeSearch(string? nameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? descriptionSubstring,
             int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, int? tourNameId, string? tourName,
-            long? bookingId, int? hotelServiceId, long? hotelImageId)
+            long? bookingId, int? hotelServiceId, long? hotelImageId, int[]? settlementIds)
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByCompositeSearch(nameSubstring, countryNameSubstring, settlementNameSubstring, descriptionSubstring,
                                stars, hotelConfigurationId, bedConfigurationId, settlementId, tourNameId, tourName,
-                                              bookingId, hotelServiceId, hotelImageId));
+                                              bookingId, hotelServiceId, hotelImageId, settlementIds));
         }
 
         public async Task<HotelDTO> Create(HotelDTO hotelDTO)
