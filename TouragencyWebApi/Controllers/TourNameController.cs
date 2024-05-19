@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.BLL.Interfaces;
+using Newtonsoft.Json.Linq;
 
 namespace TouragencyWebApi.Controllers
 {
@@ -11,10 +12,12 @@ namespace TouragencyWebApi.Controllers
     public class TourNameController : ControllerBase
     {
         private readonly ITourNameService _serv;
+        IWebHostEnvironment _appEnvironment;
 
-        public TourNameController(ITourNameService serv)
+        public TourNameController(ITourNameService serv, IWebHostEnvironment appEnvironment)
         {
             _serv = serv;
+            _appEnvironment = appEnvironment;
         }
 
 
@@ -137,7 +140,7 @@ namespace TouragencyWebApi.Controllers
                             }
                         }
                         break;
-                        case "GetByContinentName":
+                    case "GetByContinentName":
                         {
                             if (tourNameQuery.ContinentName == null)
                             {
@@ -202,6 +205,96 @@ namespace TouragencyWebApi.Controllers
             {
                 var dto = await _serv.Create(tourNameDTO);
                 return Ok(dto);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("PostTourImage")]
+        public async Task<ActionResult<ICollection<string>>> PostTourImage([FromForm] IFormFileCollection FormFiles)
+        {
+            try
+            {
+                if (FormFiles is null || FormFiles.Count == 0)
+                {
+                    throw new ValidationException("Файли не було завантажено!", nameof(FormFiles));
+                }
+                List<string> paths = new List<string>();
+                foreach (var FormFile in FormFiles)
+                {
+                    // получаем имя файла
+                    string fileName = System.IO.Path.GetFileNameWithoutExtension(FormFile.FileName);
+                    fileName = fileName.Replace(" ", "_");
+
+                    // генерируем новый GUID
+                    string guid = Guid.NewGuid().ToString();
+
+                    // добавляем GUID к имени файла
+                    string newFileName = $"{fileName}_{guid}{Path.GetExtension(FormFile.FileName)}";
+
+                    // Путь к папке Files
+                    string path = "/TourImages/" + newFileName; // новое имя файла
+
+                    // Сохраняем файл в папку Files в каталоге wwwroot
+                    // Для получения полного пути к каталогу wwwroot
+                    // применяется свойство WebRootPath объекта IWebHostEnvironment
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await FormFile.CopyToAsync(fileStream); // копируем файл в поток
+                    }
+                    //return new ObjectResult(_appEnvironment.WebRootPath + path);
+                    path = "https://26.162.95.213:7099" + path;
+                    paths.Add(path);
+                }
+                return new ObjectResult(paths);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("PostJsonConstructorFile")]
+        public async Task<ActionResult<string>> PostJsonConstructorFile([FromForm] string JsonConstructorItems)
+        {
+            try
+            {
+                JArray jsonObject = JArray.Parse(JsonConstructorItems);
+                // генерируем новый GUID
+                string guid = Guid.NewGuid().ToString();
+
+                // добавляем GUID к имени файла
+                string newFileName = $"{guid}.json";
+
+                // Путь к папке Files
+                string path = "/TourPageJsonStructures/" + newFileName; // новое имя файла
+
+                // Сохраняем файл в папку Files в каталоге wwwroot
+                // Для получения полного пути к каталогу wwwroot
+                // применяется свойство WebRootPath объекта IWebHostEnvironment
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    // Записуємо JObject у файл
+                    using (var writer = new StreamWriter(fileStream))
+                    {
+                        writer.Write(jsonObject.ToString()); // jsonObject - ваш JObject
+                    }
+                }
+                //return new ObjectResult(_appEnvironment.WebRootPath + path);
+                path = "https://26.162.95.213:7099" + path;
+                return new ObjectResult(path);
             }
             catch (ValidationException ex)
             {

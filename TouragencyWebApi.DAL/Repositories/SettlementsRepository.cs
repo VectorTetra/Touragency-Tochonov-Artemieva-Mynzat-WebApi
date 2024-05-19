@@ -91,7 +91,7 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.Settlements.FirstOrDefaultAsync(p => p.Hotels.Any(h => h.Id == hotelId));
         }
 
-        public async Task<IEnumerable<Settlement>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName, int[]? countryIds)
+        public async Task<IEnumerable<Settlement>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName)
         {
             var settlementsCollections = new List<IEnumerable<Settlement>>();
 
@@ -122,12 +122,6 @@ namespace TouragencyWebApi.DAL.Repositories
             {
                 var settlementsByTourName = await GetByTourName(tourName);
                 settlementsCollections.Add(settlementsByTourName);
-            }
-
-            if (countryIds != null)
-            {
-                var settlementsByCountryIds = await GetByCountryIds(countryIds);
-                settlementsCollections.Add(settlementsByCountryIds);
             }
 
 

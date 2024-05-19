@@ -190,10 +190,10 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<Settlement, SettlementDTO>(await Database.Settlements.GetByHotelId(hotelId));
         }
 
-        public async Task<IEnumerable<SettlementDTO>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName, int[]? countryIds)
+        public async Task<IEnumerable<SettlementDTO>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName)
         {
             var mapper = new Mapper(Settlement_SettlementDTOMapConfig);
-            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCompositeSearch(name, countryName, countryId, tourNameId, tourName,countryIds));
+            return mapper.Map<IEnumerable<Settlement>, IEnumerable<SettlementDTO>>(await Database.Settlements.GetByCompositeSearch(name, countryName, countryId, tourNameId, tourName));
         }
     }
 }

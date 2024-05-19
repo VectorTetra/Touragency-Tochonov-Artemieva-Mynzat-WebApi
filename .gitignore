@@ -11,6 +11,7 @@
 *.jpeg
 *.png
 *.svg
+**/TourPageJsonStructures/*.json
 
 # Ігнорувати конкретні типи файлів або шаблони
 *.cache

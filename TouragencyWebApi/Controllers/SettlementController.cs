@@ -116,7 +116,7 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(settlementQuery.Name, settlementQuery.CountryName, settlementQuery.CountryId, settlementQuery.TourNameId, settlementQuery.TourName, settlementQuery.CountryIds.ToArray());
+                            collection = await _serv.GetByCompositeSearch(settlementQuery.Name, settlementQuery.CountryName, settlementQuery.CountryId, settlementQuery.TourNameId, settlementQuery.TourName);
                         }
                         break;
                     default:
