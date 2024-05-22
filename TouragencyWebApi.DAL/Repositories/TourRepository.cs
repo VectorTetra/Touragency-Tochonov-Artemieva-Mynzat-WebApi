@@ -26,7 +26,14 @@ namespace TouragencyWebApi.DAL.Repositories
         }
         public async Task<IEnumerable<Tour>> Get200Last()
         {
-            return await _context.Tours.OrderByDescending(t => t.Id).Take(200).ToListAsync();
+            var distinctTours = await _context.Tours
+            .OrderByDescending(t => t.ArrivalDate) // Сортуємо за датою у зворотньому порядку
+            .GroupBy(t => t.Name.Id) // Групуємо за TourNameId
+            .Select(g => g.First()) // Вибираємо перший елемент з кожної групи
+            .Take(200) // Вибираємо перші 200 записів
+            .ToListAsync();
+
+            return distinctTours;
         }
         public async Task<Tour?> GetById(long id)
         {
@@ -81,14 +88,16 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Tours.Where(t => t.Name.Settlements.Any(c => c.Id == settlementId)).ToListAsync();
         }
-        public async Task<IEnumerable<Tour>> GetBySettlementName(string settlementNameSubstring){
+        public async Task<IEnumerable<Tour>> GetBySettlementName(string settlementNameSubstring)
+        {
             return await _context.Tours.Where(t => t.Name.Settlements.Any(c => c.Name.Contains(settlementNameSubstring))).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByHotel(Hotel hotel)
         {
             return await _context.Tours.Where(t => t.Name.Hotels.Any(h => h.Id == hotel.Id)).ToListAsync();
         }
-        public async Task<IEnumerable<Tour>> GetByHotelName(string hotelNameSubstring){
+        public async Task<IEnumerable<Tour>> GetByHotelName(string hotelNameSubstring)
+        {
             return await _context.Tours.Where(t => t.Name.Hotels.Any(c => c.Name.Contains(hotelNameSubstring))).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByHotelId(int hotelId)
@@ -111,8 +120,9 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Tours.Where(t => t.Name.TransportTypes.Any(tt => tt.Id == transportType.Id)).ToListAsync();
         }
-        public async Task<IEnumerable<Tour>> GetByTransportTypeId(int id){
-            
+        public async Task<IEnumerable<Tour>> GetByTransportTypeId(int id)
+        {
+
             return await _context.Tours.Where(t => t.Name.TransportTypes.Any(tt => tt.Id == id)).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByTransportTypeName(string transportTypeNameSubstring)

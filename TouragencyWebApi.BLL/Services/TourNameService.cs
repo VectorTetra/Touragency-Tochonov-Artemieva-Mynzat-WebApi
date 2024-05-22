@@ -229,6 +229,7 @@ namespace TouragencyWebApi.BLL.Services
         }
         public async Task<TourNameDTO> Update(TourNameDTO tourNameDTO)
         {
+            /*
             TourName tourName = await Database.TourNames.GetById(tourNameDTO.Id);
             if (tourName == null)
             {
@@ -306,8 +307,123 @@ namespace TouragencyWebApi.BLL.Services
                 tourName.TransportTypes.Add(transportType);
             }
             Database.TourNames.Update(tourName);
-            await Database.Save();
+            Database.Save();
             return tourNameDTO;
+             */
+            TourName tourName = await Database.TourNames.GetById(tourNameDTO.Id);
+            if (tourName == null)
+            {
+                throw new ValidationException("Така назва туру не знайдена", "");
+            }
+            var ExistedPageJSON = await Database.TourNames.GetByPageJSONStructureUrlSubstring(tourNameDTO.PageJSONStructureUrl);
+            if (ExistedPageJSON.Any(em => em.PageJSONStructureUrl == tourNameDTO.PageJSONStructureUrl && em.Id != tourNameDTO.Id))
+            {
+                throw new ValidationException("Така структура JSON вже зайнята", "");
+            }
+            tourName.Name = tourNameDTO.Name;
+            tourName.PageJSONStructureUrl = tourNameDTO.PageJSONStructureUrl;
+            tourName.IsHaveNightRides = tourNameDTO.IsHaveNightRides;
+            tourName.NightRidesCount = tourNameDTO.NightRidesCount;
+            tourName.Route = tourNameDTO.Route;
+            tourName.Duration = tourNameDTO.Duration;
+            tourName.Tours.Clear();
+            tourName.TourImages.Clear();
+            //tourName.Countries.Clear();
+            //tourName.Settlements.Clear();
+            //tourName.Hotels.Clear();
+            tourName.TransportTypes.Clear();
+            foreach (var id in tourNameDTO.TourIds)
+            {
+                var tour = await Database.Tours.GetById(id);
+                if (tour == null)
+                {
+                    throw new ValidationException($"Тур з id {id} не знайдено", "");
+                }
+                tourName.Tours.Add(tour);
+            }
+            foreach (var id in tourNameDTO.TourImageIds)
+            {
+                var tourImage = await Database.TourImages.GetById(id);
+                if (tourImage == null)
+                {
+                    throw new ValidationException($"Зображення туру з id {id} не знайдено", "");
+                }
+                tourName.TourImages.Add(tourImage);
+            }
+            foreach (var country in tourName.Countries)
+            {
+                if(!tourNameDTO.CountryIds.Contains(country.Id))
+                {
+                    tourName.Countries.Remove(country);
+                }
+            }
+            foreach (var settlement in tourName.Settlements)
+            {
+                if (!tourNameDTO.SettlementIds.Contains(settlement.Id))
+                {
+                    tourName.Settlements.Remove(settlement);
+                }
+            }
+            foreach (var hotel in tourName.Hotels)
+            {
+                if (!tourNameDTO.HotelIds.Contains(hotel.Id))
+                {
+                    tourName.Hotels.Remove(hotel);
+                }
+            }
+            foreach (var id in tourNameDTO.CountryIds)
+            {
+                var country = await Database.Countries.GetById(id);
+                if (country == null)
+                {
+                    throw new ValidationException($"Країну з id {id} не знайдено", "");
+                }
+                if(!tourName.Countries.Contains(country))
+                {
+                    tourName.Countries.Add(country);
+                }
+            }
+            foreach (var id in tourNameDTO.SettlementIds)
+            {
+                var settlement = await Database.Settlements.GetById(id);
+                if (settlement == null)
+                {
+                    throw new ValidationException($"Поселення з id {id} не знайдено", "");
+                }
+                if (!tourName.Settlements.Contains(settlement))
+                {
+                    tourName.Settlements.Add(settlement);
+                }
+            }
+            foreach (var id in tourNameDTO.HotelIds)
+            {
+                var hotel = await Database.Hotels.GetById(id);
+                if (hotel == null)
+                {
+                    throw new ValidationException($"Готель з id {id} не знайдено", "");
+                }
+                if (!tourName.Hotels.Contains(hotel))
+                {
+                    tourName.Hotels.Add(hotel);
+                }
+            }
+            foreach (var id in tourNameDTO.TransportTypeIds)
+            {
+                var transportType = await Database.TransportTypes.GetById(id);
+                if (transportType == null)
+                {
+                    throw new ValidationException($"Тип транспорту з id {id} не знайдено", "");
+                }
+                tourName.TransportTypes.Add(transportType);
+            }
+            Database.TourNames.Update(tourName);
+            await Database.Save();
+
+            // Очікуємо завершення збереження в базі даних
+            var returnedDTO = await GetById(tourNameDTO.Id);
+
+            return returnedDTO;
+
         }
         public async Task<TourNameDTO> Delete(int id)
         {

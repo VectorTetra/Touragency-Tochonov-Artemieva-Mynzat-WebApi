@@ -318,32 +318,32 @@ namespace TouragencyWebApi.Controllers
                 if (System.IO.File.Exists(oldFilePath))
                 {
                     // Отримати вміст файлу
-                    string fileContent = await System.IO.File.ReadAllTextAsync(oldFilePath);
+                    //string fileContent = await System.IO.File.ReadAllTextAsync(oldFilePath);
 
                     // Парсимо JSON-масив
-                    JArray jsonOldFileObject = JArray.Parse(fileContent);
-                    foreach (var item in jsonOldFileObject)
-                    {
-                        if (item["type"] != null && item["type"].ToString() == "gallery")
-                        {
-                            JArray valueArray = (JArray)item["value"];
-                            foreach (var valueItem in valueArray)
-                            {
-                                if (valueItem["dataUrl"] != null)
-                                {
-                                    string dataUrl = valueItem["dataUrl"].ToString();
+                    //JArray jsonOldFileObject = JArray.Parse(fileContent);
+                    //foreach (var item in jsonOldFileObject)
+                    //{
+                    //    if (item["type"] != null && item["type"].ToString() == "gallery")
+                    //    {
+                    //        JArray valueArray = (JArray)item["value"];
+                    //        foreach (var valueItem in valueArray)
+                    //        {
+                    //            if (valueItem["dataUrl"] != null)
+                    //            {
+                    //                string dataUrl = valueItem["dataUrl"].ToString();
 
-                                    var oldFileUri1 = new Uri(dataUrl);
-                                    var oldFilePath1 = Path.Combine(_appEnvironment.WebRootPath, oldFileUri1.AbsolutePath.TrimStart('/'));
-                                    Console.WriteLine(oldFilePath1);
-                                    if (System.IO.File.Exists(oldFilePath1))
-                                    {
-                                        System.IO.File.Delete(oldFilePath1);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    //                var oldFileUri1 = new Uri(dataUrl);
+                    //                var oldFilePath1 = Path.Combine(_appEnvironment.WebRootPath, oldFileUri1.AbsolutePath.TrimStart('/'));
+                    //                Console.WriteLine(oldFilePath1);
+                    //                if (System.IO.File.Exists(oldFilePath1))
+                    //                {
+                    //                    System.IO.File.Delete(oldFilePath1);
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //}
 
                     // Записуємо новий контент у старий файл
                     System.IO.File.WriteAllText(oldFilePath, JsonConstructorItems);
