@@ -232,7 +232,7 @@ namespace TouragencyWebApi.Controllers
                         await FormFile.CopyToAsync(fileStream); // копируем файл в поток
                     }
                     //return new ObjectResult(_appEnvironment.WebRootPath + path);
-                    path = "https://26.162.95.213:7099" + path;
+                    path = "https://26.162.95.213:7100" + path;
                     await _serv.Create(new ReviewImageDTO { Id=0,ReviewId = ReviewId, ImagePath = path });
                     paths.Add(path);
                 }
@@ -313,7 +313,7 @@ namespace TouragencyWebApi.Controllers
                         await FormFile.CopyToAsync(fileStream); // копируем файл в поток
                     }
                     //return new ObjectResult(_appEnvironment.WebRootPath + path);
-                    path = "https://26.162.95.213:7099" + path;
+                    path = "https://26.162.95.213:7100" + path;
                     var dto = await _serv.Create(new ReviewImageDTO { Id = 0, ReviewId = ReviewId, ImagePath = path });
                     paths.Add(path);
                 }

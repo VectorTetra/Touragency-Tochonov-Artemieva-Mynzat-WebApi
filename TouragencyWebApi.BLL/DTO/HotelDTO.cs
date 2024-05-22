@@ -36,6 +36,7 @@ namespace TouragencyWebApi.BLL.DTO
 
         public string? SettlementName { get; set; }
         public string? CountryName { get; set; }
+        public string? CountryFlagUrl { get; set; }
         public string? CountryId { get; set; }
     }
 }

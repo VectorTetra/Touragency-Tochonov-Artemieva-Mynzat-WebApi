@@ -12,7 +12,8 @@
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
+      "runtimeExecutable": "C:\\Program Files\\Opera\\opera.exe",
       "applicationUrl": "http://26.162.95.213:5263",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -21,8 +22,9 @@
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "applicationUrl": "https://26.162.95.213:7099;http://26.162.95.213:5263",
+      "launchBrowser": false,
+      "runtimeExecutable": "C:\\Program Files\\Opera\\opera.exe",
+      "applicationUrl": "https://26.162.95.213:7100;http://26.162.95.213:5263",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

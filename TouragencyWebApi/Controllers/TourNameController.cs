@@ -250,7 +250,7 @@ namespace TouragencyWebApi.Controllers
                         await FormFile.CopyToAsync(fileStream); // копируем файл в поток
                     }
                     //return new ObjectResult(_appEnvironment.WebRootPath + path);
-                    path = "https://26.162.95.213:7099" + path;
+                    path = "https://26.162.95.213:7100" + path;
                     paths.Add(path);
                 }
                 return new ObjectResult(paths);
@@ -293,8 +293,69 @@ namespace TouragencyWebApi.Controllers
                     }
                 }
                 //return new ObjectResult(_appEnvironment.WebRootPath + path);
-                path = "https://26.162.95.213:7099" + path;
+                path = "https://26.162.95.213:7100" + path;
                 return new ObjectResult(path);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("PutJsonConstructorFile")]
+        public async Task<ActionResult<string>> PutJsonConstructorFile([FromForm] string oldConstructorFilePath, [FromForm] string JsonConstructorItems)
+        {
+            try
+            {
+                var oldFileUri = new Uri(oldConstructorFilePath);
+                var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, oldFileUri.AbsolutePath.TrimStart('/'));
+                Console.WriteLine(oldFilePath);
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    // Отримати вміст файлу
+                    string fileContent = await System.IO.File.ReadAllTextAsync(oldFilePath);
+
+                    // Парсимо JSON-масив
+                    JArray jsonOldFileObject = JArray.Parse(fileContent);
+                    foreach (var item in jsonOldFileObject)
+                    {
+                        if (item["type"] != null && item["type"].ToString() == "gallery")
+                        {
+                            JArray valueArray = (JArray)item["value"];
+                            foreach (var valueItem in valueArray)
+                            {
+                                if (valueItem["dataUrl"] != null)
+                                {
+                                    string dataUrl = valueItem["dataUrl"].ToString();
+
+                                    var oldFileUri1 = new Uri(dataUrl);
+                                    var oldFilePath1 = Path.Combine(_appEnvironment.WebRootPath, oldFileUri1.AbsolutePath.TrimStart('/'));
+                                    Console.WriteLine(oldFilePath1);
+                                    if (System.IO.File.Exists(oldFilePath1))
+                                    {
+                                        System.IO.File.Delete(oldFilePath1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Записуємо новий контент у старий файл
+                    System.IO.File.WriteAllText(oldFilePath, JsonConstructorItems);
+
+                    // Повертаємо URL до оновленого файлу
+                    string updatedFilePath = oldConstructorFilePath; // Якщо шлях до файлу не змінюється
+                    return new ObjectResult(updatedFilePath);
+                }
+                else
+                {
+                    return StatusCode(404, "Старий файл не знайдено.");
+                }
             }
             catch (ValidationException ex)
             {
@@ -313,6 +374,59 @@ namespace TouragencyWebApi.Controllers
             {
                 var dto = await _serv.Delete(id);
                 return Ok(dto);
+            }
+            catch (ValidationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeleteJsonConstructorFile")]
+        public async Task<ActionResult<string>> DeleteJsonConstructorFile([FromForm] string ConstructorFilePath)
+        {
+            try
+            {
+                var oldFileUri = new Uri(ConstructorFilePath);
+                var oldFilePath = Path.Combine(_appEnvironment.WebRootPath, oldFileUri.AbsolutePath.TrimStart('/'));
+                Console.WriteLine(oldFilePath);
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    // Отримати вміст файлу
+                    string fileContent = await System.IO.File.ReadAllTextAsync(oldFilePath);
+
+                    // Парсимо JSON-масив
+                    JArray jsonOldFileObject = JArray.Parse(fileContent);
+                    foreach (var item in jsonOldFileObject)
+                    {
+                        if (item["type"] != null && item["type"].ToString() == "gallery")
+                        {
+                            JArray valueArray = (JArray)item["value"];
+                            foreach (var valueItem in valueArray)
+                            {
+                                if (valueItem["dataUrl"] != null)
+                                {
+                                    string dataUrl = valueItem["dataUrl"].ToString();
+
+                                    var oldFileUri1 = new Uri(dataUrl);
+                                    var oldFilePath1 = Path.Combine(_appEnvironment.WebRootPath, oldFileUri1.AbsolutePath.TrimStart('/'));
+                                    Console.WriteLine(oldFilePath1);
+                                    if (System.IO.File.Exists(oldFilePath1))
+                                    {
+                                        System.IO.File.Delete(oldFilePath1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // Видаляємо старий файл конструктора
+                    System.IO.File.Delete(oldFilePath);
+                }
+                return new ObjectResult("OK");
             }
             catch (ValidationException ex)
             {

@@ -52,6 +52,7 @@ namespace TouragencyWebApi.BLL.Services
             Description = b.Description,
             SettlementName = b.Settlement.Name,
             CountryName = b.Settlement.Country.Name,
+            CountryFlagUrl = b.Settlement.Country.FlagUrl,
             FoodServices = b.HotelServices.Where(hs => hs.HotelServiceType.Id == 1).Select(hs => hs.Description).ToList(),
             OtherServices = b.HotelServices.Where(hs => hs.HotelServiceType.Id == 2).Select(hs => hs.Description).ToList(),
             Stars = b.Stars,
