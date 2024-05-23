@@ -212,10 +212,10 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByCountryNameSubstring(countryNameSubstring));
         }
 
-        public async Task<IEnumerable<ReviewDTO>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring, string? reviewTextSubstring, short? startRating, short? endRating, DateTime? startDate, DateTime? endDate, string? tourNameSubstring, string? touristNicknameSubstring, string? clientFirstnameSubstring, string? clientLastnameSubstring, string? clientMiddlenameSubstring, string? countryNameSubstring)
+        public async Task<IEnumerable<ReviewDTO>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring, string? reviewTextSubstring, short? startRating, short? endRating, DateTime? startDate, DateTime? endDate, string? tourNameSubstring, string? touristNicknameSubstring, string? clientFirstnameSubstring, string? clientLastnameSubstring, string? clientMiddlenameSubstring, string? countryNameSubstring, int? TourNameId)
         {
             var mapper = new Mapper(Review_ReviewDTOMapConfig);
-            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByCompositeSearch(tourId, clientId, countryId, reviewImageId, reviewCaptionSubstring, reviewTextSubstring, startRating, endRating, startDate, endDate, tourNameSubstring, touristNicknameSubstring, clientFirstnameSubstring, clientLastnameSubstring, clientMiddlenameSubstring, countryNameSubstring));
+            return mapper.Map<IEnumerable<Review>, IEnumerable<ReviewDTO>>(await Database.Reviews.GetByCompositeSearch(tourId, clientId, countryId, reviewImageId, reviewCaptionSubstring, reviewTextSubstring, startRating, endRating, startDate, endDate, tourNameSubstring, touristNicknameSubstring, clientFirstnameSubstring, clientLastnameSubstring, clientMiddlenameSubstring, countryNameSubstring, TourNameId));
         }
     }
 }

@@ -21,6 +21,8 @@ namespace TouragencyWebApi.BLL.DTO
         public ICollection<int> CountryIds { get; set; }
         public ICollection<int> SettlementIds { get; set; }
 
+        public ICollection<long>? ReviewIds { get; set; }
+
         // Many-to-many зв'язок з таблицею Hotels
         public ICollection<int> HotelIds { get; set; }
         public ICollection<int> TransportTypeIds { get; set; }

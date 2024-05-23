@@ -7,8 +7,9 @@
 
         // Дата прибуття
         public int TourNameId { get; set; }
-        public string TourName { get; set; }
-        public string Route { get; set; }
+        public string? TourName { get; set; }
+        public string? TourState { get; set; }
+        public string? Route { get; set; }
 
         // Дата прибуття
         public DateTime ArrivalDate { get; set; }

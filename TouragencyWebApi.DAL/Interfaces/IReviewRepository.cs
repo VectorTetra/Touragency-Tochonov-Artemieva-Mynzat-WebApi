@@ -24,6 +24,7 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task Delete(long id);
         Task<IEnumerable<Review>> Get200Last();
         Task<IEnumerable<Review>> GetByTourNameSubstring(string tourNameSubstring);
+        Task<IEnumerable<Review>> GetByTourNameId(int tourNameId);
         Task<IEnumerable<Review>> GetByTouristNicknameSubstring(string touristNicknameSubstring);
         Task<IEnumerable<Review>> GetByClientFirstnameSubstring(string clientFirstnameSubstring);
         Task<IEnumerable<Review>> GetByClientLastnameSubstring(string clientLastnameSubstring);
@@ -32,6 +33,6 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task<IEnumerable<Review>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring,
             string? reviewTextSubstring, short? startRating, short? endRating, DateTime? startDate, DateTime? endDate, string? tourNameSubstring,
             string? touristNicknameSubstring, string? clientFirstnameSubstring, string? clientLastnameSubstring, string? clientMiddlenameSubstring,
-            string? countryNameSubstring);
+            string? countryNameSubstring, int? TourNameId);
     }
 }

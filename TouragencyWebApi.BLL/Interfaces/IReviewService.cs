@@ -33,6 +33,6 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<ReviewDTO>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring,
             string? reviewTextSubstring, short? startRating, short? endRating, DateTime? startDate, DateTime? endDate, string? tourNameSubstring,
             string? touristNicknameSubstring, string? clientFirstnameSubstring, string? clientLastnameSubstring, string? clientMiddlenameSubstring,
-            string? countryNameSubstring);
+            string? countryNameSubstring, int? tourNameId);
     }
 }

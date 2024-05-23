@@ -120,6 +120,13 @@ namespace TouragencyWebApi.DAL.Repositories
                 .Where(r => r.Tour.Name.Name.Contains(tourNameSubstring))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Review>> GetByTourNameId(int tourNameId)
+        {
+            return await _context.Reviews
+                .Where(r => r.Tour.Name.Id == tourNameId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<Review>> GetByTouristNicknameSubstring(string touristNicknameSubstring)
         {
             return await _context.Reviews
@@ -153,7 +160,7 @@ namespace TouragencyWebApi.DAL.Repositories
         public async Task<IEnumerable<Review>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring,
                        string? reviewTextSubstring, short? startRating, short? endRating, DateTime? startDate, DateTime? endDate, string? tourNameSubstring,
                                   string? touristNicknameSubstring, string? clientFirstnameSubstring, string? clientLastnameSubstring, string? clientMiddlenameSubstring,
-                                             string? countryNameSubstring)
+                                             string? countryNameSubstring, int? TourNameId)
         {
             var reviewCollections = new List<IEnumerable<Review>>();
 
@@ -239,6 +246,12 @@ namespace TouragencyWebApi.DAL.Repositories
             {
                 var reviewsByCountryNameSubstring = await GetByCountryNameSubstring(countryNameSubstring);
                 reviewCollections.Add(reviewsByCountryNameSubstring);
+            }
+
+            if (TourNameId != null)
+            {
+                var reviewsByTourNameId = await GetByTourNameId(TourNameId.Value);
+                reviewCollections.Add(reviewsByTourNameId);
             }
 
             if (!reviewCollections.Any())

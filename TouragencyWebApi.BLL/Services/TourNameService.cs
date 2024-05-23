@@ -24,6 +24,7 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.SettlementIds, opt => opt.MapFrom(c => c.Settlements.Select(b => b.Id)))
         .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Hotels.Select(b => b.Id)))
         .ForPath(d => d.TransportTypeIds, opt => opt.MapFrom(c => c.TransportTypes.Select(b => b.Id)))
+        .ForPath(d => d.ReviewIds, opt => opt.MapFrom(c => c.Tours.SelectMany(t => t.Reviews).Select(r => r.Id)))
         .ForPath(d => d.Countries, opt => opt.MapFrom(c => c.Countries.Select(b => new CountryDTO
         {
             Id = b.Id,
@@ -130,7 +131,7 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
             return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByTourImageId(tourImageId));
         }
-        public async Task<IEnumerable<TourNameDTO>> GetByCompositeSearch(string? tourNameSubstring, string continentNameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? hotelNameSubstring, string? pageJSONStructureUrlSubstring, long? tourId, long? tourImageId)
+        public async Task<IEnumerable<TourNameDTO>> GetByCompositeSearch(string? tourNameSubstring, string? continentNameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? hotelNameSubstring, string? pageJSONStructureUrlSubstring, long? tourId, long? tourImageId)
         {
             var mapper = new Mapper(TourName_TourNameDTOMapConfig);
             return mapper.Map<IEnumerable<TourName>, List<TourNameDTO>>(await Database.TourNames.GetByCompositeSearch(tourNameSubstring, continentNameSubstring, countryNameSubstring, settlementNameSubstring, hotelNameSubstring, pageJSONStructureUrlSubstring, tourId, tourImageId));

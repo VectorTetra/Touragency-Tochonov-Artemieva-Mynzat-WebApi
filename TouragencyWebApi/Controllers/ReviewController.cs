@@ -167,7 +167,7 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetByCompositeSearch":
                         {
-                            collection = await _serv.GetByCompositeSearch(reviewQuery.TourId, reviewQuery.ClientId, reviewQuery.CountryId, reviewQuery.ReviewImageId, reviewQuery.ReviewCaption, reviewQuery.ReviewText, reviewQuery.RatingMinValue, reviewQuery.RatingMaxValue, reviewQuery.CreationDateMinValue, reviewQuery.CreationDateMaxValue, reviewQuery.TourName, reviewQuery.TouristNickname, reviewQuery.ClientFirstname, reviewQuery.ClientLastname, reviewQuery.ClientMiddlename, reviewQuery.CountryName);
+                            collection = await _serv.GetByCompositeSearch(reviewQuery.TourId, reviewQuery.ClientId, reviewQuery.CountryId, reviewQuery.ReviewImageId, reviewQuery.ReviewCaption, reviewQuery.ReviewText, reviewQuery.RatingMinValue, reviewQuery.RatingMaxValue, reviewQuery.CreationDateMinValue, reviewQuery.CreationDateMaxValue, reviewQuery.TourName, reviewQuery.TouristNickname, reviewQuery.ClientFirstname, reviewQuery.ClientLastname, reviewQuery.ClientMiddlename, reviewQuery.CountryName,reviewQuery.TourNameId);
                         }
                         break;
                     default:
@@ -252,7 +252,8 @@ namespace TouragencyWebApi.Controllers
         public short? RatingMinValue { get; set; }
         public short? RatingMaxValue { get; set; }
         public int? ClientId { get; set; }
-        public int? TourId { get; set; }
+        public long? TourId { get; set; }
+        public int? TourNameId { get; set; }
         public int? CountryId { get; set; }
         public string? ReviewCaption { get; set; }
         public string? ReviewText { get; set; }
