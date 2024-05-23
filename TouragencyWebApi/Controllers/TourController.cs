@@ -121,7 +121,8 @@ namespace TouragencyWebApi.Controllers
                             {
                                 throw new ValidationException("Не вказано hotelServicesIds для пошуку!", nameof(tourQuery.hotelServicesIds));
                             }
-                            collection = await _serv.GetByHotelServicesIds(tourQuery.hotelServicesIds);
+                            int[] numbers = Array.ConvertAll(tourQuery.hotelServicesIds.Split(','), int.Parse);
+                            collection = await _serv.GetByStars(numbers);
                         }
                         break;
                     case "GetByTransportTypeId":
@@ -220,7 +221,8 @@ namespace TouragencyWebApi.Controllers
                             {
                                 throw new ValidationException("Не вказано stars для пошуку!", nameof(tourQuery.stars));
                             }
-                            collection = await _serv.GetByStars(tourQuery.stars);
+                            int[] numbers = Array.ConvertAll(tourQuery.stars.Split(','), int.Parse);
+                            collection = await _serv.GetByStars(numbers);
                         }
                         break;
                     case "GetByClientId":
@@ -234,10 +236,11 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetByCompositeSearch":
                         {
-
+                            int[]? hotelServicesIds = tourQuery.hotelServicesIds != null ? Array.ConvertAll(tourQuery.hotelServicesIds.Split(','), int.Parse) : null;
+                            int[]? stars = tourQuery.stars != null ? Array.ConvertAll(tourQuery.stars.Split(','), int.Parse) : null;
                             collection = await _serv.GetByCompositeSearch(tourQuery.TourNameId, tourQuery.countryId, tourQuery.settlementId, tourQuery.hotelId,
-                                tourQuery.ArrivalDate, tourQuery.DepartureDate, tourQuery.durationDays, tourQuery.hotelServicesIds, tourQuery.transportTypeId, tourQuery.TourStateId,
-                                tourQuery.TouristNickname, tourQuery.ClientFirstname, tourQuery.ClientLastname, tourQuery.ClientMiddlename, tourQuery.CountryName, tourQuery.SettlementName, tourQuery.HotelName, tourQuery.continentId, tourQuery.ContinentName, tourQuery.stars, tourQuery.ClientId);
+                                tourQuery.ArrivalDate, tourQuery.DepartureDate, tourQuery.durationDays, hotelServicesIds, tourQuery.transportTypeId, tourQuery.TourStateId,
+                                tourQuery.TouristNickname, tourQuery.ClientFirstname, tourQuery.ClientLastname, tourQuery.ClientMiddlename, tourQuery.CountryName, tourQuery.SettlementName, tourQuery.HotelName, tourQuery.continentId, tourQuery.ContinentName, stars, tourQuery.ClientId);
                         }
                         break;
                     default:
@@ -339,8 +342,8 @@ namespace TouragencyWebApi.Controllers
         public int? settlementId { get; set; }
         public int? hotelId { get; set; }
         public int[]? durationDays { get; set; }
-        public int[]? hotelServicesIds { get; set; }
-        public int[]? stars { get; set; }
+        public string? hotelServicesIds { get; set; }
+        public string? stars { get; set; }
         public int? transportTypeId { get; set; }
     }
 }

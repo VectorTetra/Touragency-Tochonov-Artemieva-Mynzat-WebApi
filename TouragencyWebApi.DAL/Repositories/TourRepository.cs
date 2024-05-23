@@ -106,6 +106,14 @@ namespace TouragencyWebApi.DAL.Repositories
         }
         public async Task<IEnumerable<Tour>> GetByDateRange(DateTime startDate, DateTime endDate)
         {
+            if(endDate < startDate)
+            {
+                return await _context.Tours.Where(t => t.DepartureDate >= startDate && t.ArrivalDate <= endDate).ToListAsync();
+            }
+            if(startDate == endDate)
+            {
+                return await _context.Tours.Where(t => t.ArrivalDate == startDate).ToListAsync();
+            }
             return await _context.Tours.Where(t => t.ArrivalDate >= startDate && t.DepartureDate <= endDate).ToListAsync();
         }
         public async Task<IEnumerable<Tour>> GetByTourDuration(int[] durationDays)
