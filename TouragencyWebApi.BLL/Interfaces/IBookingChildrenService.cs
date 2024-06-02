@@ -15,8 +15,8 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<BookingChildrenDTO>> GetByBookingDataId(long bookingId);
         Task<IEnumerable<BookingChildrenDTO>> GetByChildrenCount(short childrenCount);
         Task<IEnumerable<BookingChildrenDTO>> GetByChildrenAge(short childrenAge);
-        Task Create(BookingChildrenDTO bookingChildrenDTO);
-        Task Update(BookingChildrenDTO bookingChildrenDTO);
-        Task Delete(long id);
+        Task<BookingChildrenDTO> Create(BookingChildrenDTO bookingChildrenDTO);
+        Task<BookingChildrenDTO> Update(BookingChildrenDTO bookingChildrenDTO);
+        Task<BookingChildrenDTO> Delete(long id);
     }
 }

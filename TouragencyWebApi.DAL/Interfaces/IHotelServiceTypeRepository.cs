@@ -10,6 +10,7 @@ namespace TouragencyWebApi.DAL.Interfaces
     public interface IHotelServiceTypeRepository
     {
         Task<IEnumerable<HotelServiceType>> GetAll();
+        Task<IEnumerable<HotelServiceType>> Get200Last();
         Task<HotelServiceType?> GetById(int id);
         Task<IEnumerable<HotelServiceType>> GetByDescriptionSubstring(string descriptionSubstring);
         Task<IEnumerable<HotelServiceType>> GetByHotelServiceId(int hotelServiceId);

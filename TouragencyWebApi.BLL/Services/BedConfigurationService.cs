@@ -27,14 +27,14 @@ namespace TouragencyWebApi.BLL.Services
         .ForPath(d => d.BookingDataIds, opt => opt.MapFrom(c => c.BookingDatas.Select(t => t.Id)))
         .ForPath(d => d.HotelIds, opt => opt.MapFrom(c => c.Hotels.Select(t => t.Id)))
         );
-        public async Task Create(BedConfigurationDTO bedConfigurationDTO)
+        public async Task<BedConfigurationDTO> Create(BedConfigurationDTO bedConfigurationDTO)
         {
             //Намагаємось визначити, чи ще не існує BedConfigurations з таким Id
             var BusyBedConfigurationId = await Database.BedConfigurations.GetById(bedConfigurationDTO.Id);
             //Якщо такий Id вже зайнято, кидаємо виключення
             if (BusyBedConfigurationId != null)
             {
-                throw new ValidationException("Такий bedConfigurationId вже зайнято!", "");
+                throw new ValidationException($"Такий bedConfigurationId вже зайнято! (bedConfigurationDTO.Id : {bedConfigurationDTO.Id})", "");
             }
             //=======================================================================================================
             // Намагаємось визначити, чи ще не існує BedConfigurations з таким Label (Навіть якщо порядок міток різний)
@@ -46,7 +46,7 @@ namespace TouragencyWebApi.BLL.Services
                 var sequenceInItem = item.Label.Split('+');
                 if (bedsInDTO.OrderBy(a => a).SequenceEqual(sequenceInItem.OrderBy(a => a)))
                 {
-                    throw new ValidationException("Такий bedConfiguration із вказаним Label вже зайнято!", "");
+                    throw new ValidationException($"Такий bedConfiguration із вказаним Label вже зайнято! (bedConfigurationDTO.Label : {bedConfigurationDTO.Label} , item.Label : {item.Label})", "");
                 }
             }
             //=======================================================================================================
@@ -58,7 +58,7 @@ namespace TouragencyWebApi.BLL.Services
                     var hotel = await Database.Hotels.GetById(item);
                     if (hotel == null)
                     {
-                        throw new ValidationException("Hotel з таким Id не знайдено!", "");
+                        throw new ValidationException($"Hotel з таким Id не знайдено! (hotelId : {item})", "");
                     }
                     Hotels.Add(hotel);
                 }
@@ -72,7 +72,7 @@ namespace TouragencyWebApi.BLL.Services
                     var bookingData = await Database.BookingDatas.GetById(item);
                     if (bookingData == null)
                     {
-                        throw new ValidationException("BookingData з таким Id не знайдено!", "");
+                        throw new ValidationException($"BookingData з таким Id не знайдено! (bookingDataId : {item})", "");
                     }
                     BookingDatas.Add(bookingData);
                 }
@@ -89,14 +89,16 @@ namespace TouragencyWebApi.BLL.Services
             };
             await Database.BedConfigurations.Create(bedConfiguration);
             await Database.Save();
+            bedConfigurationDTO.Id = bedConfiguration.Id;
+            return bedConfigurationDTO;
         }
-        public async Task Update(BedConfigurationDTO bedConfigurationDTO)
+        public async Task<BedConfigurationDTO> Update(BedConfigurationDTO bedConfigurationDTO)
         { //Намагаємось визначити, чи існує BedConfigurations з таким Id
             var BedConfiguration = await Database.BedConfigurations.GetById(bedConfigurationDTO.Id);
             //Якщо такий Id не знайдено, кидаємо виключення
             if (BedConfiguration == null)
             {
-                throw new ValidationException("Такий bedConfigurationId не знайдено!", "");
+                throw new ValidationException($"Такий bedConfigurationId не знайдено! (bedConfigurationDTO.Id : {bedConfigurationDTO.Id})", "");
             }
             //=======================================================================================================
             // Намагаємось визначити, чи ще не існує BedConfigurations з таким Label (Навіть якщо порядок міток різний)
@@ -109,7 +111,7 @@ namespace TouragencyWebApi.BLL.Services
                 var sequenceInItem = item.Label.Split('+');
                 if (bedsInDTO.OrderBy(a => a).SequenceEqual(sequenceInItem.OrderBy(a => a)) && bedConfigurationDTO.Id != item.Id)
                 {
-                    throw new ValidationException("Такий bedConfiguration із вказаним Label вже зайнято!", "");
+                    throw new ValidationException($"Такий bedConfiguration із вказаним Label вже зайнято! (bedConfigurationDTO.Label : {bedConfigurationDTO.Label} , item.Label : {item.Label})", "");
                 }
             }
             //=======================================================================================================
@@ -125,7 +127,7 @@ namespace TouragencyWebApi.BLL.Services
                     var hotel = await Database.Hotels.GetById(item);
                     if (hotel == null)
                     {
-                        throw new ValidationException("Hotel з таким Id не знайдено!", "");
+                        throw new ValidationException($"Hotel з таким Id не знайдено! (hotelId : {item})", "");
                     }
                     BedConfiguration.Hotels.Add(hotel);
                 }
@@ -138,14 +140,14 @@ namespace TouragencyWebApi.BLL.Services
                     BedConfiguration.BookingDatas = new List<BookingData>();
                 }
                 BedConfiguration.BookingDatas.Clear();
-                foreach (var item in bedConfigurationDTO.HotelIds)
+                foreach (var item in bedConfigurationDTO.BookingDataIds)
                 {
-                    var hotel = await Database.BookingDatas.GetById(item);
-                    if (hotel == null)
+                    var bData = await Database.BookingDatas.GetById(item);
+                    if (bData == null)
                     {
-                        throw new ValidationException("Hotel з таким Id не знайдено!", "");
+                        throw new ValidationException($"BookingData з таким Id не знайдено! (bookingDataId : {item})", "");
                     }
-                    BedConfiguration.BookingDatas.Add(hotel);
+                    BedConfiguration.BookingDatas.Add(bData);
                 }
             }
             //=======================================================================================================
@@ -156,22 +158,33 @@ namespace TouragencyWebApi.BLL.Services
             //=======================================================================================================
             Database.BedConfigurations.Update(BedConfiguration);
             await Database.Save();
+            return bedConfigurationDTO;
         }
-        public async Task Delete(int id)
+        public async Task<BedConfigurationDTO> Delete(int id)
         {
             var BedConfiguration = await Database.BedConfigurations.GetById(id);
             if (BedConfiguration == null)
             {
-                throw new ValidationException("Такий bedConfigurationId не знайдено!", "");
+                throw new ValidationException($"Такий bedConfigurationId не знайдено! (bedConfigurationDTO.Id : {id})", "");
             }
+            var bedConfigurationDTO = await GetById(id);
             await Database.BedConfigurations.Delete(id);
             await Database.Save();
+            return bedConfigurationDTO;
         }
 
         public async Task<IEnumerable<BedConfigurationDTO>> GetAll()
         {
             var mapper = new Mapper(BedConfiguration_BedConfigurationDTOMapConfig);
             var bedConfigurationCollection = await Database.BedConfigurations.GetAll();
+            var bedConfigurationDTO = mapper.Map<IEnumerable<BedConfiguration>, IEnumerable<BedConfigurationDTO>>(bedConfigurationCollection);
+            return bedConfigurationDTO;
+        }
+
+        public async Task<IEnumerable<BedConfigurationDTO>> Get200Last()
+        {
+            var mapper = new Mapper(BedConfiguration_BedConfigurationDTOMapConfig);
+            var bedConfigurationCollection = await Database.BedConfigurations.Get200Last();
             var bedConfigurationDTO = mapper.Map<IEnumerable<BedConfiguration>, IEnumerable<BedConfigurationDTO>>(bedConfigurationCollection);
             return bedConfigurationDTO;
         }

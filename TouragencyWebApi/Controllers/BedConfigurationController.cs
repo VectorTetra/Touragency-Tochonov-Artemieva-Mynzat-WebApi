@@ -29,6 +29,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (bedConfigurationQuery.Id is null)
@@ -100,11 +105,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
         [HttpPost]
@@ -112,16 +117,16 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(bedConfigurationDTO);
-                return Ok();
+                var createdBConf = await _serv.Create(bedConfigurationDTO);
+                return Ok(createdBConf);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
         [HttpPut]
@@ -129,33 +134,33 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(bedConfigurationDTO);
-                return Ok();
+                var BConf = await _serv.Update(bedConfigurationDTO);
+                return Ok(BConf);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
-        [HttpDelete]
-        public async Task<ActionResult> DeleteBedConfiguration(int id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<BedConfigurationDTO>> DeleteBedConfiguration(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var BConf = await _serv.Delete(id);
+                return Ok(BConf);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }

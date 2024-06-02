@@ -33,6 +33,12 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(HotelConfiguration_HotelConfigurationDTOMapConfig);
             return mapper.Map<IEnumerable<HotelConfiguration>, IEnumerable<HotelConfigurationDTO>>(await Database.HotelConfigurations.GetAll());
         }
+
+        public async Task<IEnumerable<HotelConfigurationDTO>> Get200Last()
+        {
+            var mapper = new Mapper(HotelConfiguration_HotelConfigurationDTOMapConfig);
+            return mapper.Map<IEnumerable<HotelConfiguration>, IEnumerable<HotelConfigurationDTO>>(await Database.HotelConfigurations.Get200Last());
+        }
         public async Task<HotelConfigurationDTO?> GetById(int id)
         {
             var mapper = new Mapper(HotelConfiguration_HotelConfigurationDTOMapConfig);
@@ -63,7 +69,12 @@ namespace TouragencyWebApi.BLL.Services
             var mapper = new Mapper(HotelConfiguration_HotelConfigurationDTOMapConfig);
             return mapper.Map<IEnumerable<HotelConfiguration>, IEnumerable<HotelConfigurationDTO>>(await Database.HotelConfigurations.GetByIsAllowPets(isAllowPets));
         }
-        public async Task Create(HotelConfigurationDTO hotelConfigurationDTO) 
+        public async Task<IEnumerable<HotelConfigurationDTO>> GetByCompositeSearch(int? hotelId, string? compassSideSubstring, string? WindowViewSubstring, bool? isAllowChildren, bool? isAllowPets)
+        {
+            var mapper = new Mapper(HotelConfiguration_HotelConfigurationDTOMapConfig);
+            return mapper.Map<IEnumerable<HotelConfiguration>, IEnumerable<HotelConfigurationDTO>>(await Database.HotelConfigurations.GetByCompositeSearch(hotelId, compassSideSubstring, WindowViewSubstring, isAllowChildren, isAllowPets));
+        }
+        public async Task<HotelConfigurationDTO> Create(HotelConfigurationDTO hotelConfigurationDTO) 
         {
             var PreExistedHotelConfig = await Database.HotelConfigurations.GetById(hotelConfigurationDTO.Id);
             if (PreExistedHotelConfig != null)
@@ -82,7 +93,6 @@ namespace TouragencyWebApi.BLL.Services
             }
             var newHotelConfiguration = new HotelConfiguration
             {
-                Id = hotelConfigurationDTO.Id,
                 IsAllowChildren = hotelConfigurationDTO.IsAllowChildren,
                 IsAllowPets = hotelConfigurationDTO.IsAllowPets,
                 CompassSide = hotelConfigurationDTO.CompassSide,
@@ -91,9 +101,11 @@ namespace TouragencyWebApi.BLL.Services
             };
             await Database.HotelConfigurations.Create(newHotelConfiguration);
             await Database.Save();
+            hotelConfigurationDTO.Id = newHotelConfiguration.Id;
+            return hotelConfigurationDTO;
 
         }
-        public async Task Update(HotelConfigurationDTO hotelConfigurationDTO) 
+        public async Task<HotelConfigurationDTO> Update(HotelConfigurationDTO hotelConfigurationDTO) 
         {
             var hotelConfiguration = await Database.HotelConfigurations.GetById(hotelConfigurationDTO.Id);
             if (hotelConfiguration == null)
@@ -116,17 +128,19 @@ namespace TouragencyWebApi.BLL.Services
             }
             Database.HotelConfigurations.Update(hotelConfiguration);
             await Database.Save();
-        
+            return hotelConfigurationDTO;
         }
-        public async Task Delete(int id)
+        public async Task<HotelConfigurationDTO> Delete(int id)
         {
             var hotelConfiguration = await Database.HotelConfigurations.GetById(id);
             if (hotelConfiguration == null)
             {
                 throw new ValidationException($"Конфігурації готелю з таким id не існує! (id : {id})", "");
             }
+            var dto = await GetById(id);
             await Database.HotelConfigurations.Delete(id);
             await Database.Save();
+            return dto;
         }
     }
 }

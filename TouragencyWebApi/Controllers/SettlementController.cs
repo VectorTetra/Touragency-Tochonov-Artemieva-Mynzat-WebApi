@@ -28,6 +28,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (settlementQuery.Id == null)
@@ -68,13 +73,32 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByCountryId((int)settlementQuery.CountryId);
                         }
                         break;
-                    case "GetByTourId":
+                    case "GetByCountryIds":
                         {
-                            if (settlementQuery.TourId == null)
+                            if (settlementQuery.CountryIds == null)
                             {
-                                throw new ValidationException("Не вказано TourId для пошуку!", nameof(settlementQuery.TourId));
+                                throw new ValidationException("Не вказано CountryId для пошуку!", nameof(settlementQuery.CountryId));
                             }
-                            collection = await _serv.GetByTourId((long)settlementQuery.TourId);
+                            collection = await _serv.GetByCountryIds(((IEnumerable<int>)settlementQuery.CountryIds).ToArray());
+                        }
+                        break;
+
+                    case "GetByTourNameId":
+                        {
+                            if (settlementQuery.TourNameId == null)
+                            {
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(settlementQuery.TourNameId));
+                            }
+                            collection = await _serv.GetByTourNameId((int)settlementQuery.TourNameId);
+                        }
+                        break;
+                    case "GetByTourName":
+                        {
+                            if (settlementQuery.TourName == null)
+                            {
+                                throw new ValidationException("Не вказано TourName для пошуку!", nameof(settlementQuery.TourName));
+                            }
+                            collection = await _serv.GetByTourName(settlementQuery.TourName);
                         }
                         break;
                     case "GetByHotelId":
@@ -90,7 +114,11 @@ namespace TouragencyWebApi.Controllers
                             }
                         }
                         break;
-
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(settlementQuery.Name, settlementQuery.CountryName, settlementQuery.CountryId, settlementQuery.TourNameId, settlementQuery.TourName);
+                        }
+                        break;
                     default:
                         {
                             throw new ValidationException("Вказано неправильний параметр settlementQuery.SearchParameter!", nameof(settlementQuery.SearchParameter));
@@ -104,63 +132,63 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
         [HttpPost]
-        public async Task<ActionResult> AddSettlement(SettlementDTO settlementDTO)
+        public async Task<ActionResult<SettlementDTO>> AddSettlement(SettlementDTO settlementDTO)
         {
             try
             {
-                await _serv.Add(settlementDTO);
-                return Ok();
+                var dto = await _serv.Add(settlementDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateSettlement(SettlementDTO settlementDTO)
+        public async Task<ActionResult<SettlementDTO>> UpdateSettlement(SettlementDTO settlementDTO)
         {
             try
             {
-                await _serv.Update(settlementDTO);
-                return Ok();
+                var dto = await _serv.Update(settlementDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
-        [HttpDelete]
-        public async Task<ActionResult> DeleteSettlement(int id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<SettlementDTO>> DeleteSettlement(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }
@@ -169,11 +197,13 @@ namespace TouragencyWebApi.Controllers
     {
         public string SearchParameter { get; set; } = "";
         public int? Id { get; set; }
-        public long? TourId { get; set; }
+        public int? TourNameId { get; set; }
+        public string? TourName { get; set; }
         public int? HotelId { get; set; }
         public string? Name { get; set; }
         public string? CountryName { get; set; }
         public int? CountryId { get; set; }
+        public IEnumerable<int>? CountryIds { get; set; }
 
     }
 }

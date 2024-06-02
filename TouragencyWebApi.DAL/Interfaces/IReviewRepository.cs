@@ -11,7 +11,7 @@ namespace TouragencyWebApi.DAL.Interfaces
     {
         Task<IEnumerable<Review>> GetAll();
         Task<Review?> GetById(long id);
-        Task<IEnumerable<Review>> GetByTourId(int tourId);
+        Task<IEnumerable<Review>> GetByTourId(long tourId);
         Task<IEnumerable<Review>> GetByClientId(int clientId);
         Task<IEnumerable<Review>> GetByCountryId(int countryId);
         Task<IEnumerable<Review>> GetByReviewImageId(long reviewImageId);
@@ -22,5 +22,17 @@ namespace TouragencyWebApi.DAL.Interfaces
         Task Create(Review review);
         void Update(Review review);
         Task Delete(long id);
+        Task<IEnumerable<Review>> Get200Last();
+        Task<IEnumerable<Review>> GetByTourNameSubstring(string tourNameSubstring);
+        Task<IEnumerable<Review>> GetByTourNameId(int tourNameId);
+        Task<IEnumerable<Review>> GetByTouristNicknameSubstring(string touristNicknameSubstring);
+        Task<IEnumerable<Review>> GetByClientFirstnameSubstring(string clientFirstnameSubstring);
+        Task<IEnumerable<Review>> GetByClientLastnameSubstring(string clientLastnameSubstring);
+        Task<IEnumerable<Review>> GetByClientMiddlenameSubstring(string clientMiddlenameSubstring);
+        Task<IEnumerable<Review>> GetByCountryNameSubstring(string countryNameSubstring);
+        Task<IEnumerable<Review>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring,
+            string? reviewTextSubstring, short? startRating, short? endRating, DateTime? startDate, DateTime? endDate, string? tourNameSubstring,
+            string? touristNicknameSubstring, string? clientFirstnameSubstring, string? clientLastnameSubstring, string? clientMiddlenameSubstring,
+            string? countryNameSubstring, int? TourNameId);
     }
 }

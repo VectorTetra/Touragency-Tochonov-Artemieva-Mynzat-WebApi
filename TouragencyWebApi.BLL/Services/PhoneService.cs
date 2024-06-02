@@ -25,7 +25,7 @@ namespace TouragencyWebApi.BLL.Services
         {
             Database = uow;
         }
-        public async Task TryToAddNewPhone(PhoneDTO phoneDTO)
+        public async Task<PhoneDTO> TryToAddNewPhone(PhoneDTO phoneDTO)
         {
             var BusyPhone = await Database.Phones.GetByPhoneNumber(phoneDTO.PhoneNumber);
             if (BusyPhone.Any(ph => ph.PhoneNumber == phoneDTO.PhoneNumber))
@@ -49,9 +49,11 @@ namespace TouragencyWebApi.BLL.Services
             }
             await Database.Phones.Create(newPhone);
             await Database.Save();
+            phoneDTO.Id = newPhone.Id;
+            return phoneDTO;
         }
 
-        public async Task Update(PhoneDTO phoneDTO)
+        public async Task<PhoneDTO> Update(PhoneDTO phoneDTO)
         {
             Phone phone = await Database.Phones.GetById(phoneDTO.Id);
             if (phone == null)
@@ -71,9 +73,10 @@ namespace TouragencyWebApi.BLL.Services
             }
             Database.Phones.Update(phone);
             await Database.Save();
+            return phoneDTO;
         }
 
-        public async Task Delete(long id)
+        public async Task<PhoneDTO> Delete(long id)
         {
             
             Phone phone = await Database.Phones.GetById(id);
@@ -81,14 +84,22 @@ namespace TouragencyWebApi.BLL.Services
             {
                 throw new ValidationException("Телефон не знайдено", "");
             }
+            var dto = await GetById(id);
             await Database.Phones.Delete(id);
             await Database.Save();
+            return dto;
         }
 
         public async Task<IEnumerable<PhoneDTO>> GetAll()
         {
             var mapper = new Mapper(Phone_PhoneDTOMapConfig);
             return mapper.Map<IEnumerable<Phone>, IEnumerable<PhoneDTO>>(await Database.Phones.GetAll());
+        }
+
+        public async Task<IEnumerable<PhoneDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Phone_PhoneDTOMapConfig);
+            return mapper.Map<IEnumerable<Phone>, IEnumerable<PhoneDTO>>(await Database.Phones.Get200Last());
         }
 
         public async Task<PhoneDTO?> GetById(long id)
@@ -125,6 +136,39 @@ namespace TouragencyWebApi.BLL.Services
         {
             var mapper = new Mapper(Phone_PhoneDTOMapConfig);
             return mapper.Map<IEnumerable<Phone>, IEnumerable<PhoneDTO>>(await Database.Phones.GetByPhoneNumber(phoneNumberSubstring));
+        }
+
+        public async Task<IEnumerable<PhoneDTO>> GetByFirstname(string firstname)
+        {
+            var mapper = new Mapper(Phone_PhoneDTOMapConfig);
+            return mapper.Map<IEnumerable<Phone>, IEnumerable<PhoneDTO>>(await Database.Phones.GetByFirstname(firstname));
+        }
+
+        public async Task<IEnumerable<PhoneDTO>> GetByLastname(string lastname)
+        {
+            var mapper = new Mapper(Phone_PhoneDTOMapConfig);
+            return mapper.Map<IEnumerable<Phone>, IEnumerable<PhoneDTO>>(await Database.Phones.GetByLastname(lastname));
+        }
+
+        public async Task<IEnumerable<PhoneDTO>> GetByMiddlename(string middlename)
+        {
+            var mapper = new Mapper(Phone_PhoneDTOMapConfig);
+            return mapper.Map<IEnumerable<Phone>, IEnumerable<PhoneDTO>>(await Database.Phones.GetByMiddlename(middlename));
+        }
+
+        public async Task<IEnumerable<PhoneDTO>> GetByTouristNickname(string touristNickname)
+        {
+            var mapper = new Mapper(Phone_PhoneDTOMapConfig);
+            return mapper.Map<IEnumerable<Phone>, IEnumerable<PhoneDTO>>(await Database.Phones.GetByTouristNickname(touristNickname));
+        }
+
+        public async Task<IEnumerable<PhoneDTO>> GetByCompositeSearch(int? clientId, int? personId, int? touragencyEmployeeId,
+                       string? touristNickname, int? contactTypeId, string? phoneNumberSubstring, string? firstname,
+                                  string? lastname, string? middlename)
+        {
+            var mapper = new Mapper(Phone_PhoneDTOMapConfig);
+            return mapper.Map<IEnumerable<Phone>, IEnumerable<PhoneDTO>>(await Database.Phones.GetByCompositeSearch(clientId, personId, touragencyEmployeeId,
+                               touristNickname, contactTypeId, phoneNumberSubstring, firstname, lastname, middlename));
         }
     }
 }

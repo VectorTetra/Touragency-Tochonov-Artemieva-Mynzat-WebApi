@@ -17,5 +17,20 @@ namespace TouragencyWebApi.DAL.Entities
 		public virtual TouragencyEmployee? TouragencyEmployee { get; set; }
 		// One-to-one relationship with the Client model
 		public virtual Client? Client { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var otheBC = (Person)obj;
+            return Id == otheBC.Id;
+        }
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }

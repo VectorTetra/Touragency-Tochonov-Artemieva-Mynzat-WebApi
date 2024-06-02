@@ -13,8 +13,10 @@ namespace TouragencyWebApi.BLL.DTO
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public string? Middlename { get; set; }
-        public ICollection<EmailDTO>? Emails { get; set; }
-        public ICollection<PhoneDTO>? Phones { get; set; }
+        public ICollection<long>? EmailIds { get; set; }
+        public ICollection<string>? Emails { get; set; }
+        public ICollection<long>? PhoneIds { get; set; }
+        public ICollection<string>? Phones { get; set; }
         public int? TouragencyEmployeeId { get; set; }
         public int? ClientId { get; set; }
     }

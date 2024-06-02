@@ -23,13 +23,22 @@ namespace TouragencyWebApi.BLL.Services
         MapperConfiguration Hotel_HotelDTOMapConfig = new MapperConfiguration(cfg => cfg.CreateMap<Hotel, HotelDTO>()
         .ForMember("Id", opt => opt.MapFrom(c => c.Id))
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
+        .ForMember("Description", opt => opt.MapFrom(c => c.Description))
         .ForMember("Stars", opt => opt.MapFrom(c => c.Stars))
         .ForPath(d => d.HotelConfigurationIds, opt => opt.MapFrom(c => c.HotelConfigurations.Select(b => b.Id)))
         .ForPath(d => d.BedConfigurationIds, opt => opt.MapFrom(c => c.BedConfigurations.Select(b => b.Id)))
         .ForPath(d => d.SettlementId, opt => opt.MapFrom(c => c.Settlement.Id))
-        .ForPath(d => d.TourIds, opt => opt.MapFrom(c => c.Tours.Select(b => b.Id)))
+        .ForPath(d => d.TourNameIds, opt => opt.MapFrom(c => c.TourNames.Select(b => b.Id)))
         .ForPath(d => d.BookingIds, opt => opt.MapFrom(c => c.Bookings.Select(b => b.Id)))
         .ForPath(d => d.HotelServiceIds, opt => opt.MapFrom(c => c.HotelServices.Select(b => b.Id)))
+        .ForPath(d => d.FoodServices, opt => opt.MapFrom(c => c.HotelServices.Where(b => b.HotelServiceType.Id == 1).Select(b => b.Name)))
+        .ForPath(d => d.OtherServices, opt => opt.MapFrom(c => c.HotelServices.Where(b => b.HotelServiceType.Id == 2).Select(b => b.Name)))
+        .ForPath(d => d.FoodServicesIds, opt => opt.MapFrom(c => c.HotelServices.Where(b => b.HotelServiceType.Id == 1).Select(b => b.Id)))
+        .ForPath(d => d.OtherServicesIds, opt => opt.MapFrom(c => c.HotelServices.Where(b => b.HotelServiceType.Id == 2).Select(b => b.Id)))
+        .ForPath(d => d.SettlementName, opt => opt.MapFrom(c => c.Settlement.Name))
+        .ForPath(d => d.CountryName, opt => opt.MapFrom(c => c.Settlement.Country.Name))
+        .ForPath(d => d.CountryId, opt => opt.MapFrom(c => c.Settlement.Country.Id))
+        .ForPath(d => d.HotelImages, opt => opt.MapFrom(c => c.HotelImages.Select(b => new HotelImageDTO { Id = b.Id, ImageUrl = b.ImageUrl, HotelId = b.Hotel.Id })))
         );
         public async Task<IEnumerable<HotelDTO>> GetAll()
         {
@@ -37,6 +46,11 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetAll());
         }
 
+        public async Task<IEnumerable<HotelDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.Get200Last());
+        }
         public async Task<HotelDTO?> GetById(int id)
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
@@ -47,6 +61,12 @@ namespace TouragencyWebApi.BLL.Services
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByNameSubstring(nameSubstring));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetByDescriptionSubstring(string descriptionSubstring)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByDescriptionSubstring(descriptionSubstring));
         }
 
         public async Task<IEnumerable<HotelDTO>> GetByStars(int[] selectedStarsRatings)
@@ -73,10 +93,22 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetBySettlementId(settlementId));
         }
 
-        public async Task<IEnumerable<HotelDTO>> GetByTourId(long tourId)
+        public async Task<IEnumerable<HotelDTO>> GetBySettlementIds(int[] settlementIds)
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
-            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByTourId(tourId));
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetBySettlementIds(settlementIds));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetByTourNameId(int tourNameId)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByTourNameId(tourNameId));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetByTourName(string tourName)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByTourName(tourName));
         }
 
         public async Task<IEnumerable<HotelDTO>> GetByBookingId(long bookingId)
@@ -85,13 +117,41 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByBookingId(bookingId));
         }
 
-        public async Task<IEnumerable<HotelDTO>> GetByHotelServiceId(int settlementId)
+        public async Task<IEnumerable<HotelDTO>> GetByHotelServiceId(int hotelServiceId)
         {
             var mapper = new Mapper(Hotel_HotelDTOMapConfig);
-            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByHotelServiceId(settlementId));
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByHotelServiceId(hotelServiceId));
         }
 
-        public async Task Create(HotelDTO hotelDTO)
+        public async Task<IEnumerable<HotelDTO>> GetByHotelImageId(long hotelImageId)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByHotelImageId(hotelImageId));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetByCountryNameSubstring(string countryNameSubstring)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByCountryNameSubstring(countryNameSubstring));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetBySettlementNameSubstring(string settlementNameSubstring)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetBySettlementNameSubstring(settlementNameSubstring));
+        }
+
+        public async Task<IEnumerable<HotelDTO>> GetByCompositeSearch(string? nameSubstring, string? countryNameSubstring, string? settlementNameSubstring, string? descriptionSubstring,
+            int[]? stars, int? hotelConfigurationId, int? bedConfigurationId, int? settlementId, int? tourNameId, string? tourName,
+            long? bookingId, int? hotelServiceId, long? hotelImageId, int[]? settlementIds)
+        {
+            var mapper = new Mapper(Hotel_HotelDTOMapConfig);
+            return mapper.Map<IEnumerable<Hotel>, IEnumerable<HotelDTO>>(await Database.Hotels.GetByCompositeSearch(nameSubstring, countryNameSubstring, settlementNameSubstring, descriptionSubstring,
+                               stars, hotelConfigurationId, bedConfigurationId, settlementId, tourNameId, tourName,
+                                              bookingId, hotelServiceId, hotelImageId, settlementIds));
+        }
+
+        public async Task<HotelDTO> Create(HotelDTO hotelDTO)
         {
             var PreExistedHotelId = await Database.Hotels.GetById(hotelDTO.Id);
             if (PreExistedHotelId != null)
@@ -127,15 +187,15 @@ namespace TouragencyWebApi.BLL.Services
                 throw new ValidationException($"Такого поселення, вказаного в hotel.SettlementId, не існує! (SettlementId : {hotelDTO.SettlementId})", "");
             }
             //======================================================================
-            var Tours = new List<Tour>();
-            foreach (var id in hotelDTO.TourIds)
+            var TourNames = new List<TourName>();
+            foreach (var id in hotelDTO.TourNameIds)
             {
-                var tour = await Database.Tours.GetById(id);
+                var tour = await Database.TourNames.GetById(id);
                 if (tour == null)
                 {
-                    throw new ValidationException($"Такого туру, вказаного в hotel.TourIds, не існує! (TourId : {id})", "");
+                    throw new ValidationException($"Такої назви туру, вказаної в hotel.TourNameIds, не існує! (TourNameId : {id})", "");
                 }
-                Tours.Add(tour);
+                TourNames.Add(tour);
             }
             //======================================================================
             var Bookings = new List<Booking>();
@@ -149,7 +209,7 @@ namespace TouragencyWebApi.BLL.Services
                 Bookings.Add(booking);
             }
             //======================================================================
-            var HotelServices = new List<HotelService>();
+            var HotelServices = new List<TouragencyWebApi.DAL.Entities.HotelService>();
             foreach (var id in hotelDTO.HotelServiceIds)
             {
                 var hotelService = await Database.HotelServices.GetById(id);
@@ -165,19 +225,24 @@ namespace TouragencyWebApi.BLL.Services
                 Id = hotelDTO.Id,
                 Name = hotelDTO.Name,
                 Stars = hotelDTO.Stars,
+                Description = hotelDTO.Description,
                 HotelConfigurations = HotelConfigurations,
                 BedConfigurations = BedConfigurations,
                 Settlement = Settlement,
-                Tours = Tours,
+                TourNames = TourNames,
                 Bookings = Bookings,
                 HotelServices = HotelServices
             };
 
             await Database.Hotels.Create(newHotel);
             await Database.Save();
+            hotelDTO.Id = newHotel.Id;
+            return hotelDTO;
+
+
         }
 
-        public async Task Update(HotelDTO hotelDTO)
+        public async Task<HotelDTO> Update(HotelDTO hotelDTO)
         {
             Hotel hotelEntity = await Database.Hotels.GetById(hotelDTO.Id);
             if (hotelEntity == null)
@@ -213,15 +278,15 @@ namespace TouragencyWebApi.BLL.Services
                 throw new ValidationException($"Такого поселення, вказаного в hotel.SettlementId, не існує! (SettlementId : {hotelDTO.SettlementId})", "");
             }
             //======================================================================
-            hotelEntity.Tours.Clear();
-            foreach (var id in hotelDTO.TourIds)
+            hotelEntity.TourNames.Clear();
+            foreach (var id in hotelDTO.TourNameIds)
             {
-                var tour = await Database.Tours.GetById(id);
-                if (tour == null)
+                var tourName = await Database.TourNames.GetById(id);
+                if (tourName == null)
                 {
-                    throw new ValidationException($"Такого туру, вказаного в hotel.TourIds, не існує! (TourId : {id})", "");
+                    throw new ValidationException($"Такої назви туру, вказаної в hotel.TourNameIds, не існує! (TourNameId : {id})", "");
                 }
-                hotelEntity.Tours.Add(tour);
+                hotelEntity.TourNames.Add(tourName);
             }
             //======================================================================
             hotelEntity.Bookings.Clear();
@@ -249,20 +314,24 @@ namespace TouragencyWebApi.BLL.Services
             hotelEntity.Name = hotelDTO.Name;
             hotelEntity.Stars = hotelDTO.Stars;
             hotelEntity.Settlement = Settlement;
+            hotelEntity.Description = hotelDTO.Description;
 
             Database.Hotels.Update(hotelEntity);
             await Database.Save();
+            return hotelDTO;
         }
 
-        public async Task Delete(int id)
+        public async Task<HotelDTO> Delete(int id)
         {
             Hotel hotel = await Database.Hotels.GetById(id);
             if (hotel == null)
             {
-                throw new ValidationException("Готель не знайдено", "");
+                throw new ValidationException($"Готель з вказаним id не знайдено (id : {id})", "");
             }
+            var dto = await GetById(id);
             await Database.Hotels.Delete(id);
             await Database.Save();
+            return dto;
         }
     }
 }

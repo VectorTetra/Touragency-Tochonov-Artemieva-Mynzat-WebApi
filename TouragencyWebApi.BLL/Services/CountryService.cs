@@ -23,73 +23,124 @@ namespace TouragencyWebApi.BLL.Services
         .ForMember("Name", opt => opt.MapFrom(c => c.Name))
         .ForMember("FlagUrl", opt => opt.MapFrom(c => c.FlagUrl))
         .ForPath(d => d.SettlementIds, opt => opt.MapFrom(c => c.Settlements.Select(b => b.Id)))
+        .ForPath(d => d.TourNameIds, opt => opt.MapFrom(c => c.TourNames.Select(b => b.Id)))
+        .ForPath(d => d.ContinentId, opt => opt.MapFrom(c => c.Continent.Id))
+        .ForPath(d => d.ContinentName, opt => opt.MapFrom(c => c.Continent.Name))
         );
         public CountryService(IUnitOfWork uow)
         {
             Database = uow;
         }
-        public async Task Add(CountryDTO countryDTO)
+        public async Task<CountryDTO> Add(CountryDTO countryDTO)
         {
             var PreExistedCountry = await Database.Countries.GetByName(countryDTO.Name);
             if (PreExistedCountry.Any(em => em.Name == countryDTO.Name))
             {
-                throw new ValidationException("Така країна вже існує", "");
+                throw new ValidationException($"Така країна вже існує (countryDTO.Name : {countryDTO.Name})", "");
             }
             var newCountry = new Country
             {
                 Name = countryDTO.Name,
-                FlagUrl= countryDTO.FlagUrl
+                FlagUrl= countryDTO.FlagUrl,
+                Settlements = new List<Settlement>(),
+                TourNames = new List<TourName>()
             };
 
             foreach (var id in countryDTO.SettlementIds)
             {
                 var settlement = await Database.Settlements.GetById(id);
-                if (settlement != null)
+                if (settlement == null)
                 {
-                    newCountry.Settlements.Add(settlement);
+                    throw new ValidationException($"Населений пункт із вказаним id не знайдено! (settlementId : {id})", "");
                 }
+                newCountry.Settlements.Add(settlement);
             }
+            foreach (var id in countryDTO.TourNameIds)
+            {
+                var tourName = await Database.TourNames.GetById(id);
+                if (tourName == null)
+                {
+                    throw new ValidationException($"Назви туру із вказаним id не знайдено! (tourNameId : {id})", "");
+                }
+                newCountry.TourNames.Add(tourName);
+            }
+
+            var continent = await Database.Continents.GetById(countryDTO.ContinentId);
+            if (continent == null)
+            {
+                throw new ValidationException($"Континент із вказаним id не знайдено! (continentId : {countryDTO.ContinentId})", "");
+            }
+            newCountry.Continent = continent;
             await Database.Countries.Create(newCountry);
             await Database.Save();
+
+            countryDTO.Id = newCountry.Id;
+            return countryDTO;
         }
 
-        public async Task Update(CountryDTO countryDTO)
+        public async Task<CountryDTO> Update(CountryDTO countryDTO)
         {
             Country country = await Database.Countries.GetById(countryDTO.Id);
             if (country == null)
             {
-                throw new ValidationException("Країну не знайдено", "");
+                throw new ValidationException($"Країну з вказаним Id не знайдено (countryDTO.Id : {countryDTO.Id})", "");
             }
             country.Name = countryDTO.Name;
             country.FlagUrl = countryDTO.FlagUrl;
+            var continent = await Database.Continents.GetById(countryDTO.ContinentId);
+            if (continent == null)
+            {
+                throw new ValidationException($"Континент із вказаним id не знайдено! (continentId : {countryDTO.ContinentId})", "");
+            }
+            country.Continent = continent;
             country.Settlements.Clear();
             foreach (var id in countryDTO.SettlementIds)
             {
-                var person = await Database.Settlements.GetById(id);
-                if (person != null)
+                var settlement = await Database.Settlements.GetById(id);
+                if (settlement == null)
                 {
-                    country.Settlements.Add(person);
+                    throw new ValidationException($"Населений пункт із вказаним id не знайдено! (settlementId : {id})", "");
                 }
+                country.Settlements.Add(settlement);
+            }
+            country.TourNames.Clear();
+            foreach (var id in countryDTO.TourNameIds)
+            {
+                var TourName = await Database.TourNames.GetById(id);
+                if (TourName == null)
+                {
+                    throw new ValidationException($"Населений пункт із вказаним id не знайдено! (TourNameId : {id})", "");
+                }
+                country.TourNames.Add(TourName);
             }
             Database.Countries.Update(country);
             await Database.Save();
+            return countryDTO;
         }
 
-        public async Task Delete(int id)
+        public async Task<CountryDTO> Delete(int id)
         {
             Country country = await Database.Countries.GetById(id);
             if (country == null)
             {
-                throw new ValidationException("Країну не знайдено", "");
+                throw new ValidationException($"Країну з вказаним Id не знайдено (id : {id})", "");
             }
+            var countryDTO = await GetById(id);
             await Database.Countries.Delete(id);
             await Database.Save();
+            return countryDTO;
         }
 
         public async Task<IEnumerable<CountryDTO>> GetAll()
         {
             var mapper = new Mapper(Country_CountryDTOMapConfig);
             return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetAll());
+        }
+
+        public async Task<IEnumerable<CountryDTO>> Get200Last()
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.Get200Last());
         }
 
         public async Task<CountryDTO?> GetById(int id)
@@ -102,6 +153,36 @@ namespace TouragencyWebApi.BLL.Services
         {
             var mapper = new Mapper(Country_CountryDTOMapConfig);
             return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByName(countryName));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByContinentName(string continentName)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByContinentName(continentName));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByContinentId(int continentId)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByContinentId(continentId));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByTourNameId(int tourNameId)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByTourNameId(tourNameId));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByTourName(string tourName)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByTourName(tourName));
+        }
+
+        public async Task<IEnumerable<CountryDTO>> GetByCompositeSearch(string? name, string? continentName, int? continentId, int? tourNameId, string? tourName)
+        {
+            var mapper = new Mapper(Country_CountryDTOMapConfig);
+            return mapper.Map<IEnumerable<Country>, IEnumerable<CountryDTO>>(await Database.Countries.GetByCompositeSearch(name, continentName, continentId, tourNameId, tourName));
         }
     }
 }

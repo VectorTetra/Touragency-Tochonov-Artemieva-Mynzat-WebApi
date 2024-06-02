@@ -30,13 +30,18 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
-                            if (countryQuery.CountryId == null)
+                            if (countryQuery.Id == null)
                             {
-                                throw new ValidationException("Не вказано CountryId для пошуку!", nameof(countryQuery.CountryId));
+                                throw new ValidationException("Не вказано CountryId для пошуку!", nameof(countryQuery.Id));
                             }
-                            var cntr = await _serv.GetById((int)countryQuery.CountryId);
+                            var cntr = await _serv.GetById((int)countryQuery.Id);
                             if (cntr != null)
                             {
                                 collection = new List<CountryDTO?> { cntr };
@@ -45,11 +50,53 @@ namespace TouragencyWebApi.Controllers
                         break;
                     case "GetByName":
                         {
-                            if (countryQuery.CountryName == null)
+                            if (countryQuery.Name == null)
                             {
-                                throw new ValidationException("Не вказано CountryQuery для пошуку!", nameof(countryQuery.CountryName));
+                                throw new ValidationException("Не вказано CountryQuery для пошуку!", nameof(countryQuery.Name));
                             }
-                            collection = await _serv.GetByName(countryQuery.CountryName);
+                            collection = await _serv.GetByName(countryQuery.Name);
+
+                        }
+                        break;
+                    case "GetByContinentName":
+                        {
+                            if (countryQuery.ContinentName == null)
+                            {
+                                throw new ValidationException("Не вказано ContinentName для пошуку!", nameof(countryQuery.ContinentName));
+                            }
+                            collection = await _serv.GetByContinentName(countryQuery.ContinentName);
+                        }
+                        break;
+                    case "GetByContinentId":
+                        {
+                            if (countryQuery.ContinentId == null)
+                            {
+                                throw new ValidationException("Не вказано ContinentId для пошуку!", nameof(countryQuery.ContinentId));
+                            }
+                            collection = await _serv.GetByContinentId((int)countryQuery.ContinentId);
+                        }
+                        break;
+                    case "GetByTourNameId":
+                        {
+                            if (countryQuery.TourNameId == null)
+                            {
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(countryQuery.TourNameId));
+                            }
+                            collection = await _serv.GetByTourNameId((int)countryQuery.TourNameId);
+                        }
+                        break;
+                    case "GetByTourName":
+                        {
+                            if (countryQuery.TourName == null)
+                            {
+                                throw new ValidationException("Не вказано TourName для пошуку!", nameof(countryQuery.TourName));
+                            }
+                            collection = await _serv.GetByTourName(countryQuery.TourName);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(countryQuery.Name, countryQuery.ContinentName, countryQuery.ContinentId, countryQuery.TourNameId, countryQuery.TourName);
                         }
                         break;
                     default:
@@ -65,29 +112,29 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddCountry(CountryDTO countryDTO)
+        public async Task<ActionResult<CountryDTO>> AddCountry(CountryDTO countryDTO)
         {
             try
             {
-                await _serv.Add(countryDTO);
-                return Ok();
+                var createdCountry = await _serv.Add(countryDTO);
+                return Ok(createdCountry);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -96,45 +143,47 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(countryDTO);
-                return Ok();
+                var updatedCountry = await _serv.Update(countryDTO);
+                return Ok(updatedCountry);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCountry(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var deletedCountry = await _serv.Delete(id);
+                return Ok(deletedCountry);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
-
-
     }
 
     public class CountryQuery
     {
-        public string SearchParameter { get; set; } = "";
-        public int? CountryId { get; set; }
-        public string? CountryName { get; set; }
+        public string SearchParameter { get; set; } = "GetAll";
+        public int? Id { get; set; }
+        public int? ContinentId { get; set; }
+        public string? Name { get; set; }
+        public string? ContinentName { get; set; }
+        public int? TourNameId { get; set; }
+        public string? TourName { get; set; }
 
     }
 }

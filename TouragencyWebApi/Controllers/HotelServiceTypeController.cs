@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
@@ -28,6 +27,11 @@ namespace TouragencyWebApi.Controllers
                     case "GetAll":
                         {
                             collection = await _serv.GetAll();
+                        }
+                        break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
                         }
                         break;
                     case "GetById":
@@ -72,65 +76,65 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
-            }   
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateHotelServiceType(HotelServiceTypeDTO hotelServiceTypeDTO)
+        public async Task<ActionResult<HotelServiceTypeDTO>> CreateHotelServiceType(HotelServiceTypeDTO hotelServiceTypeDTO)
         {
             try
             {
-                await _serv.Create(hotelServiceTypeDTO);
-                return Ok();
+                var dto = await _serv.Create(hotelServiceTypeDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateHotelServiceType(HotelServiceTypeDTO hotelServiceTypeDTO)
+        public async Task<ActionResult<HotelServiceTypeDTO>> UpdateHotelServiceType(HotelServiceTypeDTO hotelServiceTypeDTO)
         {
             try
             {
-                await _serv.Update(hotelServiceTypeDTO);
-                return Ok();
+                var dto = await _serv.Update(hotelServiceTypeDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> DeleteHotelServiceType(int id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<HotelServiceTypeDTO>> DeleteHotelServiceType(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }

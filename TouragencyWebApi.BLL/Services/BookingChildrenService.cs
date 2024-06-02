@@ -55,19 +55,19 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<BookingChildren>, IEnumerable<BookingChildrenDTO>>(await Database.BookingChildrens.GetByChildrenAge(childrenAge));
         }
 
-        public async Task Create(BookingChildrenDTO bookingChildrenDTO)
+        public async Task<BookingChildrenDTO> Create(BookingChildrenDTO bookingChildrenDTO)
         {
             var busyBookingChildrenId = await Database.BookingChildrens.GetById(bookingChildrenDTO.Id);
             if (busyBookingChildrenId != null)
             {
-                throw new ValidationException("Такий bookingChildrenId вже зайнято!", "");
+                throw new ValidationException($"Такий bookingChildrenId вже зайнято! (BookingChildrenId : {busyBookingChildrenId.Id})", "");
             }
             if (bookingChildrenDTO.BookingDataId != null)
             {
                 var PreExistedBookingData = await Database.BookingDatas.GetById((long)bookingChildrenDTO.BookingDataId);
                 if (PreExistedBookingData == null)
                 {
-                    throw new ValidationException("Такий bookingChildrenDTO.BookingDataId не знайдено!", "");
+                    throw new ValidationException($"Такий bookingChildrenDTO.BookingDataId не знайдено! (bookingChildrenDTO.BookingDataId : {bookingChildrenDTO.BookingDataId})", "");
                 }
             }
             BookingChildren bookingChildren = new BookingChildren
@@ -79,21 +79,23 @@ namespace TouragencyWebApi.BLL.Services
 
             await Database.BookingChildrens.Create(bookingChildren);
             await Database.Save();
+            bookingChildrenDTO.Id = bookingChildren.Id;
+            return bookingChildrenDTO;
         }
 
-        public async Task Update(BookingChildrenDTO bookingChildrenDTO)
+        public async Task<BookingChildrenDTO> Update(BookingChildrenDTO bookingChildrenDTO)
         {
             var BookingChildren = await Database.BookingChildrens.GetById(bookingChildrenDTO.Id);
             if (BookingChildren == null)
             {
-                throw new ValidationException("Такий bookingChildrenId не знайдено!", "");
+                throw new ValidationException($"Такий bookingChildrenId не знайдено! (bookingChildrenDTO.Id : {bookingChildrenDTO.Id})", "");
             }
             if (bookingChildrenDTO.BookingDataId != null)
             {
                 var PreExistedBookingData = await Database.BookingDatas.GetById((long)bookingChildrenDTO.BookingDataId);
                 if (PreExistedBookingData == null)
                 {
-                    throw new ValidationException("Такий bookingChildrenDTO.BookingDataId не знайдено!", "");
+                    throw new ValidationException($"Такий bookingChildrenDTO.BookingDataId не знайдено! (bookingChildrenDTO.BookingDataId : {bookingChildrenDTO.BookingDataId})", "");
                 }
             }
 
@@ -104,17 +106,20 @@ namespace TouragencyWebApi.BLL.Services
 
             Database.BookingChildrens.Update(BookingChildren);
             await Database.Save();
+            return bookingChildrenDTO;
         }
 
-        public async Task Delete(long id)
+        public async Task<BookingChildrenDTO> Delete(long id)
         {
             var BookingChildren = await Database.BookingChildrens.GetById(id);
             if (BookingChildren == null)
             {
                 throw new ValidationException("Такий bookingChildrenId не знайдено!", "");
             }
+            var dto = await GetById(id);
             await Database.BookingChildrens.Delete(id);
             await Database.Save();
+            return dto;
         }
     }
 }
