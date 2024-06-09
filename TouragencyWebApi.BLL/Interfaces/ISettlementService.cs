@@ -11,15 +11,19 @@ namespace TouragencyWebApi.BLL.Interfaces
     public interface ISettlementService
     {
         Task<IEnumerable<SettlementDTO>> GetAll();
+        Task<IEnumerable<SettlementDTO>> Get200Last();
         Task<SettlementDTO?> GetById(int id);
         Task<IEnumerable<SettlementDTO>> GetByName(string name);
         Task<IEnumerable<SettlementDTO>> GetByCountryName(string countryName);
         Task<IEnumerable<SettlementDTO>> GetByCountryId(int countryId);
-        Task<IEnumerable<SettlementDTO>> GetByTourId(long tourId);
+        Task<IEnumerable<SettlementDTO>> GetByCountryIds(int[] countryIds);
+        Task<IEnumerable<SettlementDTO>> GetByTourNameId(int tourNameId);
+        Task<IEnumerable<SettlementDTO>> GetByTourName(string tourName);
+        Task<IEnumerable<SettlementDTO>> GetByCompositeSearch(string? name, string? countryName, int? countryId, int? tourNameId, string? tourName);
         Task<SettlementDTO?> GetByHotelId(int hotelId);
-        Task Add(SettlementDTO settlementDTO);
-        Task Update(SettlementDTO settlementDTO);
-        Task Delete(int id);
+        Task<SettlementDTO> Add(SettlementDTO settlementDTO);
+        Task<SettlementDTO> Update(SettlementDTO settlementDTO);
+        Task<SettlementDTO> Delete(int id);
 
     }
 }

@@ -29,6 +29,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (positionQuery.Id == null)
@@ -45,6 +50,18 @@ namespace TouragencyWebApi.Controllers
                             }
                         }
                         break;
+                    case "GetByName":
+                        {
+                            if (positionQuery.Name == null)
+                            {
+                                throw new ValidationException("Не вказано Position.Name для пошуку!", nameof(PositionQuery.Name));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByNameSubstring(positionQuery.Name);
+                            }
+                        }
+                        break;
                     case "GetByDescription":
                         {
                             if (positionQuery.Description == null)
@@ -55,6 +72,47 @@ namespace TouragencyWebApi.Controllers
                             {
                                 collection = await _serv.GetByDescriptionSubstring(positionQuery.Description);
                             }
+                        }
+                        break;
+                    case "GetByPersonFirstname":
+                        {
+                            if (positionQuery.PersonFirstname == null)
+                            {
+                                throw new ValidationException("Не вказано Person.Firstname для пошуку!", nameof(PositionQuery.PersonFirstname));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByPersonFirstnameSubstring(positionQuery.PersonFirstname);
+                            }
+                        }
+                        break;
+                    case "GetByPersonLastname":
+                        {
+                            if (positionQuery.PersonLastname == null)
+                            {
+                                throw new ValidationException("Не вказано Person.Lastname для пошуку!", nameof(PositionQuery.PersonLastname));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByPersonLastnameSubstring(positionQuery.PersonLastname);
+                            }
+                        }
+                        break;
+                    case "GetByPersonMiddlename":
+                        {
+                            if (positionQuery.PersonMiddlename == null)
+                            {
+                                throw new ValidationException("Не вказано Person.Middlename для пошуку!", nameof(PositionQuery.PersonMiddlename));
+                            }
+                            else
+                            {
+                                collection = await _serv.GetByPersonMiddlenameSubstring(positionQuery.PersonMiddlename);
+                            }
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(positionQuery.Name, positionQuery.Description, positionQuery.PersonFirstname, positionQuery.PersonLastname, positionQuery.PersonMiddlename);
                         }
                         break;
                     default:
@@ -70,11 +128,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -83,16 +141,16 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(positionDTO);
-                return new ObjectResult(positionDTO);
+                var dto = await _serv.Create(positionDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -101,34 +159,34 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(positionDTO);
-                return Ok();
+                var dto = await _serv.Update(positionDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<PositionDTO>> DeletePosition(int id)
-        {           
+        {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }
@@ -137,6 +195,11 @@ namespace TouragencyWebApi.Controllers
     {
         public string SearchParameter { get; set; }
         public int? Id { get; set; }
+        public string? Name { get; set; }
         public string? Description { get; set; }
+        public string? PersonFirstname { get; set; }
+        public string? PersonLastname { get; set; }
+        public string? PersonMiddlename { get; set; }
+
     }
 }

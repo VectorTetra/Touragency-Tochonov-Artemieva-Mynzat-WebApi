@@ -20,8 +20,19 @@ namespace TouragencyWebApi.BLL.Interfaces
         Task<IEnumerable<ReviewDTO>> GetByReviewTextSubstring(string reviewTextSubstring);
         Task<IEnumerable<ReviewDTO>> GetByRatingDiapazone(short start, short end);
         Task<IEnumerable<ReviewDTO>> GetByCreationDateDiapazone(DateTime start, DateTime end);
-        Task Create(ReviewDTO review);
-        Task Update(ReviewDTO review);
-        Task Delete(long id);
+        Task<ReviewDTO> Create(ReviewDTO review);
+        Task<ReviewDTO> Update(ReviewDTO review);
+        Task<ReviewDTO> Delete(long id);
+        Task<IEnumerable<ReviewDTO>> Get200Last();
+        Task<IEnumerable<ReviewDTO>> GetByTourNameSubstring(string tourNameSubstring);
+        Task<IEnumerable<ReviewDTO>> GetByTouristNicknameSubstring(string touristNicknameSubstring);
+        Task<IEnumerable<ReviewDTO>> GetByClientFirstnameSubstring(string clientFirstnameSubstring);
+        Task<IEnumerable<ReviewDTO>> GetByClientLastnameSubstring(string clientLastnameSubstring);
+        Task<IEnumerable<ReviewDTO>> GetByClientMiddlenameSubstring(string clientMiddlenameSubstring);
+        Task<IEnumerable<ReviewDTO>> GetByCountryNameSubstring(string countryNameSubstring);
+        Task<IEnumerable<ReviewDTO>> GetByCompositeSearch(long? tourId, int? clientId, int? countryId, long? reviewImageId, string? reviewCaptionSubstring,
+            string? reviewTextSubstring, short? startRating, short? endRating, DateTime? startDate, DateTime? endDate, string? tourNameSubstring,
+            string? touristNicknameSubstring, string? clientFirstnameSubstring, string? clientLastnameSubstring, string? clientMiddlenameSubstring,
+            string? countryNameSubstring, int? tourNameId);
     }
 }

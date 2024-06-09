@@ -30,5 +30,20 @@ namespace TouragencyWebApi.DAL.Entities
         public short ChildrenCount { get; set; }
         public short ChildrenAge { get; set; }
         public virtual BookingData? BookingData { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var otheBC = (BookingChildren)obj;
+            return Id == otheBC.Id;
+        }
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 } 

@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TouragencyWebApi.BLL.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
-using Microsoft.IdentityModel.Tokens;
+using TouragencyWebApi.BLL.Interfaces;
 
 namespace TouragencyWebApi.Controllers
 {
@@ -11,7 +10,7 @@ namespace TouragencyWebApi.Controllers
     [ApiController]
     public class PhoneController : ControllerBase
     {
-        private readonly IPhoneService  _serv;
+        private readonly IPhoneService _serv;
         public PhoneController(IPhoneService serv)
         {
             _serv = serv;
@@ -85,6 +84,48 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByPhoneNumber(phoneQuery?.PhoneNumber);
                         }
                         break;
+                    case "GetByTouristNickname":
+                        {
+                            if (phoneQuery.TouristNickname == null)
+                            {
+                                throw new ValidationException("Не вказано TouristNickname для пошуку!", nameof(phoneQuery.TouristNickname));
+                            }
+                            collection = await _serv.GetByTouristNickname(phoneQuery?.TouristNickname);
+                        }
+                        break;
+                    case "GetByFirstname":
+                        {
+                            if (phoneQuery.Firstname == null)
+                            {
+                                throw new ValidationException("Не вказано Firstname для пошуку!", nameof(phoneQuery.Firstname));
+                            }
+                            collection = await _serv.GetByFirstname(phoneQuery?.Firstname);
+                        }
+                        break;
+                    case "GetByLastname":
+                        {
+                            if (phoneQuery.Lastname == null)
+                            {
+                                throw new ValidationException("Не вказано Lastname для пошуку!", nameof(phoneQuery.Lastname));
+                            }
+                            collection = await _serv.GetByLastname(phoneQuery?.Lastname);
+                        }
+                        break;
+                    case "GetByMiddlename":
+                        {
+                            if (phoneQuery.Middlename == null)
+                            {
+                                throw new ValidationException("Не вказано Middlename для пошуку!", nameof(phoneQuery.Middlename));
+                            }
+                            collection = await _serv.GetByMiddlename(phoneQuery?.Middlename);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(phoneQuery.ClientId, phoneQuery.PersonId, phoneQuery.TouragencyEmployeeId,
+                                                               phoneQuery.TouristNickname, phoneQuery.ContactTypeId, phoneQuery.PhoneNumber, phoneQuery.Firstname, phoneQuery.Lastname, phoneQuery.Middlename);
+                        }
+                        break;
                     default:
                         { // Якщо немає правильного варіанту - кинути виключення
                             throw new ValidationException("Вказано неправильний параметр phoneQuery.SearchParameter!", nameof(phoneQuery.SearchParameter));
@@ -98,11 +139,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -111,16 +152,16 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.TryToAddNewPhone(phoneDTO);
-                return Ok();
+                var dto = await _serv.TryToAddNewPhone(phoneDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -129,34 +170,34 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(phoneDTO);
-                return Ok();
+                var dto = await _serv.Update(phoneDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePhone(long id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }
@@ -170,6 +211,10 @@ namespace TouragencyWebApi.Controllers
         public int? TouragencyEmployeeId { get; set; }
         public int? ContactTypeId { get; set; }
         public string? PhoneNumber { get; set; }
+        public string? TouristNickname { get; set; }
+        public string? Firstname { get; set; }
+        public string? Lastname { get; set; }
+        public string? Middlename { get; set; }
     }
 }
 

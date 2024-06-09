@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using TouragencyWebApi.BLL.DTO;
 using TouragencyWebApi.BLL.Infrastructure;
 using TouragencyWebApi.BLL.Interfaces;
@@ -61,13 +62,27 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByDescriptionSubstring(transportTypeQuery.Description);
                         }
                         break;
-                    case "GetByTourId":
+                    case "GetByTourNameId":
                         {
-                            if (transportTypeQuery.TourId is null)
+                            if (transportTypeQuery.TourNameId is null)
                             {
-                                throw new ValidationException("Не вказано TourId для пошуку!", nameof(transportTypeQuery.TourId));
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(transportTypeQuery.TourNameId));
                             }
-                            collection = await _serv.GetByTourId((long)transportTypeQuery.TourId);
+                            collection = await _serv.GetByTourNameId((int)transportTypeQuery.TourNameId);
+                        }
+                        break;
+                    case "GetByTourName":
+                        {
+                            if (transportTypeQuery.TourName is null)
+                            {
+                                throw new ValidationException("Не вказано TourName для пошуку!", nameof(transportTypeQuery.TourName));
+                            }
+                            collection = await _serv.GetByTourName(transportTypeQuery.TourName);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(transportTypeQuery.Name, transportTypeQuery.Description, transportTypeQuery.TourNameId, transportTypeQuery.TourName);
                         }
                         break;
                     default:
@@ -75,15 +90,19 @@ namespace TouragencyWebApi.Controllers
                             throw new ValidationException("Невідомий параметр пошуку!", nameof(transportTypeQuery.SearchParameter));
                         }
                 }
-                return Ok(collection);
+                if (collection.IsNullOrEmpty())
+                {
+                    return NoContent();
+                }
+                return collection?.ToList();
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -92,16 +111,16 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(transportType);
-                return Ok(transportType);
+                var dto = await _serv.Create(transportType);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
         [HttpPut]
@@ -109,34 +128,34 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(transportType);
-                return Ok(transportType);
+                var dto = await _serv.Update(transportType);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteTransportType(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }
@@ -146,7 +165,8 @@ namespace TouragencyWebApi.Controllers
         public string SearchParameter { get; set; } = "";
         public int? Id { get; set; }
         public string? Name { get; set; }
+        public string? TourName { get; set; }
         public string? Description { get; set; }
-        public long? TourId { get; set; }
+        public int? TourNameId { get; set; }
     }
 }

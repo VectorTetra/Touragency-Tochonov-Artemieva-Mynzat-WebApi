@@ -29,6 +29,11 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetAll();
                         }
                         break;
+                    case "Get200Last":
+                        {
+                            collection = await _serv.Get200Last();
+                        }
+                        break;
                     case "GetById":
                         {
                             if (hotelQuery.Id is null)
@@ -51,6 +56,33 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByNameSubstring(hotelQuery.Name);
                         }
                         break;
+                    case "GetByCountryName":
+                        {
+                            if (hotelQuery.CountryName is null)
+                            {
+                                throw new ValidationException("Не вказано CountryName для пошуку!", nameof(hotelQuery.CountryName));
+                            }
+                            collection = await _serv.GetByCountryNameSubstring(hotelQuery.CountryName);
+                        }
+                        break;
+                    case "GetBySettlementName":
+                        {
+                            if (hotelQuery.SettlementName is null)
+                            {
+                                throw new ValidationException("Не вказано SettlementName для пошуку!", nameof(hotelQuery.SettlementName));
+                            }
+                            collection = await _serv.GetBySettlementNameSubstring(hotelQuery.SettlementName);
+                        }
+                        break;
+                    case "GetByDescription":
+                        {
+                            if (hotelQuery.Description is null)
+                            {
+                                throw new ValidationException("Не вказано Description для пошуку!", nameof(hotelQuery.Description));
+                            }
+                            collection = await _serv.GetByDescriptionSubstring(hotelQuery.Description);
+                        }
+                        break;
                     case "GetByStars":
                         {
                             if (hotelQuery.Stars is null)
@@ -60,6 +92,7 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetByStars((int[])hotelQuery.Stars);
                         }
                         break;
+
                     case "GetByHotelConfigurationId":
                         {
                             if (hotelQuery.HotelConfigurationId is null)
@@ -87,32 +120,65 @@ namespace TouragencyWebApi.Controllers
                             collection = await _serv.GetBySettlementId((int)hotelQuery.SettlementId);
                         }
                         break;
-
-                    case "GetByTourId":
+                    case "GetBySettlementIds":
                         {
-                            if (hotelQuery.TourIds is null)
+                            if (hotelQuery.SettlementIds is null)
                             {
-                                throw new ValidationException("Не вказано TourId для пошуку!", nameof(hotelQuery.TourIds));
+                                throw new ValidationException("Не вказано SettlementIds для пошуку!", nameof(hotelQuery.SettlementIds));
                             }
-                            collection = await _serv.GetByTourId((long)hotelQuery.TourIds);
+                            collection = await _serv.GetBySettlementIds((int[])hotelQuery.SettlementIds);
+                        }
+                        break;
+                    case "GetByTourNameId":
+                        {
+                            if (hotelQuery.TourNameId is null)
+                            {
+                                throw new ValidationException("Не вказано TourNameId для пошуку!", nameof(hotelQuery.TourNameId));
+                            }
+                            collection = await _serv.GetByTourNameId((int)hotelQuery.TourNameId);
+                        }
+                        break;
+                    case "GetByTourName":
+                        {
+                            if (hotelQuery.TourName is null)
+                            {
+                                throw new ValidationException("Не вказано TourName для пошуку!", nameof(hotelQuery.TourName));
+                            }
+                            collection = await _serv.GetByTourName(hotelQuery.TourName);
                         }
                         break;
                     case "GetByBookingId":
                         {
-                            if (hotelQuery.BookingIds is null)
+                            if (hotelQuery.BookingId is null)
                             {
-                                throw new ValidationException("Не вказано BookingId для пошуку!", nameof(hotelQuery.BookingIds));
+                                throw new ValidationException("Не вказано BookingId для пошуку!", nameof(hotelQuery.BookingId));
                             }
-                            collection = await _serv.GetByBookingId((long)hotelQuery.BookingIds);
+                            collection = await _serv.GetByBookingId((long)hotelQuery.BookingId);
                         }
                         break;
                     case "GetByHotelServiceId":
                         {
-                            if (hotelQuery.HotelServiceIds is null)
+                            if (hotelQuery.HotelServiceId is null)
                             {
-                                throw new ValidationException("Не вказано HotelServiceId для пошуку!", nameof(hotelQuery.HotelServiceIds));
+                                throw new ValidationException("Не вказано HotelServiceId для пошуку!", nameof(hotelQuery.HotelServiceId));
                             }
-                            collection = await _serv.GetByHotelServiceId((int)hotelQuery.HotelServiceIds);
+                            collection = await _serv.GetByHotelServiceId((int)hotelQuery.HotelServiceId);
+                        }
+                        break;
+                    case "GetByHotelImageId":
+                        {
+                            if (hotelQuery.HotelImageId is null)
+                            {
+                                throw new ValidationException("Не вказано HotelImageId для пошуку!", nameof(hotelQuery.HotelImageId));
+                            }
+                            collection = await _serv.GetByHotelImageId((long)hotelQuery.HotelImageId);
+                        }
+                        break;
+                    case "GetByCompositeSearch":
+                        {
+                            collection = await _serv.GetByCompositeSearch(hotelQuery.Name, hotelQuery.CountryName, hotelQuery.SettlementName, hotelQuery.Description,
+                                                               hotelQuery.Stars, hotelQuery.HotelConfigurationId, hotelQuery.BedConfigurationId, hotelQuery.SettlementId, hotelQuery.TourNameId, hotelQuery.TourName,
+                                                                                              hotelQuery.BookingId, hotelQuery.HotelServiceId, hotelQuery.HotelImageId, hotelQuery.SettlementIds);
                         }
                         break;
                     default:
@@ -128,11 +194,11 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -141,16 +207,16 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Create(hotelDTO);
-                return Ok();
+                var dto = await _serv.Create(hotelDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -159,34 +225,34 @@ namespace TouragencyWebApi.Controllers
         {
             try
             {
-                await _serv.Update(hotelDTO);
-                return Ok();
+                var dto = await _serv.Update(hotelDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<HotelDTO>> DeleteHotel(int id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }
@@ -196,17 +262,23 @@ namespace TouragencyWebApi.Controllers
         public string SearchParameter { get; set; }
         public int? Id { get; set; }
         public string? Name { get; set; }
+        public string? SettlementName { get; set; }
+        public string? CountryName { get; set; }
+        public string? Description { get; set; }
         public int[]? Stars { get; set; }
         //public virtual Resort Resort { get; set; }
         public int? HotelConfigurationId { get; set; }
         public int? BedConfigurationId { get; set; }
         public int? SettlementId { get; set; }
+        public int[]? SettlementIds { get; set; }
         // Many-to-many relationship between Hotel and Tour
-        public long? TourIds { get; set; }
+        public int? TourNameId { get; set; }
+        public string? TourName { get; set; }
         // One-to-many relationship between Hotel and Booking
-        public long? BookingIds { get; set; }
+        public long? BookingId { get; set; }
         // В цьому полі можуть зберігатися дані про послуги готелю (наприклад, Wi-Fi, сніданок, басейн, парковка, трансфер)
         // А також дані про модель харчування (наприклад, BB, HB, FB, AI)
-        public int? HotelServiceIds { get; set; }
+        public int? HotelServiceId { get; set; }
+        public long? HotelImageId { get; set; }
     }
 }

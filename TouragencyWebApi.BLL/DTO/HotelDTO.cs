@@ -12,16 +12,31 @@ namespace TouragencyWebApi.BLL.DTO
         public int Id { get; set; }
         public string Name { get; set; }
         public int? Stars { get; set; }
+        public string Description { get; set; }
         //public virtual Resort Resort { get; set; }
         public ICollection<int> HotelConfigurationIds { get; set; }
         public ICollection<int> BedConfigurationIds { get; set; }
         public int SettlementId { get; set; }
         // Many-to-many relationship between Hotel and Tour
-        public ICollection<long> TourIds { get; set; }
+        public ICollection<int> TourNameIds { get; set; }
         // One-to-many relationship between Hotel and Booking
         public ICollection<long> BookingIds { get; set; }
         // В цьому полі можуть зберігатися дані про послуги готелю (наприклад, Wi-Fi, сніданок, басейн, парковка, трансфер)
         // А також дані про модель харчування (наприклад, BB, HB, FB, AI)
         public ICollection<int> HotelServiceIds { get; set; }
+        //public ICollection<long> HotelImageIds { get; set; }
+
+        //public ICollection<string>? HotelImageUrls { get; set; }
+        public ICollection<HotelImageDTO>? HotelImages { get; set; }
+
+        public ICollection<int>? FoodServicesIds { get; set; }
+        public ICollection<string>? FoodServices { get; set; }
+        public ICollection<int>? OtherServicesIds { get; set; }
+        public ICollection<string>? OtherServices { get; set; }
+
+        public string? SettlementName { get; set; }
+        public string? CountryName { get; set; }
+        public string? CountryFlagUrl { get; set; }
+        public string? CountryId { get; set; }
     }
 }

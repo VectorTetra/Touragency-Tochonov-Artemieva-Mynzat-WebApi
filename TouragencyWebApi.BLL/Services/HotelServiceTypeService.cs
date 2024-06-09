@@ -31,6 +31,12 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<HotelServiceType>, IEnumerable<HotelServiceTypeDTO>>(await Database.HotelServiceTypes.GetAll());
         }
 
+        public async Task<IEnumerable<HotelServiceTypeDTO>> Get200Last()
+        {
+            IMapper mapper = new Mapper(HotelServiceType_HotelServiceTypeDTOMapConfig);
+            return mapper.Map<IEnumerable<HotelServiceType>, IEnumerable<HotelServiceTypeDTO>>(await Database.HotelServiceTypes.Get200Last());
+        }
+
         public async Task<HotelServiceTypeDTO?> GetById(int id)
         {
             IMapper mapper = new Mapper(HotelServiceType_HotelServiceTypeDTOMapConfig);
@@ -49,7 +55,7 @@ namespace TouragencyWebApi.BLL.Services
             return mapper.Map<IEnumerable<HotelServiceType>, IEnumerable<HotelServiceTypeDTO>>(await Database.HotelServiceTypes.GetByHotelServiceId(hotelServiceId));
         }
 
-        public async Task Create(HotelServiceTypeDTO hotelServiceTypeDTO)
+        public async Task<HotelServiceTypeDTO> Create(HotelServiceTypeDTO hotelServiceTypeDTO)
         {
             var PreExistedHotelServiceType = await Database.HotelServiceTypes.GetById(hotelServiceTypeDTO.Id);
             if (PreExistedHotelServiceType != null)
@@ -80,11 +86,14 @@ namespace TouragencyWebApi.BLL.Services
                 }
                 hotelServiceType.HotelServices.Add(hotelService);
             }
+
             await Database.HotelServiceTypes.Create(hotelServiceType);
             await Database.Save();
+            hotelServiceTypeDTO.Id = hotelServiceType.Id;
+            return hotelServiceTypeDTO;
         }
 
-        public async Task Update(HotelServiceTypeDTO hotelServiceTypeDTO)
+        public async Task<HotelServiceTypeDTO> Update(HotelServiceTypeDTO hotelServiceTypeDTO)
         {
             var hotelServiceType = await Database.HotelServiceTypes.GetById(hotelServiceTypeDTO.Id);
             if (hotelServiceType == null)
@@ -112,17 +121,20 @@ namespace TouragencyWebApi.BLL.Services
             }
             Database.HotelServiceTypes.Update(hotelServiceType);
             await Database.Save();
+            return hotelServiceTypeDTO;
         }
 
-        public async Task Delete(int id)
+        public async Task<HotelServiceTypeDTO> Delete(int id)
         {
             var hotelServiceType = await Database.HotelServiceTypes.GetById(id);
             if (hotelServiceType == null)
             {
                 throw new ValidationException($"Такий HotelServiceType з вказаним Id не знайдено! (id : {id})", "");
             }
-                await Database.HotelServiceTypes.Delete(id);
-
+            var dto = await GetById(id);
+            await Database.HotelServiceTypes.Delete(id);
+            await Database.Save();
+            return dto;
         }
     }
 }

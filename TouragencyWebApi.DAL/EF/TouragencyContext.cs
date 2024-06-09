@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using TouragencyWebApi.DAL.Entities;
 namespace TouragencyWebApi.DAL.EF
@@ -12,12 +13,15 @@ namespace TouragencyWebApi.DAL.EF
         public DbSet<BookingData> BookingDatas { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<ContactType> ContactTypes { get; set; }
+        public DbSet<Continent> Continents { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Email> Emails { get; set; }
         public DbSet<HotelConfiguration> HotelConfigurations { get; set; }
         public DbSet<HotelService> HotelServices { get; set; }
         public DbSet<HotelServiceType> HotelServiceTypes { get; set; }
+        public DbSet<HotelImage> HotelImages { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<News> News{ get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Phone> Phones { get; set; }
         public DbSet<Position> Positions { get; set; }
@@ -29,43 +33,44 @@ namespace TouragencyWebApi.DAL.EF
         public DbSet<TouragencyAccountRole> TouragencyAccountRoles { get; set; }
         public DbSet<TouragencyEmployee> TouragencyEmployees { get; set; }
         public DbSet<TourName> TourNames { get; set; }
+        public DbSet<TourImage> TourImages { get; set; }
         public DbSet<TourState> TourStates { get; set; }
         public DbSet<TransportType> TransportTypes { get; set; }
-
+        
         #region RunWithMigration
-        /*
-        static DbContextOptions<TouragencyContext> _options;
+        
+        //static DbContextOptions<TouragencyContext> _options;
 
-        static TouragencyContext()
-        {
-            try
-            {
-                var builder = new ConfigurationBuilder();
-                builder.SetBasePath(Directory.GetCurrentDirectory());
-                builder.AddJsonFile("appsettings.json");
-                var config = builder.Build();
-                string connectionString = config.GetConnectionString("DefaultConnection");
+        //static TouragencyContext()
+        //{
+        //    try
+        //    {
+        //        var builder = new ConfigurationBuilder();
+        //        builder.SetBasePath(Directory.GetCurrentDirectory());
+        //        builder.AddJsonFile("appsettings.json");
+        //        var config = builder.Build();
+        //        string connectionString = config.GetConnectionString("DefaultConnection");
 
-                var optionsBuilder = new DbContextOptionsBuilder<TouragencyContext>();
-                _options = optionsBuilder.UseLazyLoadingProxies().UseSqlServer(connectionString).Options;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
-                throw;
-            }
-        }
+        //        var optionsBuilder = new DbContextOptionsBuilder<TouragencyContext>();
+        //        _options = optionsBuilder.UseLazyLoadingProxies().UseSqlServer(connectionString).Options;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Exception: {ex.Message}");
+        //        throw;
+        //    }
+        //}
 
-        public TouragencyContext()
+        public TouragencyContext(DbContextOptions<TouragencyContext> _options)
            : base(_options)
         {
-
         }
-        */
+
         #endregion RunWithMigration
 
-
+        /*
         #region RunWithoutMigration(Re-Create)
+
         // При першому запуску програми видаляємо БД і створюємо нову
         // Надалі коментуємо цей код і при запуску повинні виконуватись міграції, які описані вище
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -74,7 +79,7 @@ namespace TouragencyWebApi.DAL.EF
                 .HasIndex(b => new { b.BookingId, b.RoomNumber, b.DateBeginPeriod, b.DateEndPeriod })
                 .IsUnique();
             modelBuilder.Entity<BookingChildren>()
-                .HasIndex(b => new { b.BookingId, b.ChildrenCount, b.ChildrenAge })
+                .HasIndex(b => new { b.BookingDataId, b.ChildrenCount, b.ChildrenAge })
                 .IsUnique();
         }
         //The overrided OnConfiguring method is used to configure UseLazyLoadingProxies and UseSqlServer.
@@ -319,14 +324,14 @@ namespace TouragencyWebApi.DAL.EF
 
 
 
-                /*
-                 Якщо вам потрібно знайти кількість входжень підрядка в рядок, ви можете використати клас Regex і метод Matches, як показано нижче12:
 
-                    string s = "yourString";
-                    string sub = "yourSubstring";
-                    int count = Regex.Matches(s, sub).Count;
-                    Console.WriteLine($"Кількість входжень підрядка: {count}");
-                 */
+                //Якщо вам потрібно знайти кількість входжень підрядка в рядок, ви можете використати клас Regex і метод Matches, як показано нижче12:
+
+                //string s = "yourString";
+                //string sub = "yourSubstring";
+                //int count = Regex.Matches(s, sub).Count;
+                //Console.WriteLine($"Кількість входжень підрядка: {count}");
+
                 BedConfigurations.Add(new BedConfiguration { Label = "SGL+SGL", Description = "Дві односпальні ліжка", Capacity = 2 });
                 BedConfigurations.Add(new BedConfiguration { Label = "DBL", Description = "Двоспальне ліжко", Capacity = 2 });
                 BedConfigurations.Add(new BedConfiguration { Label = "KNG", Description = "Ліжко King-size", Capacity = 2 });
@@ -410,6 +415,27 @@ namespace TouragencyWebApi.DAL.EF
         }
 
         #endregion RunWithoutMigration(Re-Create)
-        
+        */
+
+
+    }
+    // Класс необходим исключительно для миграций
+    public class SampleContextFactory : IDesignTimeDbContextFactory<TouragencyContext>
+    {
+        public TouragencyContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<TouragencyContext>();
+
+            // получаем конфигурацию из файла appsettings.json
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.SetBasePath(Directory.GetCurrentDirectory());
+            builder.AddJsonFile("appsettings.json");
+            IConfigurationRoot config = builder.Build();
+
+            // получаем строку подключения из файла appsettings.json
+            string connectionString = config.GetConnectionString("DefaultConnection");
+            optionsBuilder.UseSqlServer(connectionString);
+            return new TouragencyContext(optionsBuilder.Options);
+        }
     }
 }

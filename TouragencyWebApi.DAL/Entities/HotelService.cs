@@ -13,6 +13,21 @@ namespace TouragencyWebApi.DAL.Entities
 		// Додай віртуальну навігаційну властивість HotelServiceType зв'язок один до багатьох з класом HotelServiceType
 		public virtual HotelServiceType HotelServiceType { get; set; }
 		// Додай віртуальну навігаційну властивість Hotel зв'язок багато до багатьох з класом Hotel
-		public virtual ICollection<Hotel> Hotels { get; set; }		
-	}
+		public virtual ICollection<Hotel> Hotels { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var otheBC = (HotelService)obj;
+            return Id == otheBC.Id;
+        }
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+    }
 }

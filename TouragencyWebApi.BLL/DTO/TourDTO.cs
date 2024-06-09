@@ -7,6 +7,9 @@
 
         // Дата прибуття
         public int TourNameId { get; set; }
+        public string? TourName { get; set; }
+        public string? TourState { get; set; }
+        public string? Route { get; set; }
 
         // Дата прибуття
         public DateTime ArrivalDate { get; set; }
@@ -14,22 +17,14 @@
         // Дата виїзду в тур
         public DateTime DepartureDate { get; set; }
 
-        // Покажчик, чи є в турі нічні переїзди
-        public bool IsHaveNightRides { get; set; }
-
-        // Кількість нічних переїздів
-        public short NightRidesCount { get; set; }
-
         // Кількість вільних місць в турі
         public int FreeSeats { get; set; }
 
         // Статус туру (активний, скасований, завершений і т.д.)
         public int TourStateId { get; set; }
 
-        // Повний маршрут туру
-        public string? Route { get; set; }
-
         // зв'язок з таблицею Settlements
+        public ICollection<int>? CountryIds { get; set; }
         public ICollection<int>? SettlementIds { get; set; }
 
         // Many-to-many зв'язок з таблицею Hotels

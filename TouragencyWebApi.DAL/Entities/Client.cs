@@ -19,6 +19,20 @@ namespace TouragencyWebApi.DAL.Entities
         public virtual ICollection<Tour>? Tours { get; set; }
         public int TouragencyAccountRoleId { get; set; } = 3;
         public virtual TouragencyAccountRole TouragencyAccountRole { get; set; }
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var otheBC = (Client)obj;
+            return Id == otheBC.Id;
+        }
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
 
     }
 }

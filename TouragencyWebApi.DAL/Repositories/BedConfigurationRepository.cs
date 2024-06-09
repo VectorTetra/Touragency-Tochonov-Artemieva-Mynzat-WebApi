@@ -24,8 +24,14 @@ namespace TouragencyWebApi.DAL.Repositories
         }
         public async Task<IEnumerable<BedConfiguration>> GetAll()
         {
-            return await _context.BedConfigurations.ToListAsync();
+            return await _context.BedConfigurations.OrderBy(b => b.Capacity).ToListAsync();
         }
+
+        public async Task<IEnumerable<BedConfiguration>> Get200Last()
+        {
+            return await _context.BedConfigurations.OrderByDescending(b => b.Id).Take(200).ToListAsync();
+        }
+
         public async Task<IEnumerable<BedConfiguration>> GetByHotelId(int hotelId){
             
             return await _context.BedConfigurations.Where(b => b.Hotels.Any(h => h.Id == hotelId) ).ToListAsync();

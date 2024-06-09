@@ -22,6 +22,11 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.Clients.ToListAsync();
         }
 
+        public async Task<IEnumerable<Client>> Get200Last()
+        {
+            return await _context.Clients.OrderByDescending(c => c.Id).Take(200).ToListAsync();
+        }
+
         public async Task<Client?> GetById(int clientId)
         {
             return await _context.Clients.FirstOrDefaultAsync(c => c.Id == clientId);
@@ -32,7 +37,7 @@ namespace TouragencyWebApi.DAL.Repositories
             return await _context.Clients.FirstOrDefaultAsync(c => c.PersonId == personId);
         }
 
-        public async Task<Client?> GetByBookingId(int bookingId)
+        public async Task<Client?> GetByBookingId(long bookingId)
         {
             return await _context.Clients.FirstOrDefaultAsync(c => c.Bookings.Any(b => b.Id == bookingId));
         }
@@ -63,6 +68,44 @@ namespace TouragencyWebApi.DAL.Repositories
         {
             return await _context.Clients.Where(c => c.Person.Phones.Any(p => p.PhoneNumber.Contains(phoneNumber))).ToListAsync();
         }
+
+        public async Task<IEnumerable<Client>> GetByCompositeSearch(string? touristNickname, string? emailAddress,
+            string? phoneNumber, string? firstname, string? lastname, string? middlename)
+        {
+            var clientCollections = new List<IEnumerable<Client>>();
+
+            if (touristNickname != null)
+            {
+                clientCollections.Add(await GetByTouristNickname(touristNickname));
+            }
+            if (emailAddress != null)
+            {
+                clientCollections.Add(await GetByEmailAddress(emailAddress));
+            }
+            if (phoneNumber != null)
+            {
+                clientCollections.Add(await GetByPhoneNumber(phoneNumber));
+            }
+            if (firstname != null)
+            {
+                clientCollections.Add(await GetByFirstname(firstname));
+            }
+            if (lastname != null)
+            {
+                clientCollections.Add(await GetByLastname(lastname));
+            }
+            if (middlename != null)
+            {
+                clientCollections.Add(await GetByMiddlename(middlename));
+            }
+
+            if (!clientCollections.Any())
+            {
+                return new List<Client>();
+            }
+            return clientCollections.Aggregate((previousList, nextList) => previousList.Intersect(nextList).ToList());
+        }
+
         public async Task Create(Client client)
         {
             await _context.Clients.AddAsync(client);

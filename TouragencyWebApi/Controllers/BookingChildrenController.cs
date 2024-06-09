@@ -80,65 +80,65 @@ namespace TouragencyWebApi.Controllers
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> CreateBookingChildren(BookingChildrenDTO bookingChildrenDTO)
+        public async Task<ActionResult<BookingChildrenDTO>> CreateBookingChildren(BookingChildrenDTO bookingChildrenDTO)
         {
             try
             {
-                await _serv.Create(bookingChildrenDTO);
-                return Ok();
+                var dto = await _serv.Create(bookingChildrenDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
         [HttpPut]
-        public async Task<ActionResult<string>> UpdateBookingChildren(BookingChildrenDTO bookingChildrenDTO)
+        public async Task<ActionResult<BookingChildrenDTO>> UpdateBookingChildren(BookingChildrenDTO bookingChildrenDTO)
         {
             try
             {
-                await _serv.Update(bookingChildrenDTO);
-                return Ok();
+                var dto = await _serv.Update(bookingChildrenDTO);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<string>> DeleteBookingChildren(long id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<BookingChildrenDTO>> DeleteBookingChildren(long id)
         {
             try
             {
-                await _serv.Delete(id);
-                return Ok();
+                var dto = await _serv.Delete(id);
+                return Ok(dto);
             }
             catch (ValidationException ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }
