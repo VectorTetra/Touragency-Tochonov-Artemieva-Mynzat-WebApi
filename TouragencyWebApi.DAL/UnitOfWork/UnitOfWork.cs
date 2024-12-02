@@ -3,6 +3,7 @@ using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DAL.Repositories;
 // Це буде в patch
+// Це буде в patch через Visual Studio
 namespace TouragencyWebApi.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
