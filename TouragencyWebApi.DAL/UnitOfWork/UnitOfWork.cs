@@ -5,6 +5,7 @@ using TouragencyWebApi.DAL.Repositories;
 // Це буде в patch
 // Це буде в patch через Visual Studio
 // Комміт 1
+// Комміт 2
 namespace TouragencyWebApi.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
