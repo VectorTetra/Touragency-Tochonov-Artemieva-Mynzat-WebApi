@@ -2,6 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using TouragencyWebApi.DAL.Entities;
+// Колеги додали таблицю Подорожі
+// Колеги додали таблицю Клієнти
+// Колеги додали таблицю Співробітники
+// Колеги додали таблицю Готелі
 namespace TouragencyWebApi.DAL.EF
 {
 
