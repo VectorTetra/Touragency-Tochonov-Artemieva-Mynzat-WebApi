@@ -2,10 +2,7 @@
 using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DAL.Repositories;
-// Initial 
-// Додано таблицю Тури 
-// Додано таблицю Туристів
-// Для push-with-lease via Visual Studio
+// Віддалена зміна для revert
 namespace TouragencyWebApi.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
