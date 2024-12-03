@@ -5,11 +5,14 @@ using TouragencyWebApi.DAL.Repositories;
 // Initial 
 // Додано таблицю Тури 
 // Додано таблицю Туристів
+// Нова зміна для stash
+// Змінено файл для push with lease через GitKraken
+// Змінено файл для push with lease через Visual Studio
 namespace TouragencyWebApi.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly TouragencyContext _context;
+        private readonly TouragencyContext _context; 
         private IClientRepository _clients;
         private IEmailRepository _emails;
         private IPhoneRepository _phones;
