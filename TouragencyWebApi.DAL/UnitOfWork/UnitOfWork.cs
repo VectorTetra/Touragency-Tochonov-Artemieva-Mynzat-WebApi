@@ -8,6 +8,7 @@ using TouragencyWebApi.DAL.Repositories;
 // Комміт 2
 // Комміт 3 через Visual Studio
 // Комміт 4 через Visual Studio
+// Хитрий комміт 5 який краще синхронізувати через SYNC
 namespace TouragencyWebApi.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
