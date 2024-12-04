@@ -1,12 +1,11 @@
-﻿using System.Data;
+using System.Data;
 using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DAL.Repositories;
-
+// Коментар для відправки на інший репозиторій
 // Хитрий комміт 5 який краще синхронізувати через SYNC
-
+// Коментар для стешу
 // Віддалена зміна для revert
-
 namespace TouragencyWebApi.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
