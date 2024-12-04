@@ -4,6 +4,7 @@ using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DAL.Repositories;
 // Коментар для відправки на інший репозиторій
 // Цей коментар додано через Github.com
+// Цей коментар додано для Fetch і Pull через Visual Studio
 namespace TouragencyWebApi.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
