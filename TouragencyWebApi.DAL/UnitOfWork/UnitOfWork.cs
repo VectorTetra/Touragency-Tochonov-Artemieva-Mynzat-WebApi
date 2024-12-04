@@ -2,6 +2,7 @@
 using TouragencyWebApi.DAL.EF;
 using TouragencyWebApi.DAL.Interfaces;
 using TouragencyWebApi.DAL.Repositories;
+// Super useful feature
 // Коментар для відправки на інший репозиторій
 // Цей коментар додано через Github.com
 // Цей коментар додано для Fetch і Pull через Visual Studio
